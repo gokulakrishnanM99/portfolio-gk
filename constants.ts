@@ -2,6 +2,11 @@
 import { Experience, Education, SkillCategory, Certificate, QuoteItem, DesignItem, FeaturedProject, BlogItem } from './types';
 import { Linkedin, Github, FileText, Mail } from 'lucide-react';
 
+// Import images so Vite properly handles asset paths with base URL
+import courseraImg from '/assets/certificates/Course/Coursera Python for Data Science, AI & Development.jpg';
+import culturalsImg from '/assets/design/Posters/Culturals-poster.jpg';
+import blogRadhaKrishnaImg from '/assets/blogs/the-radha-krishna-b8d39f39a632.png';
+
 // Color Constants specified by user
 export const COLOR_RED = '#A90000'; // R-169, G-0, B-0
 export const COLOR_GREY = '#262626'; // R-38, G-38, B-38
@@ -134,7 +139,7 @@ export const MANUAL_CERTIFICATES: Certificate[] = [
     issuer: 'Coursera (offered by IBM)',
     date: '2024',
     category: 'Cloud & AI',
-    imageUrl: 'assets/certificates/Course/Coursera Python for Data Science, AI & Development.jpg' // This will be loaded from src/assets/certificates/azure.jpg
+    imageUrl: courseraImg
   }
 ];
 
@@ -142,7 +147,7 @@ export const MANUAL_DESIGNS: DesignItem[] = [
   {
     id: 'd1',
     title: 'Culturals Poster',
-    imageUrl: 'assets/design/Posters/Culturals-poster.jpg',
+    imageUrl: culturalsImg,
     description: 'Digital art poster for Intra-cultral fest.',
     category: 'Poster'
   }
@@ -171,6 +176,6 @@ export const MANUAL_BLOGS: BlogItem[] = [
     date: "Nov 17, 2025",
     readTime: "5 min read",
     url: "https://medium.com/@gokulkrish0999/the-radha-krishna-b8d39f39a632",
-    imageUrl: "assets/blogs/the-radha-krishna-b8d39f39a632.png"
+    imageUrl: blogRadhaKrishnaImg
   }
 ];
