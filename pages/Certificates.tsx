@@ -78,7 +78,7 @@ const Certificates: React.FC = () => {
       
       {filteredCertificates.length === 0 && (
          <div className="py-20 text-center text-slate-500 font-light italic">
-           No certifications found. Add images to src/assets/certificates
+           No certifications found. Add images to assets/certificates
          </div>
       )}
     </div>

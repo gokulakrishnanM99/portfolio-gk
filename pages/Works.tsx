@@ -164,7 +164,7 @@ const BlogsGallery: React.FC = () => {
           </a>
         ))}
       </div>
-      {blogs.length === 0 && <div className="text-center py-10 opacity-50">No blogs found. Add images to src/assets/blogs</div>}
+      {blogs.length === 0 && <div className="text-center py-10 opacity-50">No blogs found. Add images to assets/blogs</div>}
     </div>
   );
 };
@@ -208,7 +208,7 @@ const QuotesGallery: React.FC = () => {
           );
         })}
       </div>
-      {quotes.length === 0 && <div className="text-center py-10 opacity-50">No quotes found. Add .txt or images to src/assets/quotes</div>}
+      {quotes.length === 0 && <div className="text-center py-10 opacity-50">No quotes found. Add .txt or images to assets/quotes</div>}
     </div>
   );
 };
@@ -279,7 +279,7 @@ const DesignsGallery: React.FC = () => {
       
       {filteredDesigns.length === 0 && (
          <div className="py-20 text-center text-slate-500 font-light italic">
-           No designs found. Add images to src/assets/designs
+           No designs found. Add images to assets/designs
          </div>
       )}
     </div>

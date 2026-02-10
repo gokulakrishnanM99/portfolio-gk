@@ -22,8 +22,8 @@ const getFileName = (path: string): string => {
 
 // --- CERTIFICATES LOADER ---
 export const getCertificates = (): Certificate[] => {
-  // Scans src/assets/certificates/{Category}/{Filename}.jpg
-  const modules = import.meta.glob('/src/assets/certificates/*/*.*', { eager: true, as: 'url' });
+  // Scans assets/certificates/{Category}/{Filename}.jpg
+  const modules = import.meta.glob('/assets/certificates/*/*.*', { eager: true, as: 'url' });
   
   const dynamicCerts: Certificate[] = [];
 
@@ -57,8 +57,8 @@ export const getCertificates = (): Certificate[] => {
 
 // --- DESIGNS LOADER ---
 export const getDesigns = (): DesignItem[] => {
-  // Scans src/assets/designs/{Category}/{Filename}.jpg
-  const modules = import.meta.glob('/src/assets/designs/*/*.*', { eager: true, as: 'url' });
+  // Scans assets/designs/{Category}/{Filename}.jpg
+  const modules = import.meta.glob('/assets/designs/*/*.*', { eager: true, as: 'url' });
   
   const dynamicDesigns: DesignItem[] = [];
 
@@ -87,8 +87,8 @@ export const getDesigns = (): DesignItem[] => {
 
 // --- BLOGS LOADER ---
 export const getBlogs = (): BlogItem[] => {
-  // Scans src/assets/blogs/{filename}.jpg
-  const modules = import.meta.glob('/src/assets/blogs/*.*', { eager: true, as: 'url' });
+  // Scans assets/blogs/{filename}.jpg
+  const modules = import.meta.glob('/assets/blogs/*.*', { eager: true, as: 'url' });
   
   const dynamicBlogs: BlogItem[] = [];
 
@@ -118,9 +118,9 @@ export const getBlogs = (): BlogItem[] => {
 // --- QUOTES LOADER ---
 export const getQuotes = (): QuoteItem[] => {
   // 1. Get Images
-  const imageModules = import.meta.glob('/src/assets/quotes/*.{png,jpg,jpeg,webp}', { eager: true, as: 'url' });
+  const imageModules = import.meta.glob('/assets/quotes/*.{png,jpg,jpeg,webp}', { eager: true, as: 'url' });
   // 2. Get Text Files
-  const textModules = import.meta.glob('/src/assets/quotes/*.txt', { eager: true, as: 'raw' });
+  const textModules = import.meta.glob('/assets/quotes/*.txt', { eager: true, as: 'raw' });
 
   const dynamicQuotes: QuoteItem[] = [];
 

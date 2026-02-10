@@ -130,21 +130,21 @@ export const MANUAL_CERTIFICATES: Certificate[] = [
   // Example: If you have a file "Azure.jpg", you can add details here with id: "Azure" to enrich it.
   {
     id: 'c1',
-    title: 'Azure Data Scientist Associate',
-    issuer: 'Microsoft',
+    title: 'Python for Data Science, AI & Development',
+    issuer: 'Coursera (offered by IBM)',
     date: '2024',
     category: 'Cloud & AI',
-    imageUrl: 'https://picsum.photos/seed/azure/400/300'
+    imageUrl: 'assets/certificates/Course/Coursera Python for Data Science, AI & Development.jpg' // This will be loaded from src/assets/certificates/azure.jpg
   }
 ];
 
 export const MANUAL_DESIGNS: DesignItem[] = [
   {
     id: 'd1',
-    title: 'Sustainable Urban Future',
-    imageUrl: 'https://picsum.photos/seed/urban/600/800',
-    description: 'Digital art concept for smart cities.',
-    category: 'Concept Art'
+    title: 'Culturals Poster',
+    imageUrl: 'assets/design/Posters/Culturals-poster.jpg',
+    description: 'Digital art poster for Intra-cultral fest.',
+    category: 'Poster'
   }
 ];
 
@@ -152,13 +152,13 @@ export const MANUAL_QUOTES: QuoteItem[] = [
   { 
     id: 'q1', 
     type: 'text',
-    content: "Data dictates the direction, but creativity carves the path.", 
+    content: "Some people are worth Melting for and my Melting point is You", 
     author: "Gokulakrishnan M" 
   },
   { 
     id: 'q2', 
     type: 'text',
-    content: "In the world of AI, the human touch is the most expensive algorithm.", 
+    content: "Love Chemistry vs Friendship Physics", 
     author: "Gokulakrishnan M" 
   }
 ];
@@ -166,11 +166,11 @@ export const MANUAL_QUOTES: QuoteItem[] = [
 export const MANUAL_BLOGS: BlogItem[] = [
   {
     id: '1',
-    title: "Understanding RAG Systems in 2025",
-    subtitle: "A deep dive into Retrieval Augmented Generation with Azure OpenAI.",
-    date: "Jan 10, 2025",
+    title: "The Radha - Krishns",
+    subtitle: "Mythology isn't just a story - sometimes it becomes a mirror",
+    date: "Nov 17, 2025",
     readTime: "5 min read",
-    url: "https://medium.com/@gokulkrish0999",
-    imageUrl: "https://images.unsplash.com/photo-1677442136019-21780ecad995?q=80&w=800&auto=format&fit=crop"
+    url: "https://medium.com/@gokulkrish0999/the-radha-krishna-b8d39f39a632",
+    imageUrl: "assets/blogs/the-radha-krishna-b8d39f39a632.png"
   }
 ];
