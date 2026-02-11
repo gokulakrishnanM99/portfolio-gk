@@ -134,7 +134,7 @@ export const FEATURED_PROJECTS: FeaturedProject[] = [
 export const MANUAL_CERTIFICATES: Certificate[] = [
   // Example: If you have a file "Azure.jpg", you can add details here with id: "Azure" to enrich it.
   {
-    id: 'c1',
+    id: 'Coursera Python for Data Science, AI & Development',
     title: 'Python for Data Science, AI & Development',
     issuer: 'Coursera (offered by IBM)',
     date: '2024',
@@ -145,11 +145,12 @@ export const MANUAL_CERTIFICATES: Certificate[] = [
 
 export const MANUAL_DESIGNS: DesignItem[] = [
   {
-    id: 'd1',
+    id: 'Culturals-poster',
     title: 'Culturals Poster',
     imageUrl: culturalsImg,
     description: 'Digital art poster for Intra-cultral fest.',
-    category: 'Poster'
+    category: 'Poster',
+    link: culturalsImg
   }
 ];
 
@@ -170,7 +171,7 @@ export const MANUAL_QUOTES: QuoteItem[] = [
 
 export const MANUAL_BLOGS: BlogItem[] = [
   {
-    id: '1',
+    id: 'the-radha-krishna-b8d39f39a632',
     title: "The Radha - Krishns",
     subtitle: "Mythology isn't just a story - sometimes it becomes a mirror",
     date: "Nov 17, 2025",

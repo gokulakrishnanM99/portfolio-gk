@@ -42,12 +42,12 @@ export const getCertificates = (): Certificate[] => {
         // Here we prioritize the manual entry completely, but we could merge.
     } else {
         dynamicCerts.push({
-            id,
-            title: formatTitle(fileName),
-            issuer: "External", // Default
-            date: new Date().getFullYear().toString(), // Default
-            category: formatTitle(category),
-            imageUrl
+          id,
+          title: formatTitle(fileName),
+          issuer: "",
+          date: "",
+          category: formatTitle(category),
+          imageUrl
         });
     }
   }
@@ -77,7 +77,8 @@ export const getDesigns = (): DesignItem[] => {
         title: formatTitle(fileName),
         category: formatTitle(category),
         imageUrl,
-        description: "" // Empty description for dynamic items
+        description: "", // Empty description for dynamic items
+        link: imageUrl
       });
     }
   }

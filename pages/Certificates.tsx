@@ -53,24 +53,23 @@ const Certificates: React.FC = () => {
         {filteredCertificates.map((cert) => (
           <div key={cert.id} className="bg-white dark:bg-slate-900 rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-800 group hover:border-slate-400 dark:hover:border-slate-600 transition-all hover:shadow-xl hover:-translate-y-2 duration-300 flex flex-col h-full">
             <div className="aspect-video bg-slate-100 dark:bg-slate-950 relative overflow-hidden">
-              <img 
-                src={cert.imageUrl} 
-                alt={cert.title} 
-                className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-700 opacity-95 hover:opacity-100" 
+              <img
+                src={cert.imageUrl}
+                alt={cert.title}
+                className="object-contain w-full h-full transition-transform duration-700 bg-white"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 to-transparent"></div>
-              <div className="absolute bottom-4 left-4 right-4">
-                <span className="px-2 py-1 rounded bg-primary-500/20 backdrop-blur-sm text-primary-100 text-xs font-bold border border-primary-500/30 mb-2 inline-block">
-                  {cert.category}
-                </span>
-                <p className="text-xs text-slate-200 font-bold uppercase tracking-wide">{cert.issuer}</p>
-              </div>
             </div>
-            <div className="p-6 flex-grow">
-              <h4 className="text-slate-900 dark:text-white font-bold leading-tight mb-3 text-lg">{cert.title}</h4>
-              <p className="text-slate-500 dark:text-slate-500 text-sm flex items-center gap-2">
-                Issued: <span className="text-slate-700 dark:text-slate-400 font-medium">{cert.date}</span>
-              </p>
+
+            <div className="px-5 py-4 bg-white dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
+              <div>
+                <div className="text-sm font-bold text-slate-900 dark:text-white leading-tight">{cert.title}</div>
+                <div className="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wider mt-1">{cert.category}</div>
+              </div>
+
+              <div className="text-right text-xs text-slate-500 dark:text-slate-400">
+                {cert.issuer && <div className="font-medium text-slate-700 dark:text-slate-300">{cert.issuer}</div>}
+                {cert.date && <div className="mt-1">Issued: <span className="font-medium text-slate-700 dark:text-slate-300">{cert.date}</span></div>}
+              </div>
             </div>
           </div>
         ))}

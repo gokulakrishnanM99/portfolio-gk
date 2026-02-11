@@ -1,9 +1,10 @@
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { NavLink, Routes, Route, Outlet, useLocation } from 'react-router-dom';
+import { DesignItem } from '../types';
 import { getBlogs, getQuotes, getDesigns } from '../utils/contentLoader';
 import { COLOR_RED, COLOR_GREY } from '../constants';
-import { Quote, Image, ArrowRight, BookOpen, ExternalLink } from 'lucide-react';
+import { Quote, Image, ArrowRight, BookOpen, ExternalLink, ArrowLeft } from 'lucide-react';
 
 const WorksHub: React.FC = () => {
   return (
@@ -171,43 +172,121 @@ const BlogsGallery: React.FC = () => {
 
 const QuotesGallery: React.FC = () => {
   const quotes = useMemo(() => getQuotes(), []);
+  const [openIndex, setOpenIndex] = useState<number | null>(null);
+  const [stackMode, setStackMode] = useState<boolean>(false);
+  const prevScrollY = useRef<number>(0);
+
+  useEffect(() => {
+    if (openIndex == null || !stackMode) return;
+    const el = document.getElementById(`quote-${openIndex}`);
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, [openIndex, stackMode]);
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (openIndex == null) return;
+      if (e.key === 'Escape') setOpenIndex(null);
+      if (e.key === 'ArrowUp') setOpenIndex(i => (i == null ? null : Math.max(0, i - 1)));
+      if (e.key === 'ArrowDown') setOpenIndex(i => (i == null ? null : Math.min(quotes.length - 1, i + 1)));
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [openIndex, quotes.length]);
 
   return (
     <div className="max-w-7xl mx-auto px-4 pb-20">
       <WorksSubNav />
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-0 bg-white dark:bg-slate-950 animate-fade-up shadow-2xl rounded-lg overflow-hidden border border-transparent dark:border-slate-800">
+      {!stackMode ? (
+        <div className="grid grid-cols-3 sm:grid-cols-2 md:grid-cols-3 gap-0 bg-white dark:bg-slate-950 animate-fade-up shadow-2xl rounded-lg overflow-hidden border border-transparent dark:border-slate-800">
         {quotes.map((quote, index) => {
           const bgColor = index % 2 === 0 ? COLOR_RED : COLOR_GREY;
-          
+
           return (
-            <div 
-              key={quote.id} 
-              className="aspect-square relative group overflow-hidden"
+            <div
+              key={quote.id}
+              className="aspect-square relative group overflow-hidden cursor-pointer"
               style={{ backgroundColor: quote.type === 'text' ? bgColor : 'transparent' }}
+              onClick={() => { prevScrollY.current = window.scrollY; setOpenIndex(index); setStackMode(true); }}
             >
               {quote.type === 'image' ? (
-                <img 
-                  src={quote.content} 
-                  alt="Quote" 
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" 
+                <img
+                  src={quote.content}
+                  alt="Quote"
+                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                 />
               ) : (
-                <div className="w-full h-full flex flex-col items-center justify-center p-8 text-center transition-transform duration-500 group-hover:scale-105">
-                  <Quote className="w-10 h-10 text-white/20 mb-6" />
-                  <p className="text-white font-quote text-2xl md:text-3xl leading-relaxed tracking-wide">
-                    "{quote.content}"
-                  </p>
-                  <div className="mt-6 w-12 h-1 bg-white/30"></div>
-                  <p className="text-white/70 text-xs font-bold uppercase tracking-widest mt-4">
-                    {quote.author}
-                  </p>
+                <div className="w-full h-full flex items-center justify-center p-1 md:p-4 text-center transition-transform duration-300 overflow-hidden">
+                  <div className="transform scale-75 md:scale-100 w-full h-full flex flex-col items-center justify-center">
+                    <Quote className="w-2 h-2 md:w-5 md:h-5 text-white/20 mb-2" />
+                    <p className="text-white font-quote text-[9px] md:text-3xl leading-tight md:leading-relaxed tracking-wide line-clamp-3">
+                      "{quote.content}"
+                    </p>
+                    <div className="mt-3 md:mt-4  w-6 md:w-12 h-0.5 bg-white/30"></div>
+                    <p className="text-white/70 text-[5px] md:text-sm font-bold uppercase tracking-widest mt-1">
+                      {quote.author}
+                    </p>
+                  </div>
                 </div>
               )}
             </div>
           );
         })}
-      </div>
+        </div>
+      ) : (
+        <div className="w-full">
+          <div className="w-full">
+            {/* fixed back button at top so it stays visible while scrolling */}
+            {stackMode && (
+              <button
+                onClick={() => {
+                  setStackMode(false);
+                  setOpenIndex(null);
+                  setTimeout(() => window.scrollTo({ top: prevScrollY.current, behavior: 'auto' }), 0);
+                }}
+                className="fixed left-7 top-[calc(7rem+0.5rem)] z-50 flex items-center gap-2 px-3 py-2 rounded-full bg-white/90 dark:bg-white/20 hover:bg-white/95 dark:hover:bg-slate-800 text-slate-900 dark:text-white backdrop-blur"
+              >
+                <ArrowLeft className="w-4 h-4" />
+                <span className="text-sm">Back</span>
+              </button>
+            )}
+
+            <div className="w-full">
+              {quotes.map((quote, i) => {
+                const bgColor = i % 2 === 0 ? COLOR_RED : COLOR_GREY;
+                const isText = quote.type === 'text';
+
+                return (
+                  <div
+                    id={`quote-${i}`}
+                    key={quote.id}
+                    className="w-full min-h-screen flex items-center justify-center p-0"
+                    style={{ backgroundColor: isText ? bgColor : 'transparent' }}
+                  >
+                    {quote.type === 'image' ? (
+                      <img src={quote.content} alt="Quote" className="max-w-full max-h-full object-contain" />
+                    ) : (
+                        <div className="max-w-3xl w-full bg-transparent flex flex-col items-center justify-center p-8">
+                          <Quote className="w-6 h-6 md:w-10 md:h-10 text-white/20 mb-4" />
+                          <p className="text-white font-quote text-lg md:text-4xl lg:text-6xl leading-relaxed tracking-wide text-center">
+                            "{quote.content}"
+                          </p>
+                          <div className="mt-4 md:mt-9 w-20 h-1 bg-white/30"></div>
+                          <p className="text-white/80 text-xs md:text-2xl font-bold uppercase tracking-widest mt-4">
+                            {quote.author}
+                          </p>
+                        </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      )}
+
+      
+
       {quotes.length === 0 && <div className="text-center py-10 opacity-50">No quotes found. Add .txt or images to assets/quotes</div>}
     </div>
   );
@@ -216,6 +295,7 @@ const QuotesGallery: React.FC = () => {
 const DesignsGallery: React.FC = () => {
   const designs = useMemo(() => getDesigns(), []);
   const [activeCategory, setActiveCategory] = useState<string>('All');
+  const [selectedDesign, setSelectedDesign] = useState<DesignItem | null>(null);
 
   const categories = useMemo(() => {
     const cats = new Set(designs.map(d => d.category));
@@ -226,6 +306,51 @@ const DesignsGallery: React.FC = () => {
     if (activeCategory === 'All') return designs;
     return designs.filter(d => d.category === activeCategory);
   }, [activeCategory, designs]);
+
+  const touchStartX = useRef<number | null>(null);
+  const SWIPE_THRESHOLD = 50;
+
+  const navigateToIndex = (idx: number) => {
+    const len = filteredDesigns.length;
+    if (len === 0) return;
+    const safe = ((idx % len) + len) % len;
+    setSelectedDesign(filteredDesigns[safe]);
+  };
+
+  const navigatePrev = () => {
+    if (!selectedDesign) return;
+    const idx = filteredDesigns.findIndex(d => d.id === selectedDesign.id);
+    if (idx === -1) return;
+    navigateToIndex(idx - 1);
+  };
+
+  const navigateNext = () => {
+    if (!selectedDesign) return;
+    const idx = filteredDesigns.findIndex(d => d.id === selectedDesign.id);
+    if (idx === -1) return;
+    navigateToIndex(idx + 1);
+  };
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (!selectedDesign) return;
+      if (e.key === 'Escape') setSelectedDesign(null);
+      if (e.key === 'ArrowLeft') navigatePrev();
+      if (e.key === 'ArrowRight') navigateNext();
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [selectedDesign, filteredDesigns]);
+
+  // Prevent background scrolling when modal is open and restore on close
+  useEffect(() => {
+    if (selectedDesign) {
+      const prev = document.body.style.overflow;
+      document.body.style.overflow = 'hidden';
+      return () => { document.body.style.overflow = prev; };
+    }
+    return;
+  }, [selectedDesign]);
 
   return (
     <div className="max-w-7xl mx-auto px-4 pb-20">
@@ -254,28 +379,89 @@ const DesignsGallery: React.FC = () => {
           const bgColor = index % 2 === 0 ? COLOR_RED : COLOR_GREY;
 
           return (
-            <div 
-              key={design.id} 
-              className="group relative aspect-square overflow-hidden"
+            <div
+              key={design.id}
+              className="group relative aspect-square overflow-hidden cursor-zoom-in"
               style={{ backgroundColor: bgColor }}
+              onDoubleClick={() => setSelectedDesign(design)}
+              onClick={() => setSelectedDesign(design)}
+              role="button"
+              tabIndex={0}
             >
-              <img 
-                src={design.imageUrl} 
-                alt={design.title} 
-                className="w-full h-full object-cover opacity-90 group-hover:opacity-100 transition-all duration-700 group-hover:scale-110 mix-blend-normal" 
+              <img
+                src={design.imageUrl}
+                alt={design.title}
+                className="w-full h-full object-cover opacity-90 group-hover:opacity-100 transition-all duration-700 group-hover:scale-110 mix-blend-normal"
               />
-              
+
               <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500 flex flex-col justify-end p-8">
-                 <span className="text-primary-400 text-xs font-bold uppercase tracking-wider mb-2 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">{design.category}</span>
-                 <h4 className="text-white font-subnav text-xl md:text-2xl transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500 delay-75">{design.title}</h4>
-                 {design.description && (
-                   <p className="text-gray-300 text-sm mt-2 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500 delay-100 font-light leading-relaxed">{design.description}</p>
-                 )}
+                <span className="text-primary-400 text-xs font-bold uppercase tracking-wider mb-2 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">{design.category}</span>
+                <h4 className="text-white font-subnav text-xl md:text-2xl transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500 delay-75">{design.title}</h4>
+                {design.description && (
+                  <p className="text-gray-300 text-sm mt-2 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500 delay-100 font-light leading-relaxed">{design.description}</p>
+                )}
               </div>
             </div>
           );
         })}
       </div>
+
+      {selectedDesign && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 px-4 md:px-12 py-6 md:py-12">
+          <div className="absolute top-6 left-6">
+            <button
+              onClick={() => setSelectedDesign(null)}
+              className="flex items-center gap-2 px-3 py-2 rounded-full bg-white/85 dark:bg-white/10 hover:bg-white/20 text-slate-900 dark:text-white backdrop-blur"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              <span className="text-sm">Back</span>
+            </button>
+          </div>
+
+          <div className="absolute left-6 inset-y-0 flex items-center pointer-events-none">
+            <button
+              onClick={navigatePrev}
+              className="pointer-events-auto rounded-full p-2 bg-white/10 hover:bg-white/20 text-slate-900 dark:text-white"
+              aria-label="Previous"
+            >
+              <ArrowLeft className="w-6 h-6" />
+            </button>
+          </div>
+
+          <div className="absolute right-6 inset-y-0 flex items-center pointer-events-none">
+            <button
+              onClick={navigateNext}
+              className="pointer-events-auto rounded-full p-2 bg-white/10 hover:bg-white/20 text-slate-900 dark:text-white"
+              aria-label="Next"
+            >
+              <ArrowRight className="w-6 h-6" />
+            </button>
+          </div>
+
+          <div
+            className="w-full h-full max-w-full max-h-full flex flex-col items-center justify-center overflow-auto rounded-lg"
+            onTouchStart={(e) => { touchStartX.current = e.touches?.[0]?.clientX ?? null; }}
+            onTouchEnd={(e) => {
+              if (touchStartX.current == null) return;
+              const endX = e.changedTouches?.[0]?.clientX ?? null;
+              if (endX == null) return;
+              const diff = touchStartX.current - endX;
+              if (diff > SWIPE_THRESHOLD) navigateNext();
+              else if (diff < -SWIPE_THRESHOLD) navigatePrev();
+              touchStartX.current = null;
+            }}
+          >
+            <img
+              src={selectedDesign.imageUrl}
+              alt={selectedDesign.title}
+              className="max-w-[calc(100vw-2rem)] md:max-w-[calc(100vw-8rem)] max-h-[calc(100vh-4rem)] md:max-h-[calc(100vh-9rem)] object-contain"
+            />
+            {selectedDesign.title && (
+              <div className="mt-3 text-center text-white/80">{selectedDesign.title}</div>
+            )}
+          </div>
+        </div>
+      )}
       
       {filteredDesigns.length === 0 && (
          <div className="py-20 text-center text-slate-500 font-light italic">
