@@ -1,20 +1,34 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+# Portfolio Website
 
-# Run and deploy your AI Studio app
+This is a personal portfolio website built using **React** and **Vite**.
 
-This contains everything you need to run your app locally.
+## Live Demo
 
-View your app in AI Studio: https://ai.studio/apps/drive/11ZChnDen-X7KDxduXQYSZUvU7rYyRu02
+Access the Portfolio website in https://gokulakrishnanm99.github.io/portfolio-gk/
 
-## Run Locally
+## Project Structure
 
-**Prerequisites:**  Node.js
+- `src/`: Contains the application source code, including components, hooks, and styles.
+- `public/`: Static assets like images and icons that are served directly.
+- `vite.config.js`: Configuration file for the Vite build tool.
 
+## Getting Started
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+### Prerequisites
+
+- **Node.js**: Ensure you have Node.js installed on your machine.
+
+### Installation & Usage
+
+1. **Install dependencies:**
+   ```bash
+   npm install
+   ```
+2. **Run the development server:**
+   ```bash
+   npm run dev
+   ```
+3. **Deploy to GitHub Pages:**
+   ```bash
+   npm run deploy
+   ```
