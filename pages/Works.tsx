@@ -1,10 +1,85 @@
 
 import React, { useState, useMemo, useEffect, useRef } from 'react';
-import { NavLink, Routes, Route, Outlet, useLocation } from 'react-router-dom';
+import { NavLink, Outlet, useLocation } from 'react-router-dom';
 import { DesignItem } from '../types';
 import { getBlogs, getQuotes, getDesigns } from '../utils/contentLoader';
 import { COLOR_RED, COLOR_GREY } from '../constants';
 import { Quote, Image, ArrowRight, BookOpen, ExternalLink, ArrowLeft } from 'lucide-react';
+
+const getQuoteDensityScore = (content: string): number => {
+  const trimmed = content.trim();
+  if (!trimmed) return 0;
+
+  const words = trimmed.split(/\s+/).filter(Boolean);
+  const lines = trimmed.split(/\r?\n/).length;
+  const longWordPenalty = words.reduce((sum, word) => sum + (word.length > 12 ? 3 : 0), 0);
+
+  return trimmed.length + (words.length * 2) + ((lines - 1) * 22) + longWordPenalty;
+};
+
+const getGridQuoteTextClass = (content: string): string => {
+  const score = getQuoteDensityScore(content);
+
+  if (score <= 125) return 'text-[9px] md:text-2xl leading-tight md:leading-relaxed';
+  if (score <= 250) return 'text-[8px] md:text-xl leading-tight md:leading-snug';
+  if (score <= 375) return 'text-[7px] md:text-lg leading-tight md:leading-snug';
+  return 'text-[6px] md:text-base leading-tight md:leading-snug';
+};
+
+const getStackQuoteTextClass = (content: string): string => {
+  const score = getQuoteDensityScore(content);
+
+  if (score <= 120) return 'text-lg md:text-4xl lg:text-6xl leading-relaxed';
+  if (score <= 180) return 'text-base md:text-3xl lg:text-5xl leading-relaxed';
+  if (score <= 250) return 'text-sm md:text-2xl lg:text-4xl leading-relaxed';
+  return 'text-sm md:text-xl lg:text-3xl leading-relaxed';
+};
+
+const LONG_ARROWS_TOKEN = '[[LONG_ARROWS]]';
+
+const isLongArrowsQuote = (content: string): boolean => content.includes(LONG_ARROWS_TOKEN);
+
+const renderLongArrowsQuote = (
+  content: string,
+  textClass: string,
+  variant: 'grid' | 'stack'
+): React.ReactNode => {
+  const [top = '', bottom = ''] = content.split(LONG_ARROWS_TOKEN);
+  const arrowSvgClass = variant === 'grid' ? 'w-4 h-16 md:w-7 md:h-28' : 'w-6 h-28 md:w-8 md:h-44';
+  const gapClass = variant === 'grid' ? 'gap-2 md:gap-9' : 'gap-10 md:gap-20';
+  const textSpacingClass = variant === 'grid' ? 'gap-1 md:gap-2' : 'gap-2 md:gap-4';
+
+  return (
+    <div className={`w-full flex flex-col items-center justify-center text-center ${textSpacingClass}`}>
+      {top.trim() && (
+        <p className={`text-white font-quote tracking-wide whitespace-pre-wrap break-words ${textClass}`}>
+          {top.trim()}
+        </p>
+      )}
+
+      <div className={`flex items-stretch justify-center ${gapClass}`}>
+        <div className="flex flex-col items-center">
+          <svg className={arrowSvgClass} viewBox="0 0 22 110" aria-hidden="true">
+            <path d="M12 8 L20 24 H4 Z" fill="white" />
+            <path d="M10.4 24 L13.6 24 L12 114 Z" fill="white" />
+          </svg>
+        </div>
+        <div className="flex flex-col items-center">
+          <svg className={arrowSvgClass} viewBox="0 0 22 110" aria-hidden="true">
+            <path d="M12 6 L13.6 96 L10.4 96 Z" fill="white" />
+            <path d="M4 96 H20 L12 112 Z" fill="white" />
+          </svg>
+        </div>
+      </div>
+
+      {bottom.trim() && (
+        <p className={`text-white font-quote tracking-wide whitespace-pre-wrap break-words ${textClass}`}>
+          {bottom.trim()}
+        </p>
+      )}
+    </div>
+  );
+};
 
 const WorksHub: React.FC = () => {
   return (
@@ -201,6 +276,7 @@ const QuotesGallery: React.FC = () => {
         <div className="grid grid-cols-3 sm:grid-cols-2 md:grid-cols-3 gap-0 bg-white dark:bg-slate-950 animate-fade-up shadow-2xl rounded-lg overflow-hidden border border-transparent dark:border-slate-800">
         {quotes.map((quote, index) => {
           const bgColor = index % 2 === 0 ? COLOR_RED : COLOR_GREY;
+          const gridQuoteTextClass = getGridQuoteTextClass(quote.content);
 
           return (
             <div
@@ -219,11 +295,15 @@ const QuotesGallery: React.FC = () => {
                 <div className="w-full h-full flex items-center justify-center p-1 md:p-4 text-center transition-transform duration-300 overflow-hidden">
                   <div className="transform scale-75 md:scale-100 w-full h-full flex flex-col items-center justify-center">
                     <Quote className="w-2 h-2 md:w-5 md:h-5 text-white/20 mb-2" />
-                    <p className="text-white font-quote text-[9px] md:text-3xl leading-tight md:leading-relaxed tracking-wide line-clamp-3">
-                      "{quote.content}"
-                    </p>
+                    {isLongArrowsQuote(quote.content) ? (
+                      renderLongArrowsQuote(quote.content, gridQuoteTextClass, 'grid')
+                    ) : (
+                      <p className={`text-white font-quote tracking-wide whitespace-pre-wrap break-words ${gridQuoteTextClass}`}>
+                        {quote.content}
+                      </p>
+                    )}
                     <div className="mt-3 md:mt-4  w-6 md:w-12 h-0.5 bg-white/30"></div>
-                    <p className="text-white/70 text-[5px] md:text-sm font-bold uppercase tracking-widest mt-1">
+                    <p className="text-white/70 text-[5px] md:text-sm font-bold tracking-widest mt-1">
                       {quote.author}
                     </p>
                   </div>
@@ -255,6 +335,7 @@ const QuotesGallery: React.FC = () => {
               {quotes.map((quote, i) => {
                 const bgColor = i % 2 === 0 ? COLOR_RED : COLOR_GREY;
                 const isText = quote.type === 'text';
+                const stackQuoteTextClass = getStackQuoteTextClass(quote.content);
 
                 return (
                   <div
@@ -266,13 +347,17 @@ const QuotesGallery: React.FC = () => {
                     {quote.type === 'image' ? (
                       <img src={quote.content} alt="Quote" className="max-w-full max-h-full object-contain" />
                     ) : (
-                        <div className="max-w-3xl w-full bg-transparent flex flex-col items-center justify-center p-8">
+                        <div className="max-w-4xl w-full bg-transparent flex flex-col items-center justify-center p-8">
                           <Quote className="w-6 h-6 md:w-10 md:h-10 text-white/20 mb-4" />
-                          <p className="text-white font-quote text-lg md:text-4xl lg:text-6xl leading-relaxed tracking-wide text-center">
-                            "{quote.content}"
-                          </p>
+                          {isLongArrowsQuote(quote.content) ? (
+                            renderLongArrowsQuote(quote.content, stackQuoteTextClass, 'stack')
+                          ) : (
+                            <p className={`text-white font-quote tracking-wide text-center whitespace-pre-wrap break-words ${stackQuoteTextClass}`}>
+                              {quote.content}
+                            </p>
+                          )}
                           <div className="mt-4 md:mt-9 w-20 h-1 bg-white/30"></div>
-                          <p className="text-white/80 text-xs md:text-2xl font-bold uppercase tracking-widest mt-4">
+                          <p className="text-white/80 text-xs md:text-2xl font-bold tracking-widest mt-4">
                             {quote.author}
                           </p>
                         </div>

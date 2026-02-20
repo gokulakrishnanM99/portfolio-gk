@@ -11,6 +11,7 @@ Access the Portfolio website in https://gokulakrishnanm99.github.io/portfolio-gk
 - `src/`: Contains the application source code, including components, hooks, and styles.
 - `public/`: Static assets like images and icons that are served directly.
 - `vite.config.js`: Configuration file for the Vite build tool.
+- `INTERNAL_CONTENT_GUIDE.md`: Internal maintenance guide for editing blogs, certificates, quotes, resume, and page structure.
 
 ## Getting Started
 

@@ -12,7 +12,7 @@ export const COLOR_RED = '#A90000'; // R-169, G-0, B-0
 export const COLOR_GREY = '#262626'; // R-38, G-38, B-38
 
 // Global Defaults
-export const DEFAULT_QUOTE_AUTHOR = "Gokulakrishnan M";
+export const DEFAULT_QUOTE_AUTHOR = "tinyDragon";
 export const MEDIUM_BASE_URL = "https://medium.com/@gokulkrish0999/";
 
 export const SOCIAL_LINKS = [
@@ -38,6 +38,7 @@ export const SOCIAL_LINKS = [
   }
 ];
 
+// ----------------------------- Resume -----------------------------
 export const EDUCATION_DATA: Education[] = [
   {
     id: "mtech",
@@ -56,6 +57,17 @@ export const EDUCATION_DATA: Education[] = [
 ];
 
 export const EXPERIENCE_DATA: Experience[] = [
+  {
+    id: "Maasta",
+    role: "Contractor - Software Developer",
+    company: "Maasta",
+    period: "Feb 2026 – Present",
+    skills: ["LLM", "OCR", "API Development", "AI", "Supabase"],
+    description: [
+      "Developing AI integrated career development platform for Schools, Colleges, and Universities.",
+      "https://www.thisai.pro/",
+    ]
+  },
   {
     id: "ideas-iitb",
     role: "Pre-Incubation Fellow",
@@ -108,6 +120,8 @@ export const SKILLS_DATA: SkillCategory[] = [
   }
 ];
 
+// ----------------------------- Portfolio -----------------------------
+
 export const FEATURED_PROJECTS: FeaturedProject[] = [
   {
     id: 'cubiverse',
@@ -130,6 +144,8 @@ export const FEATURED_PROJECTS: FeaturedProject[] = [
 // --- MANUAL OVERRIDES & EXTERNAL LINKS ---
 // Note: Local files in src/assets will be loaded automatically. 
 // Add entries here only if you want to override metadata (like adding a specific date/issuer) or use external URLs.
+
+// ----------------------------- Certificates -----------------------------
 
 export const MANUAL_CERTIFICATES: Certificate[] = [
   // Example: If you have a file "Azure.jpg", you can add details here with id: "Azure" to enrich it.
@@ -154,20 +170,204 @@ export const MANUAL_DESIGNS: DesignItem[] = [
   }
 ];
 
+// ----------------------------- Quotes -----------------------------
+
 export const MANUAL_QUOTES: QuoteItem[] = [
   { 
     id: 'q1', 
     type: 'text',
     content: "Some people are worth Melting for and my Melting point is You", 
-    author: "Gokulakrishnan M" 
+    author: "tinyDragon" 
   },
   { 
     id: 'q2', 
     type: 'text',
-    content: "Love Chemistry vs Friendship Physics", 
-    author: "Gokulakrishnan M" 
+    content: "Crushed by the Curls", 
+    author: "tinyDragon" 
+  },
+  { 
+    id: 'q2', 
+    type: 'text',
+    content: "Her Reply will always be a Haiku", 
+    author: "tinyDragon" 
+  },
+  { 
+    id: 'q2', 
+    type: 'text',
+    content: "Did I wound you? asked Big Panda\nNah, the Wound was already made, you were my Healer", 
+    author: "tinyDragon" 
+  },
+  { 
+    id: 'q2', 
+    type: 'text',
+    content: "Simple Equation of Life\n x² + x + 1 = 0", 
+    author: "tinyDragon" 
+  },
+  { 
+    id: 'q2', 
+    type: 'text',
+    content: "Non-fictional Super Power -\nMemory Loss", 
+    author: "tinyDragon" 
+  },
+  { 
+    id: 'q2', 
+    type: 'text',
+    content: "Love Chemistry vs\nFriendship Physics", 
+    author: "tinyDragon" 
+  },
+  { 
+    id: 'q2', 
+    type: 'text',
+    content: "Pain - One thing Gained out of Chemistry", 
+    author: "tinyDragon" 
+  },
+  { 
+    id: 'q2', 
+    type: 'text',
+    content: "என் நிழலும் என்னுடன் வாராத பொழுதினில்\n உன்னுடன் செல்ல ஏங்கினேன்", 
+    author: "tinyDragon" 
+  },
+  { 
+    id: 'q2', 
+    type: 'text',
+    content: "மாற்றங்களின் சிறு முள்ளாய் நானும் பெரு முள்ளாய் நீயும்", 
+    author: "tinyDragon" 
+  },
+  { 
+    id: 'q2', 
+    type: 'text',
+    content: "Understanding: Real Curse", 
+    author: "tinyDragon" 
+  },
+   { 
+    id: 'q2', 
+    type: 'text',
+    content: "A Journey or Destination feels worthless when no Company to share", 
+    author: "tinyDragon" 
+  },
+  { 
+    id: 'q2', 
+    type: 'text',
+    content: "Stronger it becomes, More Brittle it will be", 
+    author: "tinyDragon" 
+  },
+  { 
+    id: 'q2', 
+    type: 'text',
+    content: "The Gem Always Shines", 
+    author: "tinyDragon" 
+  },
+  { 
+    id: 'q2', 
+    type: 'text',
+    content: "The Real Gem shines even when its Losts", 
+    author: "tinyDragon" 
+  },
+  { 
+    id: 'q2', 
+    type: 'text',
+    content: "Found the care in Resentment", 
+    author: "tinyDragon" 
+  },
+  { 
+    id: 'q2', 
+    type: 'text',
+    content: "Need a Stand with Holding your hands", 
+    author: "tinyDragon" 
+  },
+  { 
+    id: 'q2', 
+    type: 'text',
+    content: "Make a Stand, I will; Standing Alone, I'm used to it", 
+    author: "tinyDragon" 
+  },
+  { 
+    id: 'q2', 
+    type: 'text',
+    content: "There's Always been a Reason", 
+    author: "tinyDragon" 
+  },
+  { 
+    id: 'q2', 
+    type: 'text',
+    content: "Reason becomes Lies", 
+    author: "tinyDragon" 
+  },
+  { 
+    id: 'q2', 
+    type: 'text',
+    content: "The Reason is not Always the reason, the Person is", 
+    author: "tinyDragon" 
+  },
+  { 
+    id: 'q2', 
+    type: 'text',
+    content: "One person enough, to make you Feel you have All", 
+    author: "tinyDragon" 
+  },
+  { 
+    id: 'q2', 
+    type: 'text',
+    content: "Stop earning Persons, Start earning Memories, it might Last Long", 
+    author: "tinyDragon" 
+  },
+  { 
+    id: 'q2', 
+    type: 'text',
+    content: "If you try to go back to your Older version, it will become a New version and the Current version will become your Older version. Changes can't bring back what you used to be", 
+    author: "tinyDragon" 
+  },
+  { 
+    id: 'q2', 
+    type: 'text',
+    content: "What we want vs\nWhat we feel is Right", 
+    author: "tinyDragon" 
+  },
+  { 
+    id: 'q2', 
+    type: 'text',
+    content: "Wavelenth Matters", 
+    author: "tinyDragon" 
+  },
+  { 
+    id: 'q2', 
+    type: 'text',
+    content: "Always an Opposite Charge", 
+    author: "tinyDragon" 
+  },
+  { 
+    id: 'q2', 
+    type: 'text',
+    content: "Jealous - Nope \n Possessive - Yep", 
+    author: "tinyDragon" 
+  },
+  { 
+    id: 'q2', 
+    type: 'text',
+    content: "Out of Love - Possessive\nOut of Desperate - Jealous", 
+    author: "tinyDragon" 
+  },
+  { 
+    id: 'q2', 
+    type: 'text',
+    content: "Heart- Always want More", 
+    author: "tinyDragon" 
+  },
+  { 
+    id: 'q2', 
+    type: 'text',
+    content: "Worst day + Listening = Solace", 
+    author: "tinyDragon" 
+  },
+  { 
+    id: 'q2', 
+    type: 'text',
+    content: "Views are about Perspective, not about Truth", 
+    author: "tinyDragon" 
   }
 ];
+
+// ----------------------------- Blogs -----------------------------
 
 export const MANUAL_BLOGS: BlogItem[] = [
   {
