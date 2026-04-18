@@ -6,6 +6,8 @@ import { Linkedin, Github, FileText, Mail } from 'lucide-react';
 import courseraImg from '/assets/certificates/Course/Coursera Python for Data Science, AI & Development.jpg';
 import culturalsImg from '/assets/design/Posters/Culturals-poster.jpg';
 import blogRadhaKrishnaImg from '/assets/blogs/the-radha-krishna-b8d39f39a632.png';
+import cubiverseImg from '/assets/projects/cubiverse.jpeg';
+import reszoomImg from '/assets/projects/reszoom_full.png';
 
 // Color Constants specified by user
 export const COLOR_RED = '#A90000'; // R-169, G-0, B-0
@@ -58,9 +60,9 @@ export const EDUCATION_DATA: Education[] = [
 
 export const EXPERIENCE_DATA: Experience[] = [
   {
-    id: "Maasta",
-    role: "Contractor - Software Developer",
-    company: "Maasta",
+    id: "Thisai",
+    role: "AI Engineer (Contract)",
+    company: "Thisai",
     period: "Feb 2026 – Present",
     skills: ["LLM", "OCR", "API Development", "AI", "Supabase"],
     description: [
@@ -72,10 +74,10 @@ export const EXPERIENCE_DATA: Experience[] = [
     id: "ideas-iitb",
     role: "Pre-Incubation Fellow",
     company: "IDEAs IIT Bombay",
-    period: "Jan 2026 – Present",
+    period: "Jan 2026 – March 2026",
     description: [
-      "Leading pre-incubation analysis of sustainability challenges across corporate and urban systems.",
-      "Translating stakeholder insights and operational data gaps into actionable, real-world sustainability workflows."
+      "Led pre-incubation analysis of sustainability challenges across corporate and urban systems.",
+      "Translated stakeholder insights and operational data gaps into actionable, real-world sustainability workflows."
     ]
   },
   {
@@ -121,6 +123,18 @@ export const SKILLS_DATA: SkillCategory[] = [
 ];
 
 // ----------------------------- Portfolio -----------------------------
+export const HIDDEN_REPOS = [
+  'portfolio-gk', // Example: hide the portfolio repo itself
+  // Add specific repository names you want to hide here
+];
+
+export const HIDDEN_REPO_TOPICS = [
+  'portfolio',
+  'prototype',
+  'prototypes',
+  'backyard',
+  'hide'
+];
 
 export const FEATURED_PROJECTS: FeaturedProject[] = [
   {
@@ -128,7 +142,7 @@ export const FEATURED_PROJECTS: FeaturedProject[] = [
     title: 'Cubiverse',
     description: 'An immersive 3D web experience built with modern web technologies.',
     url: 'https://cubiverse-pied.vercel.app/',
-    imageUrl: 'https://images.unsplash.com/photo-1593640408182-31c70c8268f5?q=80&w=800&auto=format&fit=crop',
+    imageUrl: cubiverseImg,
     tags: ['Three.js', 'React', 'Vercel']
   },
   {
@@ -136,7 +150,7 @@ export const FEATURED_PROJECTS: FeaturedProject[] = [
     title: 'Reszoom',
     description: 'A powerful tool for resuming and optimizing your digital workflow.',
     url: 'https://reszoom.vercel.app/',
-    imageUrl: 'https://images.unsplash.com/photo-1586281380349-632531db7ed4?q=80&w=800&auto=format&fit=crop',
+    imageUrl: reszoomImg,
     tags: ['Next.js', 'Productivity', 'Tool']
   }
 ];
@@ -173,197 +187,197 @@ export const MANUAL_DESIGNS: DesignItem[] = [
 // ----------------------------- Quotes -----------------------------
 
 export const MANUAL_QUOTES: QuoteItem[] = [
-  { 
-    id: 'q1', 
+  {
+    id: 'q1',
     type: 'text',
-    content: "Some people are worth Melting for and my Melting point is You", 
-    author: "tinyDragon" 
+    content: "Some people are worth Melting for and my Melting point is You",
+    author: "tinyDragon"
   },
-  { 
-    id: 'q2', 
+  {
+    id: 'q2',
     type: 'text',
-    content: "Crushed by the Curls", 
-    author: "tinyDragon" 
+    content: "Crushed by the Curls",
+    author: "tinyDragon"
   },
-  { 
-    id: 'q2', 
+  {
+    id: 'q2',
     type: 'text',
-    content: "Her Reply will always be a Haiku", 
-    author: "tinyDragon" 
+    content: "Her Reply will always be a Haiku",
+    author: "tinyDragon"
   },
-  { 
-    id: 'q2', 
+  {
+    id: 'q2',
     type: 'text',
-    content: "Did I wound you? asked Big Panda\nNah, the Wound was already made, you were my Healer", 
-    author: "tinyDragon" 
+    content: "Did I wound you? asked Big Panda\nNah, the Wound was already made, you were my Healer",
+    author: "tinyDragon"
   },
-  { 
-    id: 'q2', 
+  {
+    id: 'q2',
     type: 'text',
-    content: "Simple Equation of Life\n x² + x + 1 = 0", 
-    author: "tinyDragon" 
+    content: "Simple Equation of Life\n x² + x + 1 = 0",
+    author: "tinyDragon"
   },
-  { 
-    id: 'q2', 
+  {
+    id: 'q2',
     type: 'text',
-    content: "Non-fictional Super Power -\nMemory Loss", 
-    author: "tinyDragon" 
+    content: "Non-fictional Super Power -\nMemory Loss",
+    author: "tinyDragon"
   },
-  { 
-    id: 'q2', 
+  {
+    id: 'q2',
     type: 'text',
-    content: "Love Chemistry vs\nFriendship Physics", 
-    author: "tinyDragon" 
+    content: "Love Chemistry vs\nFriendship Physics",
+    author: "tinyDragon"
   },
-  { 
-    id: 'q2', 
+  {
+    id: 'q2',
     type: 'text',
-    content: "Pain - One thing Gained out of Chemistry", 
-    author: "tinyDragon" 
+    content: "Pain - One thing Gained out of Chemistry",
+    author: "tinyDragon"
   },
-  { 
-    id: 'q2', 
+  {
+    id: 'q2',
     type: 'text',
-    content: "என் நிழலும் என்னுடன் வாராத பொழுதினில்\n உன்னுடன் செல்ல ஏங்கினேன்", 
-    author: "tinyDragon" 
+    content: "என் நிழலும் என்னுடன் வாராத பொழுதினில்\n உன்னுடன் செல்ல ஏங்கினேன்",
+    author: "tinyDragon"
   },
-  { 
-    id: 'q2', 
+  {
+    id: 'q2',
     type: 'text',
-    content: "மாற்றங்களின் சிறு முள்ளாய் நானும் பெரு முள்ளாய் நீயும்", 
-    author: "tinyDragon" 
+    content: "மாற்றங்களின் சிறு முள்ளாய் நானும் பெரு முள்ளாய் நீயும்",
+    author: "tinyDragon"
   },
-  { 
-    id: 'q2', 
+  {
+    id: 'q2',
     type: 'text',
-    content: "Understanding: Real Curse", 
-    author: "tinyDragon" 
+    content: "Understanding: Real Curse",
+    author: "tinyDragon"
   },
-   { 
-    id: 'q2', 
+  {
+    id: 'q2',
     type: 'text',
-    content: "A Journey or Destination feels worthless when no Company to share", 
-    author: "tinyDragon" 
+    content: "A Journey or Destination feels worthless when no Company to share",
+    author: "tinyDragon"
   },
-  { 
-    id: 'q2', 
+  {
+    id: 'q2',
     type: 'text',
-    content: "Stronger it becomes, More Brittle it will be", 
-    author: "tinyDragon" 
+    content: "Stronger it becomes, More Brittle it will be",
+    author: "tinyDragon"
   },
-  { 
-    id: 'q2', 
+  {
+    id: 'q2',
     type: 'text',
-    content: "The Gem Always Shines", 
-    author: "tinyDragon" 
+    content: "The Gem Always Shines",
+    author: "tinyDragon"
   },
-  { 
-    id: 'q2', 
+  {
+    id: 'q2',
     type: 'text',
-    content: "The Real Gem shines even when its Losts", 
-    author: "tinyDragon" 
+    content: "The Real Gem shines even when its Losts",
+    author: "tinyDragon"
   },
-  { 
-    id: 'q2', 
+  {
+    id: 'q2',
     type: 'text',
-    content: "Found the care in Resentment", 
-    author: "tinyDragon" 
+    content: "Found the care in Resentment",
+    author: "tinyDragon"
   },
-  { 
-    id: 'q2', 
+  {
+    id: 'q2',
     type: 'text',
-    content: "Need a Stand with Holding your hands", 
-    author: "tinyDragon" 
+    content: "Need a Stand with Holding your hands",
+    author: "tinyDragon"
   },
-  { 
-    id: 'q2', 
+  {
+    id: 'q2',
     type: 'text',
-    content: "Make a Stand, I will; Standing Alone, I'm used to it", 
-    author: "tinyDragon" 
+    content: "Make a Stand, I will; Standing Alone, I'm used to it",
+    author: "tinyDragon"
   },
-  { 
-    id: 'q2', 
+  {
+    id: 'q2',
     type: 'text',
-    content: "There's Always been a Reason", 
-    author: "tinyDragon" 
+    content: "There's Always been a Reason",
+    author: "tinyDragon"
   },
-  { 
-    id: 'q2', 
+  {
+    id: 'q2',
     type: 'text',
-    content: "Reason becomes Lies", 
-    author: "tinyDragon" 
+    content: "Reason becomes Lies",
+    author: "tinyDragon"
   },
-  { 
-    id: 'q2', 
+  {
+    id: 'q2',
     type: 'text',
-    content: "The Reason is not Always the reason, the Person is", 
-    author: "tinyDragon" 
+    content: "The Reason is not Always the reason, the Person is",
+    author: "tinyDragon"
   },
-  { 
-    id: 'q2', 
+  {
+    id: 'q2',
     type: 'text',
-    content: "One person enough, to make you Feel you have All", 
-    author: "tinyDragon" 
+    content: "One person enough, to make you Feel you have All",
+    author: "tinyDragon"
   },
-  { 
-    id: 'q2', 
+  {
+    id: 'q2',
     type: 'text',
-    content: "Stop earning Persons, Start earning Memories, it might Last Long", 
-    author: "tinyDragon" 
+    content: "Stop earning Persons, Start earning Memories, it might Last Long",
+    author: "tinyDragon"
   },
-  { 
-    id: 'q2', 
+  {
+    id: 'q2',
     type: 'text',
-    content: "If you try to go back to your Older version, it will become a New version and the Current version will become your Older version. Changes can't bring back what you used to be", 
-    author: "tinyDragon" 
+    content: "If you try to go back to your Older version, it will become a New version and the Current version will become your Older version. Changes can't bring back what you used to be",
+    author: "tinyDragon"
   },
-  { 
-    id: 'q2', 
+  {
+    id: 'q2',
     type: 'text',
-    content: "What we want vs\nWhat we feel is Right", 
-    author: "tinyDragon" 
+    content: "What we want vs\nWhat we feel is Right",
+    author: "tinyDragon"
   },
-  { 
-    id: 'q2', 
+  {
+    id: 'q2',
     type: 'text',
-    content: "Wavelenth Matters", 
-    author: "tinyDragon" 
+    content: "Wavelenth Matters",
+    author: "tinyDragon"
   },
-  { 
-    id: 'q2', 
+  {
+    id: 'q2',
     type: 'text',
-    content: "Always an Opposite Charge", 
-    author: "tinyDragon" 
+    content: "Always an Opposite Charge",
+    author: "tinyDragon"
   },
-  { 
-    id: 'q2', 
+  {
+    id: 'q2',
     type: 'text',
-    content: "Jealous - Nope \n Possessive - Yep", 
-    author: "tinyDragon" 
+    content: "Jealous - Nope \n Possessive - Yep",
+    author: "tinyDragon"
   },
-  { 
-    id: 'q2', 
+  {
+    id: 'q2',
     type: 'text',
-    content: "Out of Love - Possessive\nOut of Desperate - Jealous", 
-    author: "tinyDragon" 
+    content: "Out of Love - Possessive\nOut of Desperate - Jealous",
+    author: "tinyDragon"
   },
-  { 
-    id: 'q2', 
+  {
+    id: 'q2',
     type: 'text',
-    content: "Heart- Always want More", 
-    author: "tinyDragon" 
+    content: "Heart- Always want More",
+    author: "tinyDragon"
   },
-  { 
-    id: 'q2', 
+  {
+    id: 'q2',
     type: 'text',
-    content: "Worst day + Listening = Solace", 
-    author: "tinyDragon" 
+    content: "Worst day + Listening = Solace",
+    author: "tinyDragon"
   },
-  { 
-    id: 'q2', 
+  {
+    id: 'q2',
     type: 'text',
-    content: "Views are about Perspective, not about Truth", 
-    author: "tinyDragon" 
+    content: "Views are about Perspective, not about Truth",
+    author: "tinyDragon"
   }
 ];
 
