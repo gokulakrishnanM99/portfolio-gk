@@ -23,7 +23,7 @@ const Home: React.FC = () => {
         
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-start justify-center animate-fade-up relative z-10">
           <h2 className="text-primary-600 dark:text-primary-300 font-semibold tracking-widest text-sm mb-6 uppercase bg-white/50 dark:bg-slate-900 backdrop-blur-sm px-4 py-1.5 rounded-full border border-primary-100 dark:border-primary-500/20 shadow-sm">
-            Data Scientist & Creative
+            AI Engineer | ML Engineer | Data Scientist
           </h2>
           
           <h1 className="text-5xl md:text-7xl lg:text-8xl font-name font-bold text-slate-900 dark:text-white mb-8 tracking-tight leading-tight">
@@ -57,9 +57,9 @@ const Home: React.FC = () => {
           </h1>
           
           <p className="text-lg md:text-xl text-slate-700 dark:text-slate-300 max-w-2xl mb-10 leading-relaxed font-light backdrop-blur-sm">
-            I bridge the gap between complex data and actionable insights. 
-            Specializing in Generative AI, MLOps, and Cloud Architecture, 
-            I also have a passion for creative design and visual storytelling.
+            Specializing in Agentic AI, Generative AI, LLM Pipelines, and Cloud Architecture. 
+            Passionate about bridging complex data and frontier AI into impactful, high-throughput systems, 
+            with a love for creative design and visual storytelling.
           </p>
           
           <div className="flex flex-wrap gap-4">
@@ -72,7 +72,7 @@ const Home: React.FC = () => {
             </Link>
             
             <a 
-              href="mailto:gokulkrish0999@gmail.com"
+              href="mailto:gokulakrishnan.m0999@gmail.com"
               className="inline-flex items-center px-8 py-4 rounded-full border border-slate-300 dark:border-slate-700 bg-white/50 dark:bg-slate-800 backdrop-blur text-slate-700 dark:text-slate-200 font-medium hover:bg-white dark:hover:bg-slate-700 transition-all hover:-translate-y-1"
             >
               Contact Me
@@ -98,7 +98,6 @@ const Home: React.FC = () => {
       {/* Expertise Section */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full animate-fade-up" style={{ animationDelay: '0.2s' }}>
         <div className="border-t border-slate-200 dark:border-slate-800 pt-16">
-          {/* Reduced boldness to font-semibold */}
           <h3 className="text-3xl font-title font-semibold text-slate-900 dark:text-white mb-10 flex items-center gap-4">
              <span className="w-12 h-1 bg-primary-500 rounded-full"></span>
              Technical Expertise

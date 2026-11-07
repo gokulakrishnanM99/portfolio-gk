@@ -1,4 +1,3 @@
-
 export interface GitHubRepo {
   id: number;
   name: string;
@@ -30,6 +29,29 @@ export interface Education {
 export interface SkillCategory {
   category: string;
   items: string[];
+}
+
+export interface ResumeProject {
+  id: string;
+  title: string;
+  period: string;
+  description: string;
+  tags?: string[];
+  url?: string;
+}
+
+export interface Responsibility {
+  id: string;
+  role: string;
+  period: string;
+  description: string;
+}
+
+export interface Achievement {
+  id: string;
+  title: string;
+  period: string;
+  description: string;
 }
 
 // New Types for Works Section

@@ -166,17 +166,17 @@ Edit `constants.ts`:
 
 Edit `SKILLS_DATA` in `constants.ts`.
 
-#### Hardcoded achievements
+#### Projects, Responsibilities, and Achievements
 
-Edit the "Key Achievements" list directly in `pages/Resume.tsx`.
+Edit `constants.ts`:
+
+- `RESUME_PROJECTS_DATA` -> projects on `/resume`
+- `RESPONSIBILITIES_DATA` -> positions of responsibility on `/resume`
+- `ACHIEVEMENTS_DATA` -> key awards and achievements on `/resume`
 
 #### Resume PDF download button
 
-Current button is disabled in `pages/Resume.tsx` (`Download PDF`).
-To enable real download:
-
-1. Add resume PDF in assets/public path.
-2. Replace disabled button with anchor/button linking to the file.
+The download button in `pages/Resume.tsx` links directly to `/Resume_Gokulakrishnan_M.pdf` located in the `public/` directory.
 
 ## 4. Works Section Details
 
@@ -269,3 +269,4 @@ Useful commands:
 npm run dev
 npm run build
 ```
+
