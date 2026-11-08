@@ -2,6 +2,16 @@
 <html lang="en" class="scroll-smooth dark">
 
 <head>
+  <script>
+    // ?hologram=true opens the new holographic portfolio (hologram.html). Remove this block to retire the flag.
+    (function () {
+      try {
+        if (/[?&]hologram=(true|1)\b/.test(location.search)) {
+          location.replace(location.pathname.replace(/index\.html$/, '') + 'hologram.html' + location.hash);
+        }
+      } catch (e) { /* ignore */ }
+    })();
+  </script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Gokulakrishnan M | AI Engineer & Data Scientist</title>
