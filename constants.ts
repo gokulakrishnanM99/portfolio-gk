@@ -181,7 +181,7 @@ export const SKILLS_DATA: SkillCategory[] = [
   },
   {
     category: "Interests & Creative",
-    items: ["Vibe Coding", "Blogging", "Quotes & Story Writing", "Graphic Design", "Game Development"]
+    items: ["Vibe Coding", "Blogging", "Quotes & Story Writing", "Graphic Design"]
   }
 ];
 

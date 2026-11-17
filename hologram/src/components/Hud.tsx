@@ -88,8 +88,10 @@ export function Hud({ scene }: { scene: HoloScene | null }) {
 
       <nav className="rail" aria-label="Sectors">
         {SECTORS.map((x, i) => (
-          <button key={x.id} className={`rail-item ${i === nav.index ? 'is-active' : ''}`} onClick={() => nav.go(i)}
-            onMouseEnter={() => sound.tick()} aria-current={i === nav.index ? 'step' : undefined} aria-label={`${x.code} ${x.label}, ${x.title}`}>
+          <button key={x.id} className={`rail-item ${i === nav.index ? 'is-active' : ''}`}
+            // drop focus once used: a focused rail item kept its expanded label box over the page
+            onClick={(e) => { nav.go(i); e.currentTarget.blur(); }}
+            onMouseEnter={() => sound.tick()} aria-current={i === nav.index ? 'step' : undefined} aria-label={`${x.code} ${x.label === x.title ? x.title : `${x.label}, ${x.title}`}`}>
             <span className="rl">{x.label}</span>
             <span className="rc">{x.code}</span>
             <span className="tick" />

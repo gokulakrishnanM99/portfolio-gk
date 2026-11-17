@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { MISSIONS } from '../data/profile';
+import { MISSIONS, PROFILE } from '../data/profile';
 import { useNav } from '../lib/nav';
 import { sound } from '../lib/sound';
 import { SectionHeader, type SectionProps } from '../components/SectionHeader';
@@ -19,15 +19,19 @@ export function Missions({ active }: SectionProps) {
     el.scrollIntoView({ behavior: nav.reducedMotion ? 'auto' : 'smooth', block: 'start' });
   };
 
-  // palette / cross-reference focus (after the page has opened)
+  // palette / cross-reference focus: wait until this page has actually opened (scrolling earlier was undone
+  // when the page transition placed the page at its top), then handle each request once
+  const handledFocus = useRef(0);
   useEffect(() => {
-    if (nav.focus?.kind !== 'mission') return;
+    if (nav.focus?.kind !== 'mission' || !active || nav.mode !== 'page') return;
+    if (handledFocus.current === nav.focus.nonce) return;
     const i = MISSIONS.findIndex((x) => x.id === nav.focus!.id);
     if (i < 0) return;
+    handledFocus.current = nav.focus.nonce;
     const t = window.setTimeout(() => scrollTo(i), 120);
     return () => clearTimeout(t);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [nav.focus]);
+  }, [nav.focus, active, nav.mode]);
 
   // highlight the role being read: the last card whose top has passed just under the pinned timeline
   useEffect(() => {
@@ -92,6 +96,11 @@ export function Missions({ active }: SectionProps) {
           <div><span>{MISSIONS.length}</span> roles · <span>{monthsLabel(totalMonths)}</span> in industry</div>
           <div className="ms-stat-hint">Scroll to read every briefing</div>
         </div>
+      </div>
+
+      <div className="ms-open" data-reveal>
+        <span className="dot" aria-hidden />
+        <span><b>{PROFILE.availability.roles}</b><i> · </i>{PROFILE.availability.places}<i> · </i><em>{PROFILE.availability.when}</em></span>
       </div>
 
       <div className="gantt panel panel--flat" ref={ganttRef} data-reveal>

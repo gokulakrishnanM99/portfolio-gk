@@ -82,7 +82,8 @@ export function Matrix({ active }: SectionProps) {
       <div className="mx-grid" onMouseLeave={() => setHover(null)}>
         <div className="mx-groups">
           {SKILL_GROUPS.map((g, gi) => (
-            <div key={g.id} className={`mx-group panel ${gi === 0 ? 'span2' : ''}`} data-reveal>
+            // the first group spans the row; so does the last when it would otherwise sit alone
+            <div key={g.id} className={`mx-group panel ${gi === 0 || (gi === SKILL_GROUPS.length - 1 && gi % 2 === 1) ? 'span2' : ''}`} data-reveal>
               <h4>{g.label} <span className="label">{g.code}</span></h4>
               <div className="mx-skills">
                 {g.skills.map((s) => {
@@ -116,7 +117,7 @@ export function Matrix({ active }: SectionProps) {
               <h4>{skill.name}</h4>
               <div className="xr-count">
                 {refs.length ? `${refs.length} linked deployment${refs.length > 1 ? 's' : ''}`
-                  : skill.note ? (skill.note.tag === 'EDU' ? 'Learned through coursework' : 'Tools I use')
+                  : skill.note ? (skill.note.tag === 'EDU' ? 'Learned through coursework' : skill.note.tag === 'PUB' ? 'Published research' : 'Tools I use')
                   : skill.link ? 'Off-duty work' : 'Toolkit · no deployment on record here'}
                 {pinned === skill.name && ' · pinned'}
               </div>
@@ -135,18 +136,26 @@ export function Matrix({ active }: SectionProps) {
               ) : skill.note ? (
                 <ul className="xref-list">
                   <li>
-                    <div className="xref-item xref-note">
-                      <span className="xt note">{skill.note.tag}</span>
-                      <span className="xn">{skill.note.title}</span>
-                      {skill.note.sub && <span className="xs">{skill.note.sub}</span>}
-                    </div>
+                    {skill.note.href ? (
+                      <a className="xref-item" href={skill.note.href} target="_blank" rel="noreferrer">
+                        <span className="xt note">{skill.note.tag}</span>
+                        <span className="xn">{skill.note.title}</span>
+                        {skill.note.sub && <span className="xs">{skill.note.sub} · read paper ↗</span>}
+                      </a>
+                    ) : (
+                      <div className="xref-item xref-note">
+                        <span className="xt note">{skill.note.tag}</span>
+                        <span className="xn">{skill.note.title}</span>
+                        {skill.note.sub && <span className="xs">{skill.note.sub}</span>}
+                      </div>
+                    )}
                   </li>
                 </ul>
               ) : skill.link ? (
                 <div className="xref-link">
                   <p className="xref-empty">{skill.link.text}</p>
                   <button className="btn btn--sm" onClick={() => nav.goId(skill.link!.page)}>
-                    Off-duty transmissions <IArrowRight width={12} height={12} />
+                    Beyond the code <IArrowRight width={12} height={12} />
                   </button>
                 </div>
               ) : (

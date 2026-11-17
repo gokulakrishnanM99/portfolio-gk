@@ -143,7 +143,7 @@ const Portfolio: React.FC = () => {
                   </span>
                 </div>
                 <span className="text-slate-400 font-mono">
-                  {new Date(repo.updated_at).toLocaleDateString()}
+                  {new Date(repo.pushed_at || repo.updated_at).toLocaleDateString()}
                 </span>
               </div>
             </div>

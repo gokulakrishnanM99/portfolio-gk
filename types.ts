@@ -6,6 +6,8 @@ export interface GitHubRepo {
   language: string | null;
   stargazers_count: number;
   updated_at: string;
+  /** last code push (updated_at also changes on settings/topic edits) */
+  pushed_at?: string;
   topics: string[];
 }
 

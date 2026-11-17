@@ -1,7 +1,7 @@
-import { CERTIFICATES, DISTINCTIONS, LEADERSHIP, media } from '../data/profile';
+import { CERTIFICATES, DISTINCTIONS, LEADERSHIP, PUBLICATIONS, media } from '../data/profile';
 import { useNav } from '../lib/nav';
 import { SectionHeader, type SectionProps } from '../components/SectionHeader';
-import { IVault } from '../components/icons';
+import { IArrowUpRight, IVault } from '../components/icons';
 
 const FAN = ['coursera-intoduction-to-data-engineering', 'gokulakrishnan-page-001', 'coursera-python-for-data-science-ai-development'];
 
@@ -64,6 +64,20 @@ export function Credentials({ active }: SectionProps) {
           </div>
         </section>
       </div>
+
+      <section className="cr-pubs panel panel--amber" data-reveal aria-labelledby="pub-h">
+        <div className="panel-head"><span id="pub-h"><span className="dot" style={{ background: 'var(--amber)', boxShadow: '0 0 10px var(--amber)' }} />Publications</span><span>{PUBLICATIONS.length}</span></div>
+        {PUBLICATIONS.map((p) => (
+          <article key={p.id} className="pub">
+            <div className="pub-main">
+              <div className="pub-journal">{p.journal}{p.volume && ` · Vol. ${p.volume}`}{p.article && `, ${p.article}`} · {p.date}</div>
+              <h3 className="pub-title">{p.title}</h3>
+              <div className="pub-meta"><b>{p.role}</b> · {p.contribution} · {p.context}</div>
+            </div>
+            <a className="btn btn--sm pub-link" href={p.url} target="_blank" rel="noreferrer">Read paper <IArrowUpRight width={12} height={12} /></a>
+          </article>
+        ))}
+      </section>
     </div>
   );
 }

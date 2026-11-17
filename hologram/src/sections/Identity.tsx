@@ -57,8 +57,14 @@ export function IdentityCallouts({ active, scene }: { active: boolean; scene: Se
       });
       const r = document.querySelector<HTMLElement>('.rail')?.getBoundingClientRect();
       rail = r && r.width > 0 ? r : null;
+      // all four boxes share the tallest one's height (a detail line may wrap onto two lines)
+      const boxes = Array.from(document.querySelectorAll<HTMLElement>('.callouts .callout'));
+      boxes.forEach((b) => { b.style.minHeight = ''; });
+      const tallest = Math.max(0, ...boxes.map((b) => b.offsetHeight));
+      boxes.forEach((b) => { b.style.minHeight = `${tallest}px`; });
     };
     measure();
+    document.fonts?.ready.then(measure);
     window.addEventListener('resize', measure);
     let raf = 0;
     const loop = () => {

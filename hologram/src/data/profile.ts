@@ -11,15 +11,18 @@ export const PROFILE = {
   name: 'Gokulakrishnan M',
   first: 'Gokulakrishnan',
   last: 'M',
-  roles: ['AI/ML Engineer', 'Backend Developer', 'Data Scientist'],
+  roles: ['AI/ML Engineer', 'Medical AI', 'Data Scientist'],
   headline: 'I build LLM pipelines, agentic AI tools and computer-vision systems, along with the backend services that run them.',
   summary:
-    'My work covers agentic and generative AI, LLM pipelines and cloud data platforms on AWS and Azure. Outside work, I design posters and write stories.',
+    'My work covers agentic and generative AI, LLM pipelines and cloud data platforms on AWS and Azure. Outside work, I write stories and create visual content.',
   status: 'Building with LLMs, agents & vision',
-  location: 'India',
+  location: 'Bengaluru, India',
+  /** Job-search status shown on the Experience page. */
+  availability: { roles: 'Open to AI/ML roles', places: 'Bengaluru / Chennai / Hyderabad / Remote', when: 'Available now' },
   email: 'gokulakrishnan.m0999@gmail.com',
   resume: asset('Resume_Gokulakrishnan_M.pdf'),
-  classicSite: 'https://gokulakrishnanm99.github.io/portfolio-gk/',
+  /** the previous site, kept behind ?classic=true */
+  classicSite: `${import.meta.env.BASE_URL}?classic=true`,
 };
 
 export const SOCIALS = [
@@ -32,23 +35,23 @@ export const SOCIALS = [
 export const TELEMETRY = [
   { value: '3+', unit: 'yrs', label: 'Industry experience', detail: 'Data → AI engineering' },
   { value: 'IIT Bombay', unit: '', label: 'Graduate', detail: 'CPI 9.45' },
-  { value: 'Backend', unit: '', label: 'Developer', detail: 'Python, Java' },
-  { value: 'Biomedical', unit: '', label: 'Engineer', detail: 'Simulations' },
+  { value: 'AI', unit: '', label: 'Automation', detail: 'LLMs, RAG, MCP' },
+  { value: 'Biomedical', unit: '', label: 'Engineer', detail: 'AI in Medical Imaging, Simulations' },
 ];
 
 /* ------------------------------------------------------------------ ORIGIN */
 export const ORIGIN = {
   title: 'From neurons to neural networks',
   paragraphs: [
-    'I studied biomedical engineering at CEG, Anna University, and then at IIT Bombay. Along the way I worked with medical images such as CT scans and thermal images.',
-    'That work pulled me into deep learning. I trained a UNet++ that segments liver tumours from CT scans at 94% IoU, fine-tuned pretrained classifiers, and built small networks from scratch to see how they work.',
-    'Since 2023 I have worked in industry: data platforms for carbon accounting, RAG pipelines on Azure OpenAI, and self-hosted LLM and vision systems that grade exam answer sheets.',
+    'My path began in biomedical engineering at CEG, Anna University, and deepened during my master’s at IIT Bombay. Somewhere between neurons and code, the question changed from how the brain learns? to how a machine can?',
+    'So I learned machine learning from the ground up, building networks from scratch before training and fine-tuning larger ones for medical image segmentation of CT scans and thermal images, using convolutional networks and clustering.',
+    'Today I build that knowledge into products: data platforms for carbon accounting, RAG pipelines on Azure OpenAI, and self-hosted LLM benchmarking and vision models that grade answer sheets.',
   ],
   education: [
     { id: 'mtech', degree: 'M.Tech, Biomedical Engineering', institution: 'IIT Bombay', period: '2021 – 2023', metric: '9.45', metricLabel: 'CPI' },
     { id: 'be', degree: 'B.E., Biomedical Engineering', institution: 'CEG, Anna University', period: '2017 – 2021', metric: '7.6', metricLabel: 'GPA' },
   ],
-  interests: ['Game development', 'Graphic design', 'Blogging', 'Vibe coding', 'Quote & fiction writing'],
+  interests: ['Graphic design', 'Blogging', 'Vibe coding', 'Quote & fiction writing'],
 };
 
 /* ---------------------------------------------------------------- MISSIONS */
@@ -172,7 +175,7 @@ export const PROJECTS: Project[] = [
     year: '2026',
     summary: 'An agent that turns a written story into a multi-panel comic strip. It uses MCP tools with Gemini to split the story into scenes, write the panel prompts and lay out the page.',
     tags: ['Agentic AI', 'MCP', 'Gemini', 'Prompt Engineering'],
-    image: media('generated/project-comic-agent.webp'),
+    // image: media('generated/project-comic-agent.webp'), // add the file to public/media/generated/, then uncomment
   },
   {
     id: 'liver-seg',
@@ -183,7 +186,7 @@ export const PROJECTS: Project[] = [
     summary: 'A deeply supervised UNet++ that extracts liver tumours from CT scans, trained with a custom Dice + cross-entropy loss.',
     outcome: { value: '94%', label: 'IoU' },
     tags: ['UNet++', 'PyTorch', 'CT Scans', 'Dice-CE Loss'],
-    image: media('generated/project-liver-segmentation.webp'),
+    // image: media('generated/project-liver-segmentation.webp'), // add the file to public/media/generated/, then uncomment
   },
   {
     id: 'dl-classification',
@@ -193,7 +196,7 @@ export const PROJECTS: Project[] = [
     year: '2022',
     summary: 'ResNet-18 transfer learning for image classification, plus MLPs and perceptrons built from scratch to benchmark activation functions on MNIST.',
     tags: ['ResNet-18', 'Transfer Learning', 'MLPs', 'PyTorch'],
-    image: media('generated/project-dl-classification.webp'),
+    // image: media('generated/project-dl-classification.webp'), // add the file to public/media/generated/, then uncomment
   },
   {
     id: 'ml-tuning',
@@ -203,7 +206,7 @@ export const PROJECTS: Project[] = [
     year: '2021',
     summary: 'Compared and fine-tuned SVM, logistic regression and random-forest models to map hyperparameter sensitivity; K-Means clustering for thermal-image segmentation.',
     tags: ['SVM', 'Random Forest', 'K-Means', 'Thermal Imaging'],
-    image: media('generated/project-ml-tuning.webp'),
+    // image: media('generated/project-ml-tuning.webp'), // add the file to public/media/generated/, then uncomment
   },
 ];
 
@@ -216,8 +219,8 @@ export interface Skill {
   name: string;
   refs: string[];
   /** Where the skill comes from when it isn't tied to a role or project (a course, the tools behind it). */
-  note?: { tag: string; title: string; sub?: string };
-  /** A page on this site that shows the work (e.g. the blogs on Off-duty transmissions). */
+  note?: { tag: string; title: string; sub?: string; href?: string };
+  /** A page on this site that shows the work (e.g. the blogs on Beyond the code). */
   link?: { page: 'transmissions'; text: string };
 }
 export interface SkillGroup { id: string; label: string; code: string; skills: Skill[] }
@@ -251,7 +254,14 @@ export const SKILL_GROUPS: SkillGroup[] = [
     ],
   },
   {
-    id: 'data', code: 'D-3', label: 'Data & Cloud',
+    id: 'bio', code: 'B-3', label: 'Biomedical',
+    skills: [
+      { name: 'AI in medical imaging', refs: ['liver-seg', 'ml-tuning'] },
+      { name: 'MD simulation', refs: [], note: { tag: 'PUB', title: 'MD simulation of drug interaction with a lipid bilayer', sub: 'Published in Toxicology and Applied Pharmacology (2026)', href: 'https://doi.org/10.1016/j.taap.2026.117923' } },
+    ],
+  },
+  {
+    id: 'data', code: 'D-4', label: 'Data & Cloud',
     skills: [
       { name: 'AWS (Lambda · S3)', refs: ['stepchange-assoc'] },
       { name: 'Microsoft Fabric', refs: ['stepchange-analyst'] },
@@ -262,7 +272,7 @@ export const SKILL_GROUPS: SkillGroup[] = [
     ],
   },
   {
-    id: 'eng', code: 'E-4', label: 'Engineering',
+    id: 'eng', code: 'E-5', label: 'Engineering',
     skills: [
       { name: 'Python', refs: ['thisai', 'stepchange-assoc', 'stepchange-analyst', 'liver-seg', 'dl-classification', 'ml-tuning'] },
       { name: 'Java (Spring Boot)', refs: ['stepchange-assoc'] },
@@ -275,13 +285,12 @@ export const SKILL_GROUPS: SkillGroup[] = [
     ],
   },
   {
-    id: 'creative', code: 'C-5', label: 'Creative',
+    id: 'creative', code: 'C-6', label: 'Creative',
     skills: [
       { name: 'Graphic design', refs: [], note: { tag: 'TOOLS', title: 'Photoshop, Illustrator, Premiere Pro' } },
-      { name: 'Blogging', refs: [], link: { page: 'transmissions', text: 'Visit the Off-duty transmissions page to access the blogs.' } },
-      { name: 'Game development', refs: ['cubiverse'] },
+      { name: 'Blogging', refs: [], link: { page: 'transmissions', text: 'Visit the Beyond the code page to access the blogs.' } },
       { name: 'Vibe coding', refs: ['reszoom', 'cubiverse'] },
-      { name: 'Quote & fiction writing', refs: [], link: { page: 'transmissions', text: 'Visit the Off-duty transmissions page to browse the quotes.' } },
+      { name: 'Quote & fiction writing', refs: [], link: { page: 'transmissions', text: 'Visit the Beyond the code page to browse the quotes.' } },
     ],
   },
 ];
@@ -293,6 +302,26 @@ export const DISTINCTIONS = [
   { id: 'culture', value: '7+', title: 'Cultural excellence', text: 'Winner of 7+ inter-college competitions; guest performer on National Voters’ Day.', year: '2018 – 2020' },
 ];
 
+/* ------------------------------------------------------------ PUBLICATIONS */
+export interface Publication {
+  id: string; title: string; journal: string; volume?: string; article?: string; date: string;
+  role: string; contribution: string; context: string; url: string;
+}
+export const PUBLICATIONS: Publication[] = [
+  {
+    id: 'taap-2026',
+    title: 'Membrane-mediated mechanisms of NSAID-induced cardiotoxicity independent of cyclooxygenase selectivity: Evidence from rat and zebrafish models',
+    journal: 'Toxicology and Applied Pharmacology',
+    volume: '514',
+    article: '117923',
+    date: 'September 2026',
+    role: 'Co-author',
+    contribution: 'MD simulation and in vitro study of drug–membrane interaction',
+    context: 'M.Tech research · IIT Bombay',
+    url: 'https://doi.org/10.1016/j.taap.2026.117923',
+  },
+];
+
 export const LEADERSHIP = [
   { id: 'companion', role: 'Student Companion', org: 'IIT Bombay', period: '2022 – 2023', text: 'Mentored 5 students on academic and personal development across an academic year.' },
   { id: 'social', role: 'Social Media Manager', org: 'CEG Culturals', period: '2018 – 2021', text: 'Led the official culturals team’s digital outreach and a 40+ member crew for 2+ years.' },
@@ -301,7 +330,7 @@ export const LEADERSHIP = [
 export interface Certificate { id: string; title: string; issuer: string; category: string; w: number; h: number }
 const C = (id: string, title: string, issuer: string, category: string, w: number, h: number): Certificate => ({ id, title, issuer, category, w, h });
 
-export const CERTIFICATES: Certificate[] = [
+const ALL_CERTIFICATES: Certificate[] = [
   C('coursera-python-for-data-science-ai-development', 'Python for Data Science, AI & Development', 'IBM · Coursera', 'Courses', 1600, 1236),
   C('coursera-databases-and-sql-for-data-science-with-python-page', 'Databases and SQL for Data Science with Python', 'IBM · Coursera', 'Courses', 1600, 1236),
   C('coursera-intoduction-to-data-engineering', 'Introduction to Data Engineering', 'IBM · Coursera', 'Courses', 1600, 1236),
@@ -332,19 +361,26 @@ export const CERTIFICATES: Certificate[] = [
   C('voters-shadow', 'National Voters’ Day: Shadow play', 'Election Commission', 'Culturals', 1376, 1038),
 ];
 
+/** Kept in the data (and on the classic site) but not shown in this portfolio's vault. */
+const HIDDEN_CERTIFICATES = ['finun-2018-new-college', 'medevolv-19-limbo-3rd', 'smc-euphoria-2018', 'mcc-deepwoods-2019',
+  'theaterfest-creasent-2020', 'voters-slogan', 'nss-certificate', 'covid-safe-shop'];
+export const CERTIFICATES = ALL_CERTIFICATES.filter((c) => !HIDDEN_CERTIFICATES.includes(c.id));
+
 /* ---------------------------------------------------------- TRANSMISSIONS */
 export const MEDIUM_BASE = 'https://medium.com/@gokulkrish0999/';
 
 export interface Blog { id: string; title: string; subtitle?: string; date?: string; read?: string; w: number; h: number }
+/* Dates and one-liners come from the Medium feed (each line is the post's own opening sentence;
+   The Radha – Krishna keeps its Medium subtitle). Read time is only shown where it is known. */
 export const BLOGS: Blog[] = [
   { id: 'the-radha-krishna-b8d39f39a632', title: 'The Radha – Krishna', subtitle: 'Mythology isn’t just a story; sometimes it becomes a mirror.', date: 'Nov 17, 2025', read: '5 min', w: 1024, h: 1024 },
-  { id: 'you-are-never-compared-an-imperfect-story-8d842c0022ab', title: 'You Are Never Compared', subtitle: 'An imperfect story.', w: 800, h: 1200 },
-  { id: 'the-trip-that-almost-didnt-happen-part-1-4d526d5398b7', title: 'The Trip That Almost Didn’t Happen', subtitle: 'Part 1.', w: 720, h: 960 },
-  { id: 'hearts-desire-the-girl-within-c7195dea5db4', title: 'Heart’s Desire', subtitle: 'The girl within.', w: 900, h: 1200 },
-  { id: 'a-day-to-relive-160a0bdccc1e', title: 'A Day to Relive', w: 1200, h: 637 },
-  { id: 'the-best-friend-9aa7a98e4f14', title: 'The Best Friend', w: 1200, h: 808 },
-  { id: 'the-friend-dd19a9dc374e', title: 'The Friend', w: 1200, h: 889 },
-  { id: 'girl-in-everyones-life-e837556b9d94', title: 'Girl in Everyone’s Life', w: 1200, h: 513 },
+  { id: 'you-are-never-compared-an-imperfect-story-8d842c0022ab', title: 'You Are Never Compared: An Imperfect Story', subtitle: 'One day, a friend asked me to write a story about, literally, “You are never compared.”', date: 'Aug 7, 2025', w: 800, h: 1200 },
+  { id: 'the-trip-that-almost-didnt-happen-part-1-4d526d5398b7', title: 'The Trip That Almost Didn’t Happen: Part 1', subtitle: 'The time in life when each day becomes a routine of lifeless events, and it’s another typical, tiring workday.', date: 'Jul 30, 2025', w: 720, h: 960 },
+  { id: 'hearts-desire-the-girl-within-c7195dea5db4', title: 'Heart’s Desire: The Girl Within', subtitle: 'The city felt so alive with the vibrant nightlife.', date: 'May 1, 2024', w: 900, h: 1200 },
+  { id: 'a-day-to-relive-160a0bdccc1e', title: 'A Day to Relive', subtitle: 'If granted the opportunity to relive a day from the past without altering its course, which day would you choose?', date: 'Jan 27, 2024', w: 1200, h: 637 },
+  { id: 'the-best-friend-9aa7a98e4f14', title: 'The Best Friend', subtitle: 'I grew up with a single parent, and without siblings, but my dad kept me away from all the feelings of loneliness and enriched my life with all that he could.', date: 'Feb 6, 2021', w: 1200, h: 808 },
+  { id: 'the-friend-dd19a9dc374e', title: 'The Friend', subtitle: 'I love trust; I speak with whom I trust, and I spend time with whom I trust.', date: 'May 9, 2020', w: 1200, h: 889 },
+  { id: 'girl-in-everyones-life-e837556b9d94', title: 'Girl in Everyone’s Life', subtitle: 'I met her in class, but that doesn’t make me feel anything about her.', date: 'Apr 15, 2020', w: 1200, h: 513 },
 ];
 
 export const QUOTES: string[] = [
@@ -401,7 +437,7 @@ export const BLOCKS = {
   arsenal: { pose: 3, label: 'Arsenal', title: 'Projects' },
   matrix: { pose: 4, label: 'Neural Matrix', title: 'Capabilities' },
   credentials: { pose: 5, label: 'Credentials', title: 'Recognition' },
-  transmissions: { pose: 6, label: 'Transmissions', title: 'Writing & Art' },
+  transmissions: { pose: 6, label: 'Beyond the code', title: 'Beyond the code' },
 } as const;
 export type BlockId = keyof typeof BLOCKS;
 
@@ -410,7 +446,7 @@ export const SECTORS = [
   { id: 'missions', code: '02', label: 'Mission Log', title: 'Experience', hint: '3 roles · 2023 – 2026', blocks: ['missions'] },
   { id: 'arsenal', code: '03', label: 'Arsenal', title: 'Projects', hint: 'Projects & capabilities', blocks: ['arsenal', 'matrix'] },
   { id: 'credentials', code: '04', label: 'Credentials', title: 'Recognition', hint: 'Distinctions & certificates', blocks: ['credentials'] },
-  { id: 'transmissions', code: '05', label: 'Transmissions', title: 'Writing & Art', hint: 'Blogs, quotes, designs', blocks: ['transmissions'] },
+  { id: 'transmissions', code: '05', label: 'Beyond the code', title: 'Beyond the code', hint: 'Blogs, quotes, designs', blocks: ['transmissions'] },
 ] as const satisfies readonly { id: string; code: string; label: string; title: string; hint: string; blocks: readonly BlockId[] }[];
 
 export type SectorId = (typeof SECTORS)[number]['id'];

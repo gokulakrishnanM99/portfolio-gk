@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { BLOGS, DESIGNS, MEDIUM_BASE, QUOTES, QUOTE_TRANSLATIONS, media } from '../data/profile';
 import { useNav } from '../lib/nav';
 import { sound } from '../lib/sound';
@@ -66,39 +66,15 @@ function Quote({ active }: { active: boolean }) {
   );
 }
 
-/** Blogs: a strip of transmission cards (cover, title, line, date) that scrolls sideways. */
+/** Blogs: a vertical stack of transmission cards (cover banner, title, line, date). */
 function Blogs() {
-  const strip = useRef<HTMLDivElement>(null);
-  const [edge, setEdge] = useState({ start: true, end: false });
-
-  useEffect(() => {
-    const el = strip.current;
-    if (!el) return;
-    const upd = () => setEdge({ start: el.scrollLeft < 4, end: el.scrollLeft + el.clientWidth >= el.scrollWidth - 4 });
-    upd();
-    el.addEventListener('scroll', upd, { passive: true });
-    window.addEventListener('resize', upd);
-    return () => { el.removeEventListener('scroll', upd); window.removeEventListener('resize', upd); };
-  }, []);
-
-  const page = (d: number) => {
-    const el = strip.current;
-    if (!el) return;
-    el.scrollBy({ left: d * el.clientWidth * 0.8, behavior: 'smooth' });
-    sound.tick();
-  };
-
   return (
     <section className="tx-window tx-blogs panel" data-reveal aria-label="Blogs">
       <div className="panel-head">
         <span><span className="dot" />Blog transmissions · {BLOGS.length}</span>
-        <span className="tx-head-act">
-          <button className="icon-btn" onClick={() => page(-1)} disabled={edge.start} aria-label="Previous blogs"><IChevronLeft /></button>
-          <button className="icon-btn" onClick={() => page(1)} disabled={edge.end} aria-label="More blogs"><IChevronRight /></button>
-          <a className="link-arrow" href={MEDIUM_BASE} target="_blank" rel="noreferrer">Medium <IArrowUpRight /></a>
-        </span>
+        <a className="link-arrow" href={MEDIUM_BASE} target="_blank" rel="noreferrer">Medium <IArrowUpRight /></a>
       </div>
-      <div className="blog-strip" ref={strip} data-no-swipe>
+      <div className="blog-list">
         {BLOGS.map((b) => (
           <a key={b.id} className="blog-card" href={`${MEDIUM_BASE}${b.id}`} target="_blank" rel="noreferrer">
             <div className="bc-img">
@@ -153,12 +129,15 @@ function Designs() {
 export function Transmissions({ active }: SectionProps) {
   return (
     <div className="blk-body">
-      <SectionHeader block="transmissions" active={active} title={<>Off-duty <em>transmissions</em></>}
+      <SectionHeader block="transmissions" active={active} title={<>Beyond the <em>code</em></>}
         lede="Outside work, I write stories and short lines and design posters, all under the pen name tinyDragon." />
-      <div className="tx-stack">
-        <Quote active={active} />
+      {/* left: quotes over the design studio; right: the blogs, stacked */}
+      <div className="tx-cols">
+        <div className="tx-col">
+          <Quote active={active} />
+          <Designs />
+        </div>
         <Blogs />
-        <Designs />
       </div>
     </div>
   );

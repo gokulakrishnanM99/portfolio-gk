@@ -13,15 +13,36 @@ import { Stage } from './components/Stage';
 import type { OrbitController, OrbitMode, OrbitCallbacks } from './components/Orbit';
 import { CommandPalette, Lightbox, RadialMenu, RepoDrawer, Reticle, Vault } from './components/Overlays';
 
-/** `#/missions` opens a page; `#/origin`, `#/uplink`, `#/matrix` (the former pages) open the page holding that section. */
-const fromHash = (): { page: number; block: BlockId | null } => {
-  const id = window.location.hash.replace(/^#\/?/, '').split(/[?&]/)[0];
+/* Addresses are plain paths: /portfolio-gk/missions opens a page; /portfolio-gk/origin, /uplink and /matrix
+   (the former pages) open the page holding that section. The site root and any unknown path go to
+   /portfolio-gk/identity. Old links (?hologram=true#/missions) still work. */
+const BASE = import.meta.env.BASE_URL; // '/portfolio-gk/'
+
+const resolve = (id: string): { page: number; block: BlockId | null } | null => {
   const i = SECTORS.findIndex((s) => s.id === id);
   if (i >= 0) return { page: i, block: null };
-  if (id in BLOCKS) return { page: pageOfBlock(id as BlockId), block: id as BlockId };
-  return { page: 0, block: null };
+  if (Object.prototype.hasOwnProperty.call(BLOCKS, id)) return { page: pageOfBlock(id as BlockId), block: id as BlockId };
+  return null;
 };
-const initialHash = fromHash();
+
+const fromUrl = (): { page: number; block: BlockId | null } => {
+  const path = window.location.pathname.startsWith(BASE) ? window.location.pathname.slice(BASE.length) : '';
+  const fromPath = resolve(path.split('/')[0]);
+  if (fromPath) return fromPath;
+  const legacy = resolve(window.location.hash.replace(/^#\/?/, '').split(/[?&]/)[0]);
+  return legacy ?? { page: 0, block: null };
+};
+
+/** Write the open page into the address bar (keeps only the ?capture test flag). */
+const setUrl = (id: string) => {
+  try {
+    const keep = /[?&#]capture/.test(window.location.href) ? '?capture' : '';
+    window.history.replaceState(null, '', `${BASE}${id}${keep}`);
+  } catch { /* ignore */ }
+};
+
+const initialHash = fromUrl();
+setUrl(initialHash.block ?? SECTORS[initialHash.page].id);
 
 export default function App() {
   const [scene, setScene] = useState<HoloScene | null>(null);
@@ -83,7 +104,7 @@ export default function App() {
     onOpen: (k: number) => {
       indexRef.current = k;
       setIndex(k);
-      try { window.history.replaceState(null, '', `#/${SECTORS[k].id}`); } catch { /* ignore */ }
+      setUrl(SECTORS[k].id);
     },
     blocked: () => !!overlayRef.current,
     place: placePage,
@@ -148,9 +169,11 @@ export default function App() {
   });
 
   useEffect(() => {
-    const on = () => { const h = fromHash(); if (h.block) goBlock(h.block); else go(h.page); };
+    // back/forward, or an old #/page link typed into the address bar
+    const on = () => { const h = fromUrl(); if (h.block) goBlock(h.block); else go(h.page); };
+    window.addEventListener('popstate', on);
     window.addEventListener('hashchange', on);
-    return () => window.removeEventListener('hashchange', on);
+    return () => { window.removeEventListener('popstate', on); window.removeEventListener('hashchange', on); };
   }, [go, goBlock]);
 
   useEffect(() => {
@@ -183,7 +206,7 @@ export default function App() {
       {overlay?.type === 'palette' && <CommandPalette />}
       {overlay?.type === 'vault' && <Vault category={overlay.category} />}
       {overlay?.type === 'repos' && <RepoDrawer />}
-      {overlay?.type === 'lightbox' && <Lightbox items={overlay.items} index={overlay.index} />}
+      {overlay?.type === 'lightbox' && <Lightbox items={overlay.items} index={overlay.index} back={overlay.back} />}
 
       {toastMsg && <div className="toast panel" role="status">{toastMsg}</div>}
       {booted && !motionAsk && <GateHint />}

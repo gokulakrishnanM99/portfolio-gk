@@ -12,7 +12,8 @@ export type Overlay =
   | { type: 'palette' }
   | { type: 'vault'; category?: string }
   | { type: 'repos' }
-  | { type: 'lightbox'; items: LightboxItem[]; index: number }
+  /** `back`: the overlay to return to (e.g. the vault it was opened from) */
+  | { type: 'lightbox'; items: LightboxItem[]; index: number; back?: Overlay }
   | null;
 
 export interface LightboxItem { src: string; title: string; sub?: string; video?: string; href?: string }

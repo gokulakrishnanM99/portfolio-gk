@@ -1,6 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { NavLink } from 'react-router-dom';
-import { Menu, X, Code, Briefcase, User, Layers, Award, Sun, Moon, Sparkles, Check } from 'lucide-react';
+import { Menu, X, Code, Briefcase, User, Layers, Award, Sun, Moon, Sparkles, Check, Orbit } from 'lucide-react';
+
+/** The holographic portfolio (the main site). */
+const HOLOGRAM_URL = `${import.meta.env.BASE_URL}identity`;
 
 const Navbar: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -126,6 +129,12 @@ const Navbar: React.FC = () => {
               ))}
             </div>
 
+            <a href={HOLOGRAM_URL}
+              className="px-4 py-2 rounded-full text-sm font-semibold flex items-center gap-2 text-white bg-gradient-to-r from-cyan-500 to-sky-600 hover:from-cyan-400 hover:to-sky-500 shadow-sm shadow-cyan-500/30 transition-all duration-300">
+              <Orbit className="w-4 h-4" />
+              Hologram
+            </a>
+
             <div className="flex items-center gap-2 border-l border-slate-200 dark:border-slate-800 pl-6 relative" ref={themeMenuRef}>
               {/* Minimal Mode Menu Trigger */}
               <button 
@@ -249,6 +258,11 @@ const Navbar: React.FC = () => {
                 {item.name}
               </NavLink>
             ))}
+            <a href={HOLOGRAM_URL}
+              className="block px-3 py-3 rounded-md text-base font-semibold flex items-center gap-3 text-cyan-600 dark:text-cyan-400 hover:bg-slate-50 dark:hover:bg-slate-800">
+              <Orbit className="w-5 h-5" />
+              Holographic portfolio
+            </a>
           </div>
         </div>
       )}

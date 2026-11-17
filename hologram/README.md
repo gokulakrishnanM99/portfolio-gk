@@ -33,8 +33,8 @@ Built separately from the classic site (`portfolio-gk`), which this project neve
 - **Neural matrix:** each skill is wired to the roles and projects where it was used (hover or click to trace).
 - Interface sounds are synthesised with WebAudio and off by default (speaker icon).
 - Adapts quality on slow GPUs; falls back to 2D if WebGL is unavailable.
-- Deep links open a page directly: `#/identity`, `#/missions`, `#/arsenal`, `#/credentials`, `#/transmissions`;
-  the section links `#/origin`, `#/uplink` and `#/matrix` open their page scrolled to that section.
+- Deep links open a page directly: `/portfolio-gk/identity`, `/missions`, `/arsenal`, `/credentials`, `/transmissions`;
+  the section links `/origin`, `/uplink` and `/matrix` open their page scrolled to that section. Unknown paths go to `/identity`.
 
 ## Pages
 
@@ -69,4 +69,4 @@ push to `main`, giving a separate URL such as `https://gokulakrishnanm99.github.
 After deploying, change `og:image` in `index.html` to the absolute URL of `media/generated/og-cover.jpg`
 so link previews work.
 
-Screenshot/testing aid: append `&capture` to a hash URL (e.g. `#/arsenal&capture`) to skip the boot and motion.
+Screenshot/testing aid: append `?capture` to a page URL (e.g. `/portfolio-gk/arsenal?capture`) to skip the boot and motion.

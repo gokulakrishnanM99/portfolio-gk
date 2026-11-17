@@ -97,9 +97,10 @@ export const OrbitLayer = forwardRef<HTMLDivElement, {
           {SECTORS.map((s, i) => <div key={`sp-${s.id}`} className="orbit-spoke" data-i={i} aria-hidden />)}
           {SECTORS.map((s, i) => (
             <button key={s.id} className="ocard" data-i={i} onClick={() => onCard(i)}
-              aria-label={`Open ${s.code} ${s.label}, ${s.title}`} tabIndex={-1}>
+              aria-label={`Open ${s.code} ${s.label === s.title ? s.title : `${s.label}, ${s.title}`}`} tabIndex={-1}>
               <span className="oc-face">
-                <span className="oc-head"><b>{s.code}</b><span>{s.label}</span><i aria-hidden /></span>
+                {/* the small label repeats the title when they are the same (Beyond the code): show just the code then */}
+                <span className="oc-head"><b>{s.code}</b><span>{s.label !== s.title ? s.label : ''}</span><i aria-hidden /></span>
                 <span className="oc-title">{s.title}</span>
                 <span className="oc-hint">{s.hint}</span>
                 <span className="oc-detail"><Preview id={s.id} /></span>

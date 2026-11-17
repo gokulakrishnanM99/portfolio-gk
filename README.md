@@ -6,16 +6,18 @@ This is a personal portfolio website built using **React** and **Vite**.
 
 Access the Portfolio website in https://gokulakrishnanm99.github.io/portfolio-gk/
 
-## Holographic (GK.OS) version
+## Sites and addresses
 
-A new JARVIS-style portfolio lives in the same repo and URL, behind a flag:
+The holographic portfolio (GK.OS) is the main site; the classic portfolio stays available behind a flag.
 
-- **Classic site:** https://gokulakrishnanm99.github.io/portfolio-gk/
-- **Holographic site:** https://gokulakrishnanm99.github.io/portfolio-gk/?hologram=true (deep links: `?hologram=true#/arsenal`)
+- **Main site:** https://gokulakrishnanm99.github.io/portfolio-gk/ (opens `/portfolio-gk/identity`). Pages: `/identity`, `/missions`, `/arsenal`, `/credentials`, `/transmissions`; sections: `/origin`, `/uplink`, `/matrix`. Any unknown path goes to `/identity`.
+- **Classic site:** https://gokulakrishnanm99.github.io/portfolio-gk/?classic=true (e.g. `/portfolio-gk/resume?classic=true`). No `#` in addresses.
+- Old links still work: `?hologram=true#/arsenal` opens `/arsenal`, and classic `#/resume` links open the classic Resume page.
 
-Its code is in `hologram/` (see `hologram/README.md`), its page entry is `hologram.html`, and its images are in `public/media/`.
-`index.html` has a small script at the top of `<head>` that forwards the flag. When you're ready to swap, remove that
-script, make `hologram.html` the main page, and move the classic site behind its own flag.
+How it works: `index.html` is the holographic site (code in `hologram/`, see `hologram/README.md`; images in `public/media/`).
+The build also copies it to `404.html`, because GitHub Pages has no server-side rewrites: a path like `/portfolio-gk/missions`
+is answered by `404.html`, which reads the path and opens that page. A script at the top of `index.html` sends `?classic=true`
+visits to `classic.html` (the classic site), which restores the clean address before React Router starts.
 
 ## Project Structure
 

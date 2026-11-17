@@ -2,9 +2,9 @@ import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import gsap from 'gsap';
 import {
   BLOCKS, CERTIFICATES, GITHUB_USER, blockCode, type BlockId, HIDDEN_REPOS, HIDDEN_REPO_TOPICS, MISSIONS, PROFILE, PROJECTS,
-  SECTORS, SKILL_GROUPS, SOCIALS, media,
+  PUBLICATIONS, SECTORS, SKILL_GROUPS, SOCIALS, media,
 } from '../data/profile';
-import { useNav, type LightboxItem } from '../lib/nav';
+import { useNav, type LightboxItem, type Overlay } from '../lib/nav';
 import { sound } from '../lib/sound';
 import { IArrowUpRight, IChevronLeft, IChevronRight, ISearch, IStar, IX } from './icons';
 
@@ -87,7 +87,7 @@ export function RadialMenu() {
             const m = mid(i, 200);
             return (
               <g key={s.id} className={`seg ${i === nav.index ? 'is-active' : ''}`} tabIndex={0} role="button"
-                aria-label={`${s.code} ${s.label}, ${s.title}`}
+                aria-label={`${s.code} ${s.label === s.title ? s.title : `${s.label}, ${s.title}`}`}
                 onMouseEnter={() => { setHover(i); sound.tick(); }} onMouseLeave={() => setHover(null)}
                 onFocus={() => setHover(i)}
                 onClick={() => { nav.go(i); close(); }}
@@ -144,9 +144,13 @@ export function CommandPalette() {
       id: `k-${s.name}`, type: 'Skill', title: s.name, sub: g.label,
       keywords: `${s.name} ${g.label} skill`, run: () => nav.focusOn('skill', s.name),
     })));
+    PUBLICATIONS.forEach((p) => out.push({
+      id: `pub-${p.id}`, type: 'Paper', title: p.title, sub: `${p.journal} · ${p.date}`,
+      keywords: `publication paper research journal ${p.journal} md simulation membrane nsaid`, run: () => window.open(p.url, '_blank', 'noopener'),
+    }));
     out.push(
       { id: 'a-resume', type: 'Action', title: 'Download resume (PDF)', keywords: 'resume cv pdf download dossier', run: () => { const a = document.createElement('a'); a.href = PROFILE.resume; a.download = 'Resume_Gokulakrishnan_M.pdf'; a.click(); } },
-      { id: 'a-email', type: 'Action', title: 'Copy email address', sub: PROFILE.email, keywords: 'email mail contact copy', run: () => { navigator.clipboard?.writeText(PROFILE.email).then(() => nav.toast('Email copied to clipboard')); } },
+      { id: 'a-email', type: 'Action', title: 'Copy email address', sub: PROFILE.email, keywords: 'email mail contact copy', run: () => { (navigator.clipboard?.writeText(PROFILE.email) ?? Promise.reject()).then(() => nav.toast('Email copied to clipboard'), () => nav.toast(PROFILE.email)); } },
       { id: 'a-vault', type: 'Action', title: 'Open certificate vault', keywords: 'certificates certificate vault course coursera', run: () => nav.setOverlay({ type: 'vault' }) },
       { id: 'a-repos', type: 'Action', title: 'Open live GitHub feed', keywords: 'github repos repositories code', run: () => nav.setOverlay({ type: 'repos' }) },
       { id: 'a-orbit', type: 'Action', title: 'Orbit view: all pages on the ring', keywords: 'orbit ring overview all pages', run: () => nav.orbit() },
@@ -227,14 +231,47 @@ export function CommandPalette() {
 }
 
 /* --------------------------------------------------------------- lightbox */
-export function Lightbox({ items, index }: { items: LightboxItem[]; index: number }) {
+export function Lightbox({ items, index, back }: { items: LightboxItem[]; index: number; back?: Overlay }) {
   const nav = useNav();
   const close = () => nav.setOverlay(null);
+  // Back returns to where the image was opened from (the certificate vault); Esc does the same
+  const goBack = () => nav.setOverlay(back ?? null);
   const [i, setI] = useState(index);
   const [showVideo, setShowVideo] = useState(false);
+  // fitted to the window by default; zoom shows it at full size and it can be dragged around
+  const [zoom, setZoom] = useState(false);
+  const mediaRef = useRef<HTMLDivElement>(null);
+  const drag = useRef<{ x: number; y: number; sl: number; st: number; moved: boolean } | null>(null);
   const it = items[i];
-  const go = (d: number) => { setI((x) => (x + d + items.length) % items.length); setShowVideo(false); };
-  useEscape(close, (e) => {
+  const go = (d: number) => { setI((x) => (x + d + items.length) % items.length); setShowVideo(false); setZoom(false); };
+  const toggleZoom = (e?: React.MouseEvent) => {
+    const el = mediaRef.current;
+    if (!zoom && el && e) {
+      // zoom towards the point that was clicked
+      const r = el.getBoundingClientRect();
+      const fx = (e.clientX - r.left) / r.width, fy = (e.clientY - r.top) / r.height;
+      requestAnimationFrame(() => { el.scrollLeft = fx * (el.scrollWidth - el.clientWidth); el.scrollTop = fy * (el.scrollHeight - el.clientHeight); });
+    }
+    setZoom((z) => !z);
+  };
+  const onDown = (e: React.PointerEvent) => {
+    const el = mediaRef.current;
+    if (!zoom || !el) return;
+    drag.current = { x: e.clientX, y: e.clientY, sl: el.scrollLeft, st: el.scrollTop, moved: false };
+    el.setPointerCapture(e.pointerId);
+  };
+  const onMove = (e: React.PointerEvent) => {
+    const el = mediaRef.current, d = drag.current;
+    if (!el || !d) return;
+    const dx = e.clientX - d.x, dy = e.clientY - d.y;
+    if (Math.abs(dx) + Math.abs(dy) > 3) d.moved = true;
+    el.scrollLeft = d.sl - dx; el.scrollTop = d.st - dy;
+  };
+  const onUp = (e: React.PointerEvent) => {
+    const d = drag.current; drag.current = null;
+    if (d && !d.moved) toggleZoom(e); // a click (not a drag) while zoomed fits it back
+  };
+  useEscape(back ? goBack : close, (e) => {
     if (e.key === 'ArrowRight') { e.stopPropagation(); go(1); }
     if (e.key === 'ArrowLeft') { e.stopPropagation(); go(-1); }
   });
@@ -243,14 +280,19 @@ export function Lightbox({ items, index }: { items: LightboxItem[]; index: numbe
     <Shell onClose={close} label={it.title}>
       <div className="lightbox panel">
         <div className="panel-head">
-          <span><span className="dot" />Visual record · {String(i + 1).padStart(2, '0')} / {String(items.length).padStart(2, '0')}</span>
-          <button className="icon-btn" onClick={close} aria-label="Close" data-autofocus><IX /></button>
+          <span className="lb-head-l">
+            {back && <button className="btn btn--sm lb-back" onClick={goBack} data-autofocus><IChevronLeft width={14} height={14} /> Back to vault</button>}
+            <span><span className="dot" />Visual record · {String(i + 1).padStart(2, '0')} / {String(items.length).padStart(2, '0')}</span>
+          </span>
+          <button className="icon-btn" onClick={close} aria-label="Close" data-autofocus={back ? undefined : true}><IX /></button>
         </div>
-        <div className="lightbox-media">
+        <div ref={mediaRef} className={`lightbox-media ${zoom ? 'is-zoomed' : ''}`}
+          onPointerDown={onDown} onPointerMove={onMove} onPointerUp={onUp} onPointerCancel={() => { drag.current = null; }}>
           {showVideo && it.video ? (
             <video key={it.video} src={it.video} controls autoPlay playsInline />
           ) : (
-            <img key={it.src} className="mat-in" src={it.src} alt={it.title} />
+            <img key={it.src} className="mat-in" src={it.src} alt={it.title} draggable={false}
+              onClick={(e) => { if (!zoom) toggleZoom(e); }} />
           )}
         </div>
         <div className="lightbox-bar">
@@ -259,6 +301,9 @@ export function Lightbox({ items, index }: { items: LightboxItem[]; index: numbe
             {it.sub && <div className="lb-sub">{it.sub}</div>}
           </div>
           <span className="spacer" />
+          {!(showVideo && it.video) && (
+            <button className="btn btn--sm" onClick={() => setZoom((z) => !z)} aria-pressed={zoom}>{zoom ? 'Fit to screen' : 'Zoom'}</button>
+          )}
           {it.video && (
             <button className="btn btn--sm" onClick={() => setShowVideo((v) => !v)}>{showVideo ? 'Show poster' : 'Play title card'}</button>
           )}
@@ -286,6 +331,7 @@ export function Vault({ category }: { category?: string }) {
   const open = (k: number) => nav.setOverlay({
     type: 'lightbox', index: k,
     items: list.map((c) => ({ src: media(`certificates/${c.id}.webp`), title: c.title, sub: `${c.issuer} · ${c.category}` })),
+    back: { type: 'vault', category: cat },
   });
 
   return (
@@ -319,7 +365,7 @@ export function Vault({ category }: { category?: string }) {
 }
 
 /* --------------------------------------------------------------- GitHub feed */
-interface Repo { id: number; name: string; description: string | null; html_url: string; language: string | null; stargazers_count: number; updated_at: string; topics?: string[]; fork: boolean }
+interface Repo { id: number; name: string; description: string | null; html_url: string; language: string | null; stargazers_count: number; updated_at: string; pushed_at: string; topics?: string[]; fork: boolean }
 
 const LANG_COLOR: Record<string, string> = {
   Python: '#5fd4ff', TypeScript: '#7aa8ff', JavaScript: '#ffd75f', HTML: '#ff8a5f', CSS: '#b18cff',
@@ -342,7 +388,7 @@ export function RepoDrawer() {
       const cached = sessionStorage.getItem(KEY);
       if (cached) { setRepos(JSON.parse(cached)); return; }
     } catch { /* ignore */ }
-    fetch(`https://api.github.com/users/${GITHUB_USER}/repos?sort=updated&per_page=100`)
+    fetch(`https://api.github.com/users/${GITHUB_USER}/repos?sort=pushed&per_page=100`)
       .then((r) => { if (!r.ok) throw new Error(String(r.status)); return r.json(); })
       .then((data: Repo[]) => {
         const list = data.filter((r) => !HIDDEN_REPOS.includes(r.name)
@@ -386,7 +432,8 @@ export function RepoDrawer() {
               <div className="repo-meta">
                 {r.language && <span><span className="lang-dot" style={{ background: LANG_COLOR[r.language] ?? 'var(--holo)' }} />{r.language}</span>}
                 {r.stargazers_count > 0 && <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}><IStar width={11} height={11} />{r.stargazers_count}</span>}
-                <span>Updated {new Date(r.updated_at).toLocaleDateString(undefined, { month: 'short', year: 'numeric' })}</span>
+                {/* pushed_at = last code push; updated_at also moves when settings or topics change */}
+                <span>Updated {new Date(r.pushed_at || r.updated_at).toLocaleDateString(undefined, { month: 'short', year: 'numeric' })}</span>
               </div>
             </a>
           ))}
