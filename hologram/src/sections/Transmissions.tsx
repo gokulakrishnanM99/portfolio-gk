@@ -1,25 +1,37 @@
-import { useEffect, useState } from 'react';
-import { BLOGS, DESIGNS, MEDIUM_BASE, ORIGIN, QUOTES, QUOTE_AUTHOR, media } from '../data/profile';
+import { useEffect, useRef, useState } from 'react';
+import { BLOGS, DESIGNS, MEDIUM_BASE, QUOTES, QUOTE_TRANSLATIONS, media } from '../data/profile';
 import { useNav } from '../lib/nav';
 import { sound } from '../lib/sound';
 import { isLatin, useDecrypt } from '../lib/useDecrypt';
 import { SectionHeader, type SectionProps } from '../components/SectionHeader';
 import { IArrowUpRight, IChevronLeft, IChevronRight, IPlay } from '../components/icons';
 
-const QUOTE_MS = 8000;
+/** Time on each quote: 8.8 s, and 9.6 s for the longer ones. */
+const QUOTE_MS = 8800;
+const LONG_QUOTE_MS = 9600;
+const LONG_QUOTE = 70; // characters
+const quoteMs = (q: string) => (q.length > LONG_QUOTE ? LONG_QUOTE_MS : QUOTE_MS);
 
 function Quote({ active }: { active: boolean }) {
   const [i, setI] = useState(0);
   const [paused, setPaused] = useState(false);
-  const q = QUOTES[i];
+  const [translated, setTranslated] = useState(false);
+  const original = QUOTES[i];
+  const translation = QUOTE_TRANSLATIONS[original];
+  const q = translated && translation ? translation : original;
   const latin = isLatin(q);
   const text = useDecrypt(q, active, Math.min(1400, 300 + q.length * 14));
+  const ms = quoteMs(q);
+  // reading a translation holds the quote (it would otherwise move on mid-read)
+  const holding = paused || translated;
+
+  useEffect(() => { setTranslated(false); }, [i]);
 
   useEffect(() => {
-    if (!active || paused) return;
-    const id = window.setTimeout(() => setI((x) => (x + 1) % QUOTES.length), QUOTE_MS);
+    if (!active || holding) return;
+    const id = window.setTimeout(() => setI((x) => (x + 1) % QUOTES.length), ms);
     return () => clearTimeout(id);
-  }, [i, active, paused]);
+  }, [i, active, holding, ms]);
 
   const go = (d: number) => { setI((x) => (x + d + QUOTES.length) % QUOTES.length); sound.tick(); };
 
@@ -32,16 +44,21 @@ function Quote({ active }: { active: boolean }) {
       </div>
       <div className="quote-body">
         <div className="qmark" aria-hidden>“</div>
-        <blockquote key={i} className={`quote-text ${latin ? '' : 'tamil fade-in'}`} style={{ margin: 0 }} aria-live="polite">
+        <blockquote key={`${i}-${translated}`} className={`quote-text ${latin ? '' : 'tamil fade-in'}`} style={{ margin: 0 }} aria-live="polite">
           <span aria-hidden>{text}</span>
           <span className="sr-only">{q}</span>
         </blockquote>
-        <div className="quote-author">by {QUOTE_AUTHOR}</div>
+        {translation && (
+          <button className={`btn btn--sm quote-tr ${translated ? 'is-on' : ''}`} onClick={() => { setTranslated((t) => !t); sound.tick(); }}
+            aria-pressed={translated}>
+            {translated ? 'Show original' : 'Translate'}
+          </button>
+        )}
       </div>
       <div className="quote-ctrl">
         <button className="icon-btn" onClick={() => go(-1)} aria-label="Previous quote"><IChevronLeft /></button>
         <div className="quote-progress" aria-hidden>
-          <span key={`${i}-${paused}-${active}`} className={active && !paused ? 'run' : ''} style={{ ['--qd' as string]: `${QUOTE_MS}ms` }} />
+          <span key={`${i}-${holding}-${active}`} className={active && !holding ? 'run' : ''} style={{ ['--qd' as string]: `${ms}ms` }} />
         </div>
         <button className="icon-btn" onClick={() => go(1)} aria-label="Next quote"><IChevronRight /></button>
       </div>
@@ -49,70 +66,99 @@ function Quote({ active }: { active: boolean }) {
   );
 }
 
-export function Transmissions({ active }: SectionProps) {
-  const nav = useNav();
-  const [tab, setTab] = useState<'blogs' | 'designs'>('blogs');
+/** Blogs: a strip of transmission cards (cover, title, line, date) that scrolls sideways. */
+function Blogs() {
+  const strip = useRef<HTMLDivElement>(null);
+  const [edge, setEdge] = useState({ start: true, end: false });
 
-  const openDesign = (k: number) => nav.setOverlay({
+  useEffect(() => {
+    const el = strip.current;
+    if (!el) return;
+    const upd = () => setEdge({ start: el.scrollLeft < 4, end: el.scrollLeft + el.clientWidth >= el.scrollWidth - 4 });
+    upd();
+    el.addEventListener('scroll', upd, { passive: true });
+    window.addEventListener('resize', upd);
+    return () => { el.removeEventListener('scroll', upd); window.removeEventListener('resize', upd); };
+  }, []);
+
+  const page = (d: number) => {
+    const el = strip.current;
+    if (!el) return;
+    el.scrollBy({ left: d * el.clientWidth * 0.8, behavior: 'smooth' });
+    sound.tick();
+  };
+
+  return (
+    <section className="tx-window tx-blogs panel" data-reveal aria-label="Blogs">
+      <div className="panel-head">
+        <span><span className="dot" />Blog transmissions · {BLOGS.length}</span>
+        <span className="tx-head-act">
+          <button className="icon-btn" onClick={() => page(-1)} disabled={edge.start} aria-label="Previous blogs"><IChevronLeft /></button>
+          <button className="icon-btn" onClick={() => page(1)} disabled={edge.end} aria-label="More blogs"><IChevronRight /></button>
+          <a className="link-arrow" href={MEDIUM_BASE} target="_blank" rel="noreferrer">Medium <IArrowUpRight /></a>
+        </span>
+      </div>
+      <div className="blog-strip" ref={strip} data-no-swipe>
+        {BLOGS.map((b) => (
+          <a key={b.id} className="blog-card" href={`${MEDIUM_BASE}${b.id}`} target="_blank" rel="noreferrer">
+            <div className="bc-img">
+              <img src={media(`blogs/${b.id}.thumb.webp`)} alt="" loading="lazy" decoding="async" />
+            </div>
+            <div className="bc-body">
+              <div className="bc-title">{b.title}</div>
+              {b.subtitle && <div className="bc-sub">{b.subtitle}</div>}
+              <div className="bc-foot">
+                <span>{[b.date, b.read && `${b.read} read`].filter(Boolean).join(' · ') || 'Medium'}</span>
+                <span className="bc-go">Read <IArrowUpRight width={12} height={12} /></span>
+              </div>
+            </div>
+          </a>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+/** Designs: one large image per row; selecting one opens it full screen (with its video, if any). */
+function Designs() {
+  const nav = useNav();
+  const open = (k: number) => nav.setOverlay({
     type: 'lightbox', index: k,
     items: DESIGNS.map((d) => ({ src: media(`designs/${d.id}.webp`), title: d.title, sub: d.caption, video: d.video })),
   });
+  return (
+    <section className="tx-window tx-designs panel" data-reveal aria-label="Designs">
+      <div className="panel-head">
+        <span><span className="dot" style={{ background: 'var(--amber)', boxShadow: '0 0 10px var(--amber)' }} />Design studio · {DESIGNS.length}</span>
+        <span>Select to view full screen</span>
+      </div>
+      <div className="design-stack">
+        {DESIGNS.map((d, k) => (
+          <button key={d.id} className="design-item" onClick={() => open(k)} aria-label={`${d.title}: view full screen`}>
+            <div className="di-img">
+              <img src={media(`designs/${d.id}.webp`)} width={d.w} height={d.h} alt="" loading="lazy" decoding="async" />
+              {d.video && <span className="di-play"><IPlay width={14} height={14} /> Title card</span>}
+            </div>
+            <div className="di-meta">
+              <span className="di-title">{d.title}</span>
+              <span className="di-cap">{d.caption}</span>
+            </div>
+          </button>
+        ))}
+      </div>
+    </section>
+  );
+}
 
+export function Transmissions({ active }: SectionProps) {
   return (
     <div className="blk-body">
       <SectionHeader block="transmissions" active={active} title={<>Off-duty <em>transmissions</em></>}
         lede="Outside work, I write stories and short lines and design posters, all under the pen name tinyDragon." />
-      <div className="interests tx-interests" data-reveal>
-        <span className="label label--dim" style={{ marginRight: 6 }}>Off-duty</span>
-        {ORIGIN.interests.map((i) => <span key={i} className="chip">{i}</span>)}
-      </div>
-
-      <div className="tx-grid">
+      <div className="tx-stack">
         <Quote active={active} />
-
-        <section className="tx-side panel" data-reveal>
-          <div className="tx-tabs" role="tablist">
-            <button role="tab" aria-selected={tab === 'blogs'} className={`tab ${tab === 'blogs' ? 'is-active' : ''}`} onClick={() => setTab('blogs')}>
-              Blogs<span className="n">{BLOGS.length}</span>
-            </button>
-            <button role="tab" aria-selected={tab === 'designs'} className={`tab ${tab === 'designs' ? 'is-active' : ''}`} onClick={() => setTab('designs')}>
-              Designs<span className="n">{DESIGNS.length}</span>
-            </button>
-            <span className="spacer" />
-            <a className="link-arrow" href={MEDIUM_BASE} target="_blank" rel="noreferrer">Medium <IArrowUpRight /></a>
-          </div>
-
-          {tab === 'blogs' ? (
-            <div className="tx-list fade-in" role="tabpanel">
-              {BLOGS.map((b) => (
-                <a key={b.id} className="blog" href={`${MEDIUM_BASE}${b.id}`} target="_blank" rel="noreferrer">
-                  <img src={media(`blogs/${b.id}.thumb.webp`)} alt="" loading="lazy" decoding="async" />
-                  <div>
-                    <div className="bt">{b.title}</div>
-                    <div className="bs">{[b.subtitle, b.date, b.read && `${b.read} read`].filter(Boolean).join(' · ') || 'Read on Medium'}</div>
-                  </div>
-                  <IArrowUpRight />
-                </a>
-              ))}
-            </div>
-          ) : (
-            <div className="tx-list fade-in" role="tabpanel">
-              <div className="designs">
-                {DESIGNS.map((d, k) => (
-                  <button key={d.id} className="thumb" onClick={() => openDesign(k)}>
-                    <div className="img"><img src={media(`designs/${d.id}.thumb.webp`)} alt="" loading="lazy" /></div>
-                    <div className="meta">
-                      <div className="t" style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                        {d.title} {d.video && <IPlay width={12} height={12} style={{ color: 'var(--holo)' }} />}
-                      </div>
-                      <div className="s">{d.video ? 'Poster + title card' : 'Poster'}</div>
-                    </div>
-                  </button>
-                ))}
-              </div>
-            </div>
-          )}
-        </section>
+        <Blogs />
+        <Designs />
       </div>
     </div>
   );

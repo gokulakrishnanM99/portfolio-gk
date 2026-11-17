@@ -58,7 +58,7 @@ export function Credentials({ active }: SectionProps) {
                 <button key={c} className="chip" onClick={() => nav.setOverlay({ type: 'vault', category: c })}>{c}</button>
               ))}
             </div>
-            <button className="btn" style={{ alignSelf: 'flex-start', marginTop: 'auto' }} onClick={() => nav.setOverlay({ type: 'vault' })}>
+            <button className="btn btn--breathe" style={{ alignSelf: 'flex-start', marginTop: 'auto' }} onClick={() => nav.setOverlay({ type: 'vault' })}>
               <IVault /> Open vault
             </button>
           </div>

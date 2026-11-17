@@ -313,6 +313,8 @@ export class OrbitController {
   async enterRing(fast = false) {
     if (this.mode !== 'page') return;
     const my = ++this.seq;
+    // leaving while the page is still settling in: finish that animation first
+    if (this.tl) { this.tl.progress(1); this.tl = null; }
     const k = this.current;
     this.resetGestures();
     this.p = this.target = this.nearest(k);
@@ -378,16 +380,21 @@ export class OrbitController {
     const tl = gsap.timeline();
     tl.to(this, { zoom: 1, spread: 1.35, tilt: -2, duration: this.D(0.62), ease: 'power2.in' }, 0)
       .to(this.root, { autoAlpha: 0, duration: this.D(0.3) }, this.D(0.36))
-      .fromTo(el, { autoAlpha: 0, scale: 1.12 }, { autoAlpha: 1, scale: 1, duration: this.D(0.7), ease: 'expo.out', clearProps: 'transform' }, this.D(0.3));
+      .fromTo(el, { autoAlpha: 0, scale: 1.12 }, { autoAlpha: 1, scale: 1, duration: this.D(0.7), ease: 'expo.out', clearProps: 'transform' }, this.D(0.3))
+      // the page is readable well before its zoom-in settles: hand it to the visitor then, so a scroll
+      // made during the tail of the transition moves the page instead of being swallowed
+      .call(() => { if (my === this.seq && this.mode === 'busy') this.setMode('page'); }, [], this.D(0.6));
+    this.tl = tl;
     await this.play(tl);
     if (my !== this.seq) return;
+    this.tl = null;
     this.stopLoop();
     this.resetGestures();
     this.zoom = 0; this.spread = 1; this.zoomIdx = -1; this.tilt = RING_TILT;
     this.render();
     el.classList.remove('is-scanning'); void el.offsetWidth; el.classList.add('is-scanning');
     window.setTimeout(() => el.classList.remove('is-scanning'), 1200);
-    this.setMode('page');
+    if (this.mode !== 'page') this.setMode('page');
   }
 
   stepBy(d: number) {

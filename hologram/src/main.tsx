@@ -5,6 +5,7 @@ import '@fontsource/rajdhani/700.css';
 import '@fontsource-variable/inter';
 import '@fontsource/jetbrains-mono/400.css';
 import '@fontsource/jetbrains-mono/500.css';
+import '@fontsource-variable/jost'; // quotes only (same face as the classic site)
 import './styles/global.css';
 import gsap from 'gsap';
 import App from './App';

@@ -115,7 +115,9 @@ export function Matrix({ active }: SectionProps) {
             <div key={skill.name} className="mat-in">
               <h4>{skill.name}</h4>
               <div className="xr-count">
-                {refs.length ? `${refs.length} linked deployment${refs.length > 1 ? 's' : ''}` : 'Toolkit · no deployment on record here'}
+                {refs.length ? `${refs.length} linked deployment${refs.length > 1 ? 's' : ''}`
+                  : skill.note ? (skill.note.tag === 'EDU' ? 'Learned through coursework' : 'Tools I use')
+                  : skill.link ? 'Off-duty work' : 'Toolkit · no deployment on record here'}
                 {pinned === skill.name && ' · pinned'}
               </div>
               {refs.length > 0 ? (
@@ -130,6 +132,23 @@ export function Matrix({ active }: SectionProps) {
                     </li>
                   ))}
                 </ul>
+              ) : skill.note ? (
+                <ul className="xref-list">
+                  <li>
+                    <div className="xref-item xref-note">
+                      <span className="xt note">{skill.note.tag}</span>
+                      <span className="xn">{skill.note.title}</span>
+                      {skill.note.sub && <span className="xs">{skill.note.sub}</span>}
+                    </div>
+                  </li>
+                </ul>
+              ) : skill.link ? (
+                <div className="xref-link">
+                  <p className="xref-empty">{skill.link.text}</p>
+                  <button className="btn btn--sm" onClick={() => nav.goId(skill.link!.page)}>
+                    Off-duty transmissions <IArrowRight width={12} height={12} />
+                  </button>
+                </div>
               ) : (
                 <p className="xref-empty">Part of my toolkit, but not tied to a specific role or project on this site.</p>
               )}

@@ -16,7 +16,7 @@ import { Linkedin, Github, FileText, Mail } from 'lucide-react';
 // Import images so Vite properly handles asset paths with base URL
 import courseraImg from '/assets/certificates/Course/Coursera Python for Data Science, AI & Development.jpg';
 import courseraSqlImg from '/assets/certificates/Course/Coursera Databases and SQL for Data Science with Python_page.jpg';
-import culturalsImg from '/assets/design/Posters/Culturals-poster.jpg';
+import culturalsImg from '/assets/design/Posters/Culturals-poster-public.jpg';
 import blogRadhaKrishnaImg from '/assets/blogs/the-radha-krishna-b8d39f39a632.png';
 import cubiverseImg from '/assets/projects/cubiverse.jpeg';
 import reszoomImg from '/assets/projects/reszoom_full.png';

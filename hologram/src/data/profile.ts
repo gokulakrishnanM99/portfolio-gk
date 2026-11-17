@@ -48,7 +48,7 @@ export const ORIGIN = {
     { id: 'mtech', degree: 'M.Tech, Biomedical Engineering', institution: 'IIT Bombay', period: '2021 – 2023', metric: '9.45', metricLabel: 'CPI' },
     { id: 'be', degree: 'B.E., Biomedical Engineering', institution: 'CEG, Anna University', period: '2017 – 2021', metric: '7.6', metricLabel: 'GPA' },
   ],
-  interests: ['Game development', 'Graphic design', 'Story & quote writing', 'Blogging', 'Vibe coding'],
+  interests: ['Game development', 'Graphic design', 'Blogging', 'Vibe coding', 'Quote & fiction writing'],
 };
 
 /* ---------------------------------------------------------------- MISSIONS */
@@ -78,8 +78,8 @@ export const MISSIONS: Mission[] = [
     codename: 'LOCAL INTELLIGENCE',
     brief: 'Self-hosted LLM and vision pipelines for an ed-tech platform, used to verify questions, grade answer sheets and generate exams.',
     points: [
-      { label: 'Local LLM evaluation', text: 'Benchmarked self-hosted Llama, Qwen and GPT-OSS (3B–20B) with prompt and inference tuning inside an LLM pipeline that verifies 14k+ MCQs and generates pedagogical metadata.' },
-      { label: 'Computer vision & GenAI', text: 'Architected an OpenCV + Vision-LLM OCR pipeline on Django/Celery to grade scanned answer sheets; tuned and integrated a Gemma 3 4B RAG system to auto-generate personalised exams.' },
+      { label: 'Local LLM evaluation', text: 'Benchmarked self-hosted Llama, Qwen and GPT-OSS (3B–20B) with prompt and inference tuning in an LLM pipeline verifying 14k+ MCQs and generating metadata.' },
+      { label: 'Computer vision & GenAI', text: 'Built an OpenCV + Vision-LLM OCR pipeline to grade answer sheets; integrated Gemma 3 4B RAG to generate personalised exams.' },
     ],
     stack: ['Local LLMs', 'Llama', 'Qwen', 'GPT-OSS', 'Gemma 3', 'RAG', 'OpenCV', 'Vision-LLM', 'Django', 'Celery'],
   },
@@ -93,8 +93,8 @@ export const MISSIONS: Mission[] = [
     codename: 'GENERATIVE POLICY',
     brief: 'GenAI and serverless automation for a B2B carbon-accounting SaaS platform.',
     points: [
-      { label: 'GenAI & LLM development', text: 'Engineered a LangChain-driven RAG pipeline on Azure OpenAI to automate policy report generation and predict qualitative outcomes from historical datasets.' },
-      { label: 'AWS serverless automation', text: 'Built an event-driven AWS Lambda architecture for data ingestion and real-time metric computation, which cut turnaround from months of manual processing to hours.' },
+      { label: 'GenAI & LLM development', text: 'Engineered a LangChain RAG pipeline on Azure OpenAI to automate policy reports and predict qualitative outcomes from historical data.' },
+      { label: 'AWS serverless automation', text: 'Built an event-driven AWS Lambda architecture for data ingestion and real-time computation, cutting manual turnaround from months to hours.' },
       { label: 'SaaS platform', text: 'Optimised high-throughput sustainability-metric computation and designed scalable multi-table ingestion frameworks in Java (Spring Boot) and SQL.' },
     ],
     stack: ['Azure OpenAI', 'LangChain', 'RAG', 'AWS Lambda', 'Java (Spring Boot)', 'SQL'],
@@ -109,8 +109,8 @@ export const MISSIONS: Mission[] = [
     codename: 'GROUND TRUTH',
     brief: 'Geospatial emission models, enterprise data migration and financial-filing APIs.',
     points: [
-      { label: 'Geospatial & emission modelling', text: 'Developed algorithms on Google Maps APIs and Geopy to compute travel distances and emissions in line with global carbon-accounting financial standards.' },
-      { label: 'Data engineering & migration', text: 'Migrated 14 TB of enterprise data across a multi-region Microsoft Fabric tenancy; engineered APIs that convert NSE XBRL financial filings into structured data.' },
+      { label: 'Geospatial & emission modelling', text: 'Developed algorithms integrating Google Maps APIs and Geopy to compute travel distances and emissions per global financial standards.' },
+      { label: 'Data engineering & migration', text: 'Migrated 14 TB of enterprise data across multi-region Microsoft Fabric; built APIs converting NSE XBRL filings to structured data.' },
       { label: 'Analytics dashboards', text: 'Prototyped interactive Power BI dashboards on Azure Storage and Fabric Dataflows.' },
     ],
     stack: ['Google Maps API', 'Geopy', 'Microsoft Fabric', 'Power BI', 'REST APIs', 'Azure Storage'],
@@ -212,7 +212,14 @@ export const HIDDEN_REPOS = ['portfolio-gk', 'portfolio-jarvis', 'gk-holographic
 export const HIDDEN_REPO_TOPICS = ['portfolio', 'prototype', 'prototypes', 'backyard', 'hide'];
 
 /* ------------------------------------------------------------ CAPABILITIES */
-export interface Skill { name: string; refs: string[] }
+export interface Skill {
+  name: string;
+  refs: string[];
+  /** Where the skill comes from when it isn't tied to a role or project (a course, the tools behind it). */
+  note?: { tag: string; title: string; sub?: string };
+  /** A page on this site that shows the work (e.g. the blogs on Off-duty transmissions). */
+  link?: { page: 'transmissions'; text: string };
+}
 export interface SkillGroup { id: string; label: string; code: string; skills: Skill[] }
 
 /** refs point at MISSIONS ids or PROJECTS ids — used for live cross-referencing. */
@@ -225,7 +232,7 @@ export const SKILL_GROUPS: SkillGroup[] = [
       { name: 'Agentic AI', refs: ['reszoom', 'comic-agent'] },
       { name: 'MCP', refs: ['comic-agent'] },
       { name: 'LangChain', refs: ['stepchange-assoc'] },
-      { name: 'LangGraph', refs: [] },
+      { name: 'LangGraph', refs: ['comic-agent'] },
       { name: 'Azure OpenAI', refs: ['stepchange-assoc'] },
       { name: 'Local LLMs (Llama · Qwen · Gemma)', refs: ['thisai'] },
       { name: 'Prompt engineering', refs: ['thisai', 'comic-agent', 'reszoom'] },
@@ -235,7 +242,7 @@ export const SKILL_GROUPS: SkillGroup[] = [
     id: 'ml', code: 'M-2', label: 'Machine Learning & Vision',
     skills: [
       { name: 'PyTorch', refs: ['liver-seg', 'dl-classification'] },
-      { name: 'TensorFlow', refs: [] },
+      { name: 'TensorFlow', refs: [], note: { tag: 'EDU', title: 'Deep Learning (academic course)', sub: 'IIT Bombay' } },
       { name: 'OpenCV', refs: ['thisai'] },
       { name: 'Vision-LLM OCR', refs: ['thisai'] },
       { name: 'Segmentation (UNet++)', refs: ['liver-seg'] },
@@ -260,21 +267,21 @@ export const SKILL_GROUPS: SkillGroup[] = [
       { name: 'Python', refs: ['thisai', 'stepchange-assoc', 'stepchange-analyst', 'liver-seg', 'dl-classification', 'ml-tuning'] },
       { name: 'Java (Spring Boot)', refs: ['stepchange-assoc'] },
       { name: 'Django · Celery', refs: ['thisai'] },
-      { name: 'Flask', refs: [] },
+      { name: 'Flask', refs: ['stepchange-assoc', 'stepchange-analyst'] },
       { name: 'REST APIs', refs: ['stepchange-analyst'] },
-      { name: 'Docker', refs: [] },
-      { name: 'Git', refs: [] },
+      { name: 'Docker', refs: ['thisai', 'stepchange-assoc', 'stepchange-analyst'] },
+      { name: 'Git', refs: ['thisai', 'stepchange-assoc', 'stepchange-analyst'] },
       { name: 'Three.js · React', refs: ['cubiverse'] },
     ],
   },
   {
     id: 'creative', code: 'C-5', label: 'Creative',
     skills: [
-      { name: 'Graphic design', refs: [] },
-      { name: 'Story & quote writing', refs: [] },
-      { name: 'Blogging', refs: [] },
-      { name: 'Game development', refs: [] },
+      { name: 'Graphic design', refs: [], note: { tag: 'TOOLS', title: 'Photoshop, Illustrator, Premiere Pro' } },
+      { name: 'Blogging', refs: [], link: { page: 'transmissions', text: 'Visit the Off-duty transmissions page to access the blogs.' } },
+      { name: 'Game development', refs: ['cubiverse'] },
       { name: 'Vibe coding', refs: ['reszoom', 'cubiverse'] },
+      { name: 'Quote & fiction writing', refs: [], link: { page: 'transmissions', text: 'Visit the Off-duty transmissions page to browse the quotes.' } },
     ],
   },
 ];
@@ -335,37 +342,45 @@ export const BLOGS: Blog[] = [
   { id: 'the-trip-that-almost-didnt-happen-part-1-4d526d5398b7', title: 'The Trip That Almost Didn’t Happen', subtitle: 'Part 1.', w: 720, h: 960 },
   { id: 'hearts-desire-the-girl-within-c7195dea5db4', title: 'Heart’s Desire', subtitle: 'The girl within.', w: 900, h: 1200 },
   { id: 'a-day-to-relive-160a0bdccc1e', title: 'A Day to Relive', w: 1200, h: 637 },
-  { id: 'girl-in-everyones-life-e837556b9d94', title: 'Girl in Everyone’s Life', w: 1200, h: 513 },
   { id: 'the-best-friend-9aa7a98e4f14', title: 'The Best Friend', w: 1200, h: 808 },
   { id: 'the-friend-dd19a9dc374e', title: 'The Friend', w: 1200, h: 889 },
+  { id: 'girl-in-everyones-life-e837556b9d94', title: 'Girl in Everyone’s Life', w: 1200, h: 513 },
 ];
 
-export const QUOTE_AUTHOR = 'tinyDragon';
 export const QUOTES: string[] = [
-  'Views are about perspective, not about truth.',
-  'Some people are worth melting for, and my melting point is you.',
-  'Simple equation of life:\nx² + x + 1 = 0',
-  'If you try to go back to your older version, it becomes a new version, and the current one becomes your older. Change can’t bring back what you used to be.',
-  'Stop earning persons. Start earning memories; they might last longer.',
-  'The real gem shines even when it’s lost.',
-  'Worst day + Listening = Solace',
-  'Love chemistry vs\nfriendship physics',
+  'Some people are worth melting for, and my Melting point is you.',
+  'Simple equation of Life:\nx² + x + 1 = 0',
+  'Her reply will always be a Haiku.',
+  'Non-fictional superpower: Memory loss',
+  'Did I wound you? asked Big Panda.\nNah, the wound was already made. You were my Healer.',
+  'Love chemistry vs Friendship physics',
+  'The real Gem shines even when it’s lost.',
   'Expectation state ⟶ Ground state',
-  'A journey or destination feels worthless with no company to share it.',
-  'Stronger it becomes, more brittle it will be.',
-  'Make a stand, I will. Standing alone, I’m used to it.',
-  'The reason is not always the reason; the person is.',
-  'Non-fictional superpower:\nmemory loss',
-  'Her reply will always be a haiku.',
-  'Wavelength matters.',
-  'Did I wound you? asked Big Panda.\nNah, the wound was already made. You were my healer.',
-  'One person is enough to make you feel you have it all.',
-  'What we want vs\nwhat we feel is right',
-  'Heart: always wants more.',
-  'Understanding: the real curse.',
+  'Pain: one thing gained out of Chemistry.',
+  'Stop earning persons; Start earning Memories',
   'என் நிழலும் என்னுடன் வாராத பொழுதினில்\nஉன்னுடன் செல்ல ஏங்கினேன்',
+  'Need a stand with holding your Hands.',
+  'Crushed by the curls.',
   'மாற்றங்களின் சிறு முள்ளாய் நானும் பெரு முள்ளாய் நீயும்',
+  'Understanding: the real Curse.',
+  'A journey or destination feels worthless with no Company to share it.',
+  'One person is enough to make you feel you have it all.',
+  'If you try to go back to your older version, it becomes a new version, and the current one becomes your older. Change can’t bring back what you used to be.',
+  'Stronger it becomes, more brittle it will be.',
+  'What we want vs What we feel is right',
+  'Wavelength Matters.',
+  'Heart: Always wants more.',
+  'Views are about Perspective, not about truth.',
 ];
+
+/** English translations of the Tamil quotes (keyed by the original text). A quote with a translation
+ *  gets a Translate toggle on the Off-duty page. */
+export const QUOTE_TRANSLATIONS: Record<string, string> = {
+  'என் நிழலும் என்னுடன் வாராத பொழுதினில்\nஉன்னுடன் செல்ல ஏங்கினேன்':
+    'Wishing to Wander with you in lightless places where even my Shadows won’t accompany me.',
+  'மாற்றங்களின் சிறு முள்ளாய் நானும் பெரு முள்ளாய் நீயும்':
+    'When it comes to Changes, I am the hour hand and you’re the minute hand.',
+};
 
 export interface Design { id: string; title: string; caption: string; w: number; h: number; video?: string }
 export const DESIGNS: Design[] = [

@@ -41,13 +41,15 @@ export function Boot({ onDone }: { onDone: () => void }) {
     const start = performance.now();
     let raf = 0;
     const step = (now: number) => {
-      const elapsed = now - start;
+      // the first frame's timestamp can be slightly earlier than `start` (it marks the frame's
+      // beginning), which made the counter start below zero: clamp to 0..1
+      const elapsed = Math.max(0, now - start);
       let target = Math.min(1, elapsed / minDur);
       if (!fontsReady) target = Math.min(target, 0.92);
       if (skip.current && fontsReady) target = 1;
       // eased, slightly stepped progress for a "loading" cadence
-      const eased = target < 1 ? Math.floor((1 - Math.pow(1 - target, 2.2)) * 100) / 100 : 1;
-      setP(eased);
+      const eased = target < 1 ? Math.max(0, Math.floor((1 - Math.pow(1 - target, 2.2)) * 100) / 100) : 1;
+      setP((prev) => Math.max(prev, eased)); // only ever counts up
       if (eased >= 1) { finish(); return; }
       raf = requestAnimationFrame(step);
     };

@@ -76,6 +76,12 @@ export function Missions({ active }: SectionProps) {
     return { pct, years, nowM };
   }, []);
 
+  // years the highlighted role ran through: their axis labels glow with its bar
+  const selYears = (() => {
+    const m = MISSIONS[sel];
+    return { from: Math.floor(monthIndex(m.start) / 12), to: Math.floor(monthIndex(m.end) / 12) };
+  })();
+
   const totalMonths = MISSIONS.reduce((a, x) => a + (monthIndex(x.end) - monthIndex(x.start) + 1), 0);
 
   return (
@@ -103,7 +109,9 @@ export function Missions({ active }: SectionProps) {
           <div className="gantt-now" style={{ left: `${g.pct(g.nowM + 0.5)}%` }} aria-hidden />
         </div>
         <div className="gantt-axis" aria-hidden>
-          {g.years.map((y) => <span key={y} style={{ left: `${g.pct(y * 12)}%` }}>{y}</span>)}
+          {g.years.map((y) => (
+            <span key={y} className={y >= selYears.from && y <= selYears.to ? 'is-on' : ''} style={{ left: `${g.pct(y * 12)}%` }}>{y}</span>
+          ))}
         </div>
       </div>
 
