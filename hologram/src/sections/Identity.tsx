@@ -13,13 +13,13 @@ const SLOTS: [number, number][] = [[-1, -1], [1, -1], [-1, 1], [1, 1]];
 const BOX_W = 196;
 const BOX_H = 84;
 
-export function Identity({ index, active, scene }: SectionProps) {
-  const nav = useNav();
-  const status = useDecrypt(PROFILE.status, active, 1100, 900);
+/** Telemetry callouts wired to the 3D core. Rendered beside the page scroller (not inside it) and
+ *  shown only while the hero is on screen — `on` turns false once the visitor scrolls down. */
+export function IdentityCallouts({ on, scene }: { on: boolean; scene: SectionProps['scene'] }) {
   const wrap = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (!active || !scene) return;
+    if (!on || !scene) return;
     const seg = (el: HTMLElement | undefined, x1: number, y1: number, x2: number, y2: number) => {
       if (!el) return;
       const len = Math.hypot(x2 - x1, y2 - y1);
@@ -64,18 +64,42 @@ export function Identity({ index, active, scene }: SectionProps) {
     };
     loop();
     return () => cancelAnimationFrame(raf);
-  }, [active, scene]);
+  }, [on, scene]);
+
+  return (
+    <div className={`callouts ${on ? 'on' : ''}`} ref={wrap} aria-hidden>
+      {scene && (
+        <>
+          {Array.from({ length: SLOTS.length * 2 }, (_, i) => <i key={`l${i}`} className="co-line" />)}
+          {SLOTS.map((_, i) => <i key={`d${i}`} className="co-dot" />)}
+          {TELEMETRY.map((t, i) => (
+            <div key={t.label} className="callout panel panel--flat" style={{ left: 0, top: 0, transform: 'translate(-999px,-999px)' }}>
+              <div className="cv">{t.value}{t.unit && <small>{t.unit}</small>}</div>
+              <div className="cl">{t.label}</div>
+              <div className="cd">{t.detail}</div>
+              <span className="sr-only">callout {i + 1}</span>
+            </div>
+          ))}
+          <div className="core-label" style={{ left: 0, top: 0 }}>Neural core · online</div>
+        </>
+      )}
+    </div>
+  );
+}
+
+export function Identity({ active }: SectionProps) {
+  const nav = useNav();
+  const status = useDecrypt(PROFILE.status, active, 1100, 900);
 
   // name with the signature red-dotted "i"
   const first = PROFILE.first;
   const iPos = first.indexOf('i');
 
   return (
-    <>
-      <div className="sector-inner">
+    <div className="blk-body">
         <div className="id-grid">
           <div className="id-copy">
-            <SectionHeaderLabelOnly index={index} active={active} />
+            <SectionHeaderLabelOnly block="identity" active={active} />
             <div className="id-roles" data-reveal>
               {PROFILE.roles.map((r) => <span key={r} className="chip">{r}</span>)}
             </div>
@@ -92,7 +116,7 @@ export function Identity({ index, active, scene }: SectionProps) {
             <p className="id-headline" data-reveal>{PROFILE.headline}</p>
             <p className="id-summary" data-reveal>{PROFILE.summary}</p>
             <div className="id-ctas" data-reveal>
-              <button className="btn btn--primary" onClick={nav.next}>Begin briefing <IArrowRight /></button>
+              <button className="btn btn--primary" onClick={() => nav.goBlock('origin')}>Begin briefing <IArrowRight /></button>
               <a className="btn" href={PROFILE.resume} download="Resume_Gokulakrishnan_M.pdf">Resume <IDownload /></a>
             </div>
             <div className="id-socials id-status" data-reveal>
@@ -113,25 +137,6 @@ export function Identity({ index, active, scene }: SectionProps) {
             </div>
           </div>
         </div>
-      </div>
-
-      <div className={`callouts ${active ? 'on' : ''}`} ref={wrap} aria-hidden>
-        {scene && (
-          <>
-            {Array.from({ length: SLOTS.length * 2 }, (_, i) => <i key={`l${i}`} className="co-line" />)}
-            {SLOTS.map((_, i) => <i key={`d${i}`} className="co-dot" />)}
-            {TELEMETRY.map((t, i) => (
-              <div key={t.label} className="callout panel panel--flat" style={{ left: 0, top: 0, transform: 'translate(-999px,-999px)' }}>
-                <div className="cv">{t.value}{t.unit && <small>{t.unit}</small>}</div>
-                <div className="cl">{t.label}</div>
-                <div className="cd">{t.detail}</div>
-                <span className="sr-only">callout {i + 1}</span>
-              </div>
-            ))}
-            <div className="core-label" style={{ left: 0, top: 0 }}>Neural core · online</div>
-          </>
-        )}
-      </div>
-    </>
+    </div>
   );
 }

@@ -5,13 +5,13 @@ import { IVault } from '../components/icons';
 
 const FAN = ['coursera-intoduction-to-data-engineering', 'gokulakrishnan-page-001', 'coursera-python-for-data-science-ai-development'];
 
-export function Credentials({ index, active }: SectionProps) {
+export function Credentials({ active }: SectionProps) {
   const nav = useNav();
   const cats = Array.from(new Set(CERTIFICATES.map((c) => c.category)));
 
   return (
-    <div className="sector-inner">
-      <SectionHeader index={index} active={active} title={<>Credentials & <em>recognition</em></>} />
+    <div className="blk-body">
+      <SectionHeader block="credentials" active={active} title={<>Credentials & <em>recognition</em></>} />
 
       <div className="cr-grid">
         <section className="cr-col panel panel--amber" data-reveal aria-labelledby="dist-h">

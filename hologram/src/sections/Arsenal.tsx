@@ -30,7 +30,7 @@ function CardFace({ p, front }: { p: Project; front: boolean }) {
   );
 }
 
-export function Arsenal({ index, active }: SectionProps) {
+export function Arsenal({ active }: SectionProps) {
   const nav = useNav();
   const [rot, setRot] = useState(0);         // continuous index (can exceed N)
   const [drag, setDrag] = useState(0);       // live drag offset in degrees
@@ -63,14 +63,14 @@ export function Arsenal({ index, active }: SectionProps) {
   useEffect(() => {
     if (!active) return;
     const onKey = (e: KeyboardEvent) => {
-      if (nav.overlay) return;
+      if (nav.overlay || nav.mode !== 'page') return;
       if (e.key === 'ArrowRight') step(1);
       if (e.key === 'ArrowLeft') step(-1);
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [active, nav.overlay]);
+  }, [active, nav.overlay, nav.mode]);
 
   const onDown = (e: React.PointerEvent) => {
     start.current = { x: e.clientX, moved: false, id: e.pointerId };
@@ -105,8 +105,8 @@ export function Arsenal({ index, active }: SectionProps) {
   };
 
   return (
-    <div className="sector-inner">
-      <SectionHeader index={index} active={active} title={<>Project <em>arsenal</em></>}
+    <div className="blk-body">
+      <SectionHeader block="arsenal" active={active} title={<>Project <em>arsenal</em></>}
         lede="Products I’ve shipped and research I’ve run, from agentic tools to medical imaging. Drag the ring or use ← → to inspect." />
 
       <div className="ar-grid" style={{ marginTop: 10 }}>

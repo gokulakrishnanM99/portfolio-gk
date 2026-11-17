@@ -49,7 +49,7 @@ function Quote({ active }: { active: boolean }) {
   );
 }
 
-export function Transmissions({ index, active }: SectionProps) {
+export function Transmissions({ active }: SectionProps) {
   const nav = useNav();
   const [tab, setTab] = useState<'blogs' | 'designs'>('blogs');
 
@@ -59,8 +59,8 @@ export function Transmissions({ index, active }: SectionProps) {
   });
 
   return (
-    <div className="sector-inner">
-      <SectionHeader index={index} active={active} title={<>Off-duty <em>transmissions</em></>}
+    <div className="blk-body">
+      <SectionHeader block="transmissions" active={active} title={<>Off-duty <em>transmissions</em></>}
         lede="Away from models and pipelines I write stories, short lines and design posters — under the pen name tinyDragon." />
 
       <div className="tx-grid">

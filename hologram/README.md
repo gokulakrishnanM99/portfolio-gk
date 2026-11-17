@@ -6,11 +6,17 @@ Built separately from the classic site (`portfolio-gk`), which this project neve
 ## Experience
 
 - **Boot sequence:** a reactor-ring loader with a system log; skip it with a click or any key.
-- **Orbital navigation:** all 8 pages live on a ring around the 3D core.
-  - On an open page, scrolling (wheel, trackpad, swipe, ↑/↓, Esc) pulls back into the ring with that page in front.
+- **Five scrolling pages:** Profile (+ About, Contact), Experience, Projects (+ Neural matrix), Credentials and
+  Transmissions. Each page scrolls vertically; the 3D camera re-frames itself for each section as you scroll, and every
+  page ends with the contact channels and an end-of-page marker.
+- **End-of-page pause:** the scroll that reaches the end stops there; the next scroll is a pause (the marker lights up
+  and a hint appears); the one after that orbits to the next page. Scrolling up past the top works the same way back to
+  the previous page (opening at its end). After the last page the pause leads to the orbit overview. Staying 40 s at
+  the end of a page shows a reminder. Logic: `usePageInput` in `src/lib/nav.tsx`.
+- **Orbital navigation:** all pages live on a ring around the 3D core (Esc or the HUD "Orbit view" button).
   - In the ring, scroll / drag / swipe horizontally (or ←/→) to spin it; the front page is larger and shows a rich
     preview, the side and back pages show their titles. Tap any page (or press Enter) to dive into it; Esc returns.
-  - Rail, dial, console and number keys play the whole pull-back → spin → dive sequence.
+  - Rail, dial, console, number keys and the end-of-page scroll play the whole pull-back → spin → dive sequence.
   - Ring logic: `src/components/Orbit.tsx` (light preview cards, one rAF loop, transform/opacity only).
   - Gestures in the ring work inside a motion zone (the ring + 50% around it): mouse wheel, two-finger trackpad
     scroll (vertical or horizontal), mouse drag, one-finger swipe and two-finger touch swipe.
@@ -21,26 +27,26 @@ Built separately from the classic site (`portfolio-gk`), which this project neve
 - **Motion preference:** if the visitor's OS asks for reduced motion (on Windows: *Settings → Accessibility → Visual
   effects → Animation effects*), the site starts with short, gentle motion and offers a one-time "Enable full motion"
   prompt. The choice is remembered and can be toggled any time (HUD → Motion, or the console).
-- **Navigation dial** (`M`): a radial holographic menu of all eight sectors.
+- **Navigation dial** (`M`): a radial holographic menu of all five pages.
 - **Command console** (`Ctrl/⌘ + K` or `/`): search roles, projects, skills and actions ("RAG", "resume", "IIT"…).
 - **Live telemetry:** callouts track the 3D core's screen position; the HUD shows camera coordinates.
 - **Neural matrix:** each skill is wired to the roles and projects where it was used (hover or click to trace).
 - Interface sounds are synthesised with WebAudio and off by default (speaker icon).
 - Adapts quality on slow GPUs; falls back to 2D if WebGL is unavailable.
-- Deep links open a page directly: `#/identity`, `#/origin`, `#/missions`, `#/arsenal`, `#/matrix`, `#/credentials`, `#/transmissions`, `#/uplink`.
+- Deep links open a page directly: `#/identity`, `#/missions`, `#/arsenal`, `#/credentials`, `#/transmissions`;
+  the section links `#/origin`, `#/uplink` and `#/matrix` open their page scrolled to that section.
 
-## Sectors
+## Pages
 
-| # | Sector | Content |
-|---|--------|---------|
-| 01 | Identity | Name, headline, CTA, telemetry callouts |
-| 02 | Origin | Biomedical → AI story, education, "neural signature" artwork |
-| 03 | Mission Log | Experience timeline (Gantt) and briefings |
-| 04 | Arsenal | 3D project carousel and live GitHub feed |
-| 05 | Neural Matrix | Skills cross-referenced to deployments |
-| 06 | Credentials | Distinctions, leadership, certificate vault |
-| 07 | Transmissions | Decrypting quotes, Medium blogs, designs |
-| 08 | Uplink | Contact channels, resume, compose message |
+| # | Page | Sections |
+|---|------|----------|
+| 01 | Profile | Identity (name, headline, telemetry callouts) → Origin (biomedical → AI story, education) → Uplink (contact) |
+| 02 | Experience | Every role as a full briefing; the timeline stays pinned and follows the role you are reading |
+| 03 | Projects | Arsenal (3D project carousel, live GitHub feed) → Neural matrix (skills cross-referenced) |
+| 04 | Credentials | Distinctions, leadership, certificate vault |
+| 05 | Transmissions | Decrypting quotes, Medium blogs, designs |
+
+Pages and their sections are defined by `SECTORS` and `BLOCKS` in `src/data/profile.ts`.
 
 ## Editing content
 

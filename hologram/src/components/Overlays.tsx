@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import gsap from 'gsap';
 import {
-  CERTIFICATES, GITHUB_USER, HIDDEN_REPOS, HIDDEN_REPO_TOPICS, MISSIONS, PROFILE, PROJECTS,
+  BLOCKS, CERTIFICATES, GITHUB_USER, blockCode, type BlockId, HIDDEN_REPOS, HIDDEN_REPO_TOPICS, MISSIONS, PROFILE, PROJECTS,
   SECTORS, SKILL_GROUPS, SOCIALS, media,
 } from '../data/profile';
 import { useNav, type LightboxItem } from '../lib/nav';
@@ -127,6 +127,11 @@ export function CommandPalette() {
       id: `s-${s.id}`, type: 'Sector', title: `${s.code} · ${s.title}`, sub: s.label,
       keywords: `${s.label} ${s.title} ${s.hint} go open`, run: () => nav.go(i),
     }));
+    // sections further down a page (About, Contact, Neural matrix)
+    SECTORS.forEach((s) => (s.blocks as readonly BlockId[]).slice(1).forEach((b) => out.push({
+      id: `b-${b}`, type: 'Section', title: `${blockCode(b)} · ${BLOCKS[b].title}`, sub: `${BLOCKS[b].label} · in ${s.title}`,
+      keywords: `${BLOCKS[b].label} ${BLOCKS[b].title} ${s.title} section go open`, run: () => nav.goBlock(b),
+    })));
     MISSIONS.forEach((m) => out.push({
       id: `m-${m.id}`, type: 'Role', title: `${m.role} — ${m.org}`, sub: m.period,
       keywords: `${m.role} ${m.org} ${m.codename} ${m.stack.join(' ')} experience work job`, run: () => nav.focusOn('mission', m.id),
@@ -155,7 +160,7 @@ export function CommandPalette() {
 
   const results = useMemo(() => {
     const terms = q.toLowerCase().trim().split(/\s+/).filter(Boolean);
-    if (!terms.length) return cmds.filter((c) => c.type === 'Sector' || c.type === 'Action').slice(0, 12);
+    if (!terms.length) return cmds.filter((c) => c.type === 'Sector' || c.type === 'Section' || c.type === 'Action').slice(0, 14);
     return cmds
       .map((c) => {
         const t = c.title.toLowerCase();

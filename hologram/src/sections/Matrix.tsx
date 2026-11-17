@@ -17,7 +17,7 @@ const lookup = (id: string): Ref | null => {
 
 const ALL_SKILLS = SKILL_GROUPS.flatMap((g) => g.skills.map((s) => ({ ...s, group: g.id })));
 
-export function Matrix({ index, active }: SectionProps) {
+export function Matrix({ active }: SectionProps) {
   const nav = useNav();
   const [hover, setHover] = useState<string | null>(null);
   const [pinned, setPinned] = useState<string | null>(null);
@@ -74,9 +74,9 @@ export function Matrix({ index, active }: SectionProps) {
   const deployed = new Set(ALL_SKILLS.flatMap((s) => s.refs)).size;
 
   return (
-    <div className="sector-inner" ref={rootRef}>
+    <div className="blk-body" ref={rootRef}>
       <svg ref={svgRef} className="links-svg" aria-hidden style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }} />
-      <SectionHeader index={index} active={active} title={<>Neural <em>matrix</em></>}
+      <SectionHeader block="matrix" active={active} title={<>Neural <em>matrix</em></>}
         lede="Every capability is wired to where it was actually used. Hover or select one to trace it across roles and projects." />
 
       <div className="mx-grid" onMouseLeave={() => setHover(null)}>

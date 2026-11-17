@@ -1,9 +1,9 @@
 import { ORIGIN, media } from '../data/profile';
 import { SectionHeader, type SectionProps } from '../components/SectionHeader';
 
-export function Origin({ index, active }: SectionProps) {
+export function Origin({ active }: SectionProps) {
   return (
-    <div className="sector-inner">
+    <div className="blk-body">
       <div className="or-grid">
         <figure className="signature panel panel--amber" data-reveal style={{ margin: 0 }}>
           <div className="panel-head">
@@ -25,7 +25,7 @@ export function Origin({ index, active }: SectionProps) {
         </figure>
 
         <div className="or-copy">
-          <SectionHeader index={index} active={active} title={<>From neurons to <em>neural networks</em></>} />
+          <SectionHeader block="origin" active={active} title={<>From neurons to <em>neural networks</em></>} />
           {ORIGIN.paragraphs.map((p) => <p key={p.slice(0, 20)} data-reveal>{p}</p>)}
 
           <div className="edu">

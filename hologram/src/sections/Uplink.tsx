@@ -7,7 +7,7 @@ import { IArrowUpRight, ICheck, ICopy, IFile, IGithub, ILinkedin, IMedium, ISend
 
 const ICON = { linkedin: ILinkedin, github: IGithub, medium: IMedium } as const;
 
-export function Uplink({ index, active }: SectionProps) {
+export function Uplink({ active }: SectionProps) {
   const nav = useNav();
   const [copied, setCopied] = useState(false);
   const [name, setName] = useState('');
@@ -32,9 +32,9 @@ export function Uplink({ index, active }: SectionProps) {
   };
 
   return (
-    <div className="sector-inner">
+    <div className="blk-body">
       <div className="up-wrap">
-        <div style={{ display: 'flex', justifyContent: 'center' }}><SectionHeaderLabelOnly index={index} active={active} /></div>
+        <div style={{ display: 'flex', justifyContent: 'center' }}><SectionHeaderLabelOnly block="uplink" active={active} /></div>
         <h2 className="up-title" data-reveal>Let’s build something <em>intelligent.</em></h2>
         <p className="up-lede" data-reveal>
           Have a problem worth modelling, a pipeline to scale, or an idea that needs an agent? Open a channel.
@@ -72,12 +72,6 @@ export function Uplink({ index, active }: SectionProps) {
           <input id="up-msg" className="field" placeholder="Message — opens in your mail app" value={msg} onChange={(e) => setMsg(e.target.value)} />
           <button className="btn btn--amber" type="submit"><ISend /> Transmit</button>
         </form>
-
-        <div className="up-foot" data-reveal>
-          <span>© {new Date().getFullYear()} {PROFILE.name}</span>
-          <span>GK.OS holographic interface</span>
-          <a href={PROFILE.classicSite} target="_blank" rel="noreferrer">Classic portfolio ↗</a>
-        </div>
       </div>
     </div>
   );

@@ -373,16 +373,39 @@ export const DESIGNS: Design[] = [
   { id: 'maari-pochu', title: 'Maari Pochu', caption: 'Title-card artwork for a short film.', w: 1080, h: 720, video: media('designs/mari-pochu-title-card.mp4') },
 ];
 
-/* ---------------------------------------------------------------- SECTORS */
+/* ------------------------------------------------------- SECTIONS & PAGES
+   A page (sector) is one stop on the orbital ring. Each page stacks one or more
+   sections (blocks) that the visitor scrolls through. Every block has its own
+   camera pose (index into the 3D scene's waypoints), so the scene re-frames
+   itself as you scroll from one section to the next. */
+export const BLOCKS = {
+  identity: { pose: 0, label: 'Identity', title: 'Profile' },
+  origin: { pose: 1, label: 'Origin', title: 'About' },
+  uplink: { pose: 7, label: 'Uplink', title: 'Contact' },
+  missions: { pose: 2, label: 'Mission Log', title: 'Experience' },
+  arsenal: { pose: 3, label: 'Arsenal', title: 'Projects' },
+  matrix: { pose: 4, label: 'Neural Matrix', title: 'Capabilities' },
+  credentials: { pose: 5, label: 'Credentials', title: 'Recognition' },
+  transmissions: { pose: 6, label: 'Transmissions', title: 'Writing & Art' },
+} as const;
+export type BlockId = keyof typeof BLOCKS;
+
 export const SECTORS = [
-  { id: 'identity', code: '01', label: 'Identity', title: 'Profile', hint: 'Who I am' },
-  { id: 'origin', code: '02', label: 'Origin', title: 'About', hint: 'Biomedical roots, AI focus' },
-  { id: 'missions', code: '03', label: 'Mission Log', title: 'Experience', hint: '3 roles · 2023 – 2026' },
-  { id: 'arsenal', code: '04', label: 'Arsenal', title: 'Projects', hint: 'Products & research' },
-  { id: 'matrix', code: '05', label: 'Neural Matrix', title: 'Capabilities', hint: 'Skills, cross-referenced' },
-  { id: 'credentials', code: '06', label: 'Credentials', title: 'Recognition', hint: 'Distinctions & certificates' },
-  { id: 'transmissions', code: '07', label: 'Transmissions', title: 'Writing & Art', hint: 'Blogs, quotes, designs' },
-  { id: 'uplink', code: '08', label: 'Uplink', title: 'Contact', hint: 'Open a channel' },
-] as const;
+  { id: 'identity', code: '01', label: 'Identity', title: 'Profile', hint: 'About me · education · contact', blocks: ['identity', 'origin', 'uplink'] },
+  { id: 'missions', code: '02', label: 'Mission Log', title: 'Experience', hint: '3 roles · 2023 – 2026', blocks: ['missions'] },
+  { id: 'arsenal', code: '03', label: 'Arsenal', title: 'Projects', hint: 'Projects & capabilities', blocks: ['arsenal', 'matrix'] },
+  { id: 'credentials', code: '04', label: 'Credentials', title: 'Recognition', hint: 'Distinctions & certificates', blocks: ['credentials'] },
+  { id: 'transmissions', code: '05', label: 'Transmissions', title: 'Writing & Art', hint: 'Blogs, quotes, designs', blocks: ['transmissions'] },
+] as const satisfies readonly { id: string; code: string; label: string; title: string; hint: string; blocks: readonly BlockId[] }[];
 
 export type SectorId = (typeof SECTORS)[number]['id'];
+
+/** Page that holds a block. */
+export const pageOfBlock = (b: BlockId) => SECTORS.findIndex((s) => (s.blocks as readonly BlockId[]).includes(b));
+
+/** "01", "01.2", "01.3" … — the protocol code shown in a block's header. */
+export function blockCode(b: BlockId) {
+  const p = SECTORS[pageOfBlock(b)];
+  const k = (p.blocks as readonly BlockId[]).indexOf(b);
+  return k > 0 ? `${p.code}.${k + 1}` : p.code;
+}

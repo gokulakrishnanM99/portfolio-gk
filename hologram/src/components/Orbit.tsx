@@ -12,8 +12,9 @@ import { forwardRef, type ReactNode } from 'react';
 import gsap from 'gsap';
 import {
   BLOGS, CERTIFICATES, DESIGNS, MISSIONS, ORIGIN, PROFILE, PROJECTS, QUOTES, SECTORS,
-  SKILL_GROUPS, SOCIALS, TELEMETRY, type SectorId,
+  SKILL_GROUPS, TELEMETRY, type SectorId,
 } from '../data/profile';
+import type { PagePlace } from '../lib/pages';
 import { sound } from '../lib/sound';
 import type { HoloScene } from '../three/HoloScene';
 import { IArrowRight, IChevronLeft, IChevronRight } from './icons';
@@ -28,6 +29,10 @@ export interface OrbitCallbacks {
   onFront: (k: number) => void;
   onOpen: (k: number) => void;
   blocked: () => boolean;
+  /** scroll page k to a position before it appears */
+  place: (k: number, at: PagePlace) => void;
+  /** camera pose for page k at its current scroll position */
+  poseOf: (k: number) => number;
 }
 
 /* ---------------------------------------------------------------- previews */
@@ -41,15 +46,7 @@ function Preview({ id }: { id: SectorId }): ReactNode {
           <div className="op-stats">
             {TELEMETRY.map((t) => <div key={t.label}><b>{t.value}<small>{t.unit}</small></b><span>{t.label}</span></div>)}
           </div>
-        </>
-      );
-    case 'origin':
-      return (
-        <>
-          <div className="op-line op-em">{ORIGIN.title}</div>
-          {ORIGIN.education.map((e) => (
-            <div className="op-row" key={e.id}><span>{e.institution} · {e.degree.split(',')[0]}</span><b>{e.metric} <small>{e.metricLabel}</small></b></div>
-          ))}
+          <div className="op-row"><span>{ORIGIN.education.map((e) => e.institution).join(' · ')}</span><small>Contact</small></div>
         </>
       );
     case 'missions':
@@ -57,11 +54,12 @@ function Preview({ id }: { id: SectorId }): ReactNode {
         <div className="op-row" key={m.id}><span>{m.role} <em>@ {m.org}</em></span><small>{m.period.replace(/ – .*/, '')}</small></div>
       ));
     case 'arsenal':
-      return <div className="op-chips">{PROJECTS.map((p) => <span key={p.id}>{p.title}</span>)}</div>;
-    case 'matrix':
-      return SKILL_GROUPS.map((g) => (
-        <div className="op-row" key={g.id}><span>{g.label}</span><small>{g.skills.length} skills</small></div>
-      ));
+      return (
+        <>
+          <div className="op-chips">{PROJECTS.map((p) => <span key={p.id}>{p.title}</span>)}</div>
+          <div className="op-line">{SKILL_GROUPS.reduce((n, g) => n + g.skills.length, 0)} skills in {SKILL_GROUPS.length} domains, cross-referenced</div>
+        </>
+      );
     case 'credentials':
       return (
         <>
@@ -78,13 +76,6 @@ function Preview({ id }: { id: SectorId }): ReactNode {
         <>
           <div className="op-quote">“{QUOTES[0]}”</div>
           <div className="op-line">{BLOGS.length} blogs · {QUOTES.length} quotes · {DESIGNS.length} designs</div>
-        </>
-      );
-    case 'uplink':
-      return (
-        <>
-          <div className="op-line op-em">{PROFILE.email}</div>
-          <div className="op-chips">{SOCIALS.map((s) => <span key={s.id}>{s.label}</span>)}<span>Resume PDF</span></div>
         </>
       );
   }
@@ -212,7 +203,9 @@ export class OrbitController {
     this.cw = mobile ? Math.min(W * 0.6, 300) : Math.max(270, Math.min(400, W * 0.235, H * 0.44));
     const ch = this.cw * (mobile ? 0.98 : 0.68);
     this.ch = ch;
-    this.R = (this.cw * (mobile ? 1.02 : 1.1)) / (2 * Math.tan(Math.PI / this.N));
+    // fewer cards stand at wider angles: give neighbours more room so they don't crowd the front card
+    const gap = this.N <= 6 ? (mobile ? 1.25 : 1.4) : (mobile ? 1.02 : 1.1);
+    this.R = (this.cw * gap) / (2 * Math.tan(Math.PI / this.N));
     this.root.style.setProperty('--cw', `${this.cw}px`);
     this.root.style.setProperty('--ch', `${ch}px`);
     this.root.style.setProperty('--fs', `${this.cw / 340}`);
@@ -354,10 +347,15 @@ export class OrbitController {
     return this.play(tw).then(() => { this.target = this.p = t; this.tweening = false; });
   }
 
-  /** Ring (or page) → open page k. */
-  async open(k: number) {
+  /**
+   * Ring (or page) → open page k.
+   * `at`: where the page opens — its top (default for another page), its end (when scrolling back
+   * up from the next page), a section, or 'keep' (default when returning to the page just left).
+   */
+  async open(k: number, at?: PagePlace) {
     k = Math.max(0, Math.min(this.N - 1, k));
     if (this.mode === 'busy') return;
+    const place: PagePlace = at ?? (k === this.current ? 'keep' : 'top');
     if (this.mode === 'page') {
       if (k === this.current) return;
       await this.enterRing(true);
@@ -372,8 +370,9 @@ export class OrbitController {
     this.zoomIdx = k;
     this.current = k;
     this.followCam = false;
+    this.cb.place(k, place);
     this.cb.onOpen(k);
-    this.scene?.flyTo(k, { duration: this.D(1.15) });
+    this.scene?.flyTo(this.cb.poseOf(k), { duration: this.D(1.15) });
     sound.whoosh(0.8);
     const el = this.sectors[k];
     const tl = gsap.timeline();

@@ -105,8 +105,8 @@ export function Hud({ scene }: { scene: HoloScene | null }) {
           <MotionToggle />
         </div>
         {!ring && (
-          <button className="next-btn" onClick={nav.orbit}>
-            <span className="chev" aria-hidden /> Scroll · orbit view
+          <button className="next-btn" onClick={nav.orbit} title="See all pages on the orbital ring (Esc)">
+            <span className="chev" aria-hidden /> Orbit view <span className="kbd">Esc</span>
           </button>
         )}
         <Coords scene={scene} />

@@ -1,33 +1,66 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { MISSIONS } from '../data/profile';
 import { useNav } from '../lib/nav';
 import { sound } from '../lib/sound';
 import { SectionHeader, type SectionProps } from '../components/SectionHeader';
 import { durationLabel, monthIndex, monthsLabel } from './parts';
 
-export function Missions({ index, active }: SectionProps) {
+/** Experience: every role stacked as a full briefing; the timeline stays pinned and follows the reader. */
+export function Missions({ active }: SectionProps) {
   const nav = useNav();
   const [sel, setSel] = useState(0);
-  const m = MISSIONS[sel];
+  const cards = useRef<(HTMLElement | null)[]>([]);
+  const ganttRef = useRef<HTMLDivElement>(null);
 
-  // palette / cross-reference focus
+  const scrollTo = (i: number) => {
+    const el = cards.current[i];
+    if (!el) return;
+    setSel(i);
+    el.scrollIntoView({ behavior: nav.reducedMotion ? 'auto' : 'smooth', block: 'start' });
+  };
+
+  // palette / cross-reference focus (after the page has opened)
   useEffect(() => {
     if (nav.focus?.kind !== 'mission') return;
     const i = MISSIONS.findIndex((x) => x.id === nav.focus!.id);
-    if (i >= 0) setSel(i);
+    if (i < 0) return;
+    const t = window.setTimeout(() => scrollTo(i), 120);
+    return () => clearTimeout(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [nav.focus]);
 
-  // ← → cycle missions while this sector is active
+  // highlight the role being read: the last card whose top has passed just under the pinned timeline
+  useEffect(() => {
+    if (!active) return;
+    const sc = cards.current[0]?.closest('.sector-inner') as HTMLElement | null;
+    if (!sc) return;
+    let raf = 0;
+    const update = () => {
+      raf = 0;
+      const line = sc.getBoundingClientRect().top + (ganttRef.current?.offsetHeight ?? 0) + sc.clientHeight * 0.25;
+      let k = 0;
+      cards.current.forEach((c, i) => { if (c && c.getBoundingClientRect().top <= line) k = i; });
+      if (sc.scrollTop + sc.clientHeight >= sc.scrollHeight - 2) k = MISSIONS.length - 1;
+      setSel(k);
+    };
+    const on = () => { if (!raf) raf = requestAnimationFrame(update); };
+    sc.addEventListener('scroll', on, { passive: true });
+    update();
+    return () => { sc.removeEventListener('scroll', on); cancelAnimationFrame(raf); };
+  }, [active]);
+
+  // ← → jump between roles while this page is open
   useEffect(() => {
     if (!active) return;
     const onKey = (e: KeyboardEvent) => {
-      if (nav.overlay) return;
-      if (e.key === 'ArrowRight') { setSel((s) => (s + 1) % MISSIONS.length); sound.tick(); }
-      if (e.key === 'ArrowLeft') { setSel((s) => (s - 1 + MISSIONS.length) % MISSIONS.length); sound.tick(); }
+      if (nav.overlay || nav.mode !== 'page') return;
+      if (e.key === 'ArrowRight') { scrollTo(Math.min(MISSIONS.length - 1, sel + 1)); sound.tick(); }
+      if (e.key === 'ArrowLeft') { scrollTo(Math.max(0, sel - 1)); sound.tick(); }
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [active, nav.overlay]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [active, nav.overlay, nav.mode, sel]);
 
   // timeline geometry
   const g = useMemo(() => {
@@ -40,30 +73,30 @@ export function Missions({ index, active }: SectionProps) {
     const pct = (v: number) => ((v - min) / (max - min)) * 100;
     const years: number[] = [];
     for (let y = Math.ceil(min / 12); y * 12 <= max; y++) years.push(y);
-    return { pct, years, nowM, min, max };
+    return { pct, years, nowM };
   }, []);
 
   const totalMonths = MISSIONS.reduce((a, x) => a + (monthIndex(x.end) - monthIndex(x.start) + 1), 0);
 
   return (
-    <div className="sector-inner">
+    <div className="blk-body">
       <div className="ms-head">
-        <SectionHeader index={index} active={active} title={<>Mission <em>log</em></>} />
-        <div className="mono" data-reveal style={{ fontSize: 11.5, color: 'var(--text-3)', letterSpacing: '.1em', textAlign: 'right' }}>
-          <div><span style={{ color: 'var(--text)' }}>{MISSIONS.length}</span> deployments · <span style={{ color: 'var(--text)' }}>{monthsLabel(totalMonths)}</span> in industry</div>
-          <div style={{ marginTop: 4 }}>Use <span className="kbd">←</span> <span className="kbd">→</span> to cycle</div>
+        <SectionHeader block="missions" active={active} title={<>Mission <em>log</em></>} />
+        <div className="mono ms-stat" data-reveal>
+          <div><span>{MISSIONS.length}</span> roles · <span>{monthsLabel(totalMonths)}</span> in industry</div>
+          <div className="ms-stat-hint">Scroll to read every briefing</div>
         </div>
       </div>
 
-      <div className="gantt panel panel--flat" data-reveal>
+      <div className="gantt panel panel--flat" ref={ganttRef} data-reveal>
         <div className="gantt-track">
           {MISSIONS.map((x, i) => {
             const l = g.pct(monthIndex(x.start));
             const w = g.pct(monthIndex(x.end) + 1) - l;
             return (
               <button key={x.id} className={`gantt-seg ${i === sel ? 'is-active' : ''}`} style={{ left: `${l}%`, width: `calc(${w}% - 3px)` }}
-                onClick={() => { setSel(i); sound.tick(); }} aria-label={`${x.role}, ${x.org}, ${x.period}`}>
-                <span className="gs-org">{x.org}</span><span className="gs-role"> · {x.role}</span>
+                onClick={() => { scrollTo(i); sound.tick(); }} aria-label={`${x.role}, ${x.org}, ${x.period}`}>
+                <span className="gs-org">{x.org}</span><span className="gs-role">{' · '}{x.role}</span>
               </button>
             );
           })}
@@ -74,28 +107,17 @@ export function Missions({ index, active }: SectionProps) {
         </div>
       </div>
 
-      <div className="ms-body">
-        <div className="ms-list" role="tablist" aria-label="Roles">
-          {MISSIONS.map((x, i) => (
-            <button key={x.id} role="tab" aria-selected={i === sel} className={`ms-tab ${i === sel ? 'is-active' : ''}`}
-              onClick={() => { setSel(i); sound.tick(); }} data-reveal>
-              <div className="mt-code">M-{String(MISSIONS.length - i).padStart(2, '0')} · {x.codename}</div>
-              <div className="mt-role">{x.role}</div>
-              <div className="mt-org">{x.org}{x.type ? ` · ${x.type}` : ''}</div>
-              <div className="mt-period">{x.period}</div>
-            </button>
-          ))}
-        </div>
-
-        <article className="ms-detail panel" role="tabpanel" data-reveal>
-          <div key={m.id} className="mat-in">
+      <div className="ms-roles">
+        {MISSIONS.map((m, i) => (
+          <article key={m.id} ref={(el) => { cards.current[i] = el; }} className={`ms-detail ms-card panel ${i === sel ? 'is-current' : ''}`}
+            data-reveal aria-label={`${m.role} at ${m.org}`}>
             <div className="ms-detail-top">
               <div>
-                <div className="label">Briefing // {m.codename}</div>
+                <div className="label">M-{String(MISSIONS.length - i).padStart(2, '0')} // {m.codename}</div>
                 <h3>{m.role} <span>@ {m.org}</span></h3>
               </div>
               <div className="ms-meta">
-                <div>{m.period}</div>
+                <div>{m.period}{m.type ? ` · ${m.type}` : ''}</div>
                 <div>Duration <b>{durationLabel(m.start, m.end)}</b></div>
               </div>
             </div>
@@ -107,8 +129,8 @@ export function Missions({ index, active }: SectionProps) {
               <span className="label label--dim" style={{ alignSelf: 'center', marginRight: 6 }}>Stack</span>
               {m.stack.map((s) => <span key={s} className="chip">{s}</span>)}
             </div>
-          </div>
-        </article>
+          </article>
+        ))}
       </div>
     </div>
   );
