@@ -254,7 +254,9 @@ export class OrbitController {
       if (i === this.zoomIdx) { s *= 1 + this.zoom * 2.4; op *= 1 - this.zoom * 0.95; z += this.zoom * 160; }
       else op *= 1 - this.zoom;
       c.style.transform = `rotateY(${i * this.step}deg) translateZ(${z.toFixed(1)}px) scale(${s.toFixed(4)})`;
-      c.style.opacity = op.toFixed(3);
+      // opacity goes on the faces, not the card: opacity < 1 on a preserve-3d element flattens it,
+      // which makes the front face show through mirrored on cards at the back of the ring
+      c.style.setProperty('--op', op.toFixed(3));
       c.style.setProperty('--f', f.toFixed(3));
     }
     if (best !== this.frontIdx) {

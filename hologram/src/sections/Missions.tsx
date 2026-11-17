@@ -63,7 +63,7 @@ export function Missions({ index, active }: SectionProps) {
             return (
               <button key={x.id} className={`gantt-seg ${i === sel ? 'is-active' : ''}`} style={{ left: `${l}%`, width: `calc(${w}% - 3px)` }}
                 onClick={() => { setSel(i); sound.tick(); }} aria-label={`${x.role}, ${x.org}, ${x.period}`}>
-                {x.org} · {x.role}
+                <span className="gs-org">{x.org}</span><span className="gs-role"> · {x.role}</span>
               </button>
             );
           })}

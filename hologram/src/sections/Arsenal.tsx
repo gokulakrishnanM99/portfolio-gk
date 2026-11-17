@@ -13,9 +13,9 @@ function CardFace({ p, front }: { p: Project; front: boolean }) {
   return (
     <>
       {ok && p.image && (
-        <div className="cimg">
+        <div className="cimg" style={{ background: p.imageBg }}>
           <img src={p.image} alt="" loading="lazy" decoding="async" onError={() => setOk(false)}
-            style={{ objectFit: p.imageFit ?? 'cover', opacity: front ? 1 : 0.8 }} />
+            style={{ objectFit: p.imageFit ?? 'cover', objectPosition: p.imagePosition, opacity: front ? 1 : 0.8 }} />
         </div>
       )}
       <div className={`cface ${ok ? '' : 'typo'}`}>

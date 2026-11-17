@@ -43,15 +43,17 @@ export function Identity({ index, active, scene }: SectionProps) {
       const gr = r * 0.42; // anchor radius ≈ globe edge
       SLOTS.forEach(([sx, sy], i) => {
         const box = boxes[i]; if (!box) return;
+        // real height: labels wrap to two lines, so a fixed height made leaders end inside the box
+        const bh = box.offsetHeight || BOX_H;
         let bx = sx < 0 ? cx - r * 0.6 - BOX_W : cx + r * 0.25;
         bx = Math.min(Math.max(bx, W * 0.5), W - 150 - BOX_W);
-        let by = sy < 0 ? cy - r * 0.95 - BOX_H : cy + r * 0.62;
-        by = Math.min(Math.max(by, top), bottom - BOX_H);
+        let by = sy < 0 ? cy - r * 0.95 - bh : cy + r * 0.62;
+        by = Math.min(Math.max(by, top), bottom - bh);
         box.style.transform = `translate(${bx.toFixed(1)}px, ${by.toFixed(1)}px)`;
         const ang = Math.atan2(sy * 0.8, sx);
         const ax = cx + Math.cos(ang) * gr, ay = cy + Math.sin(ang) * gr;
         const ex = sx < 0 ? bx + BOX_W : bx;
-        const ey = sy < 0 ? by + BOX_H : by;
+        const ey = sy < 0 ? by + bh : by;
         const kx = ax + (ex - ax) * 0.45;
         // composited-only updates (no SVG repaint): each leader is two transformed 1px lines
         seg(lines[i * 2], ax, ay, kx, ey);
@@ -93,9 +95,9 @@ export function Identity({ index, active, scene }: SectionProps) {
               <button className="btn btn--primary" onClick={nav.next}>Begin briefing <IArrowRight /></button>
               <a className="btn" href={PROFILE.resume} download="Resume_Gokulakrishnan_M.pdf">Resume <IDownload /></a>
             </div>
-            <div className="id-socials" data-reveal>
+            <div className="id-socials id-status" data-reveal>
               <span className="label label--dim">Status //</span>
-              <span className="mono" style={{ fontSize: 12, color: 'var(--ok)', marginRight: 14, minWidth: '30ch' }}>{status}</span>
+              <span className="mono id-status-text">{status}</span>
             </div>
             <div className="id-socials" data-reveal style={{ marginTop: 10 }}>
               {SOCIALS.map((s) => {

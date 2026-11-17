@@ -58,8 +58,16 @@ export function Matrix({ index, active }: SectionProps) {
   }, [cur, refs]);
 
   const toggle = (name: string) => {
-    setPinned((p) => (p === name ? null : name));
+    const pinning = pinned !== name;
+    setPinned(pinning ? name : null);
     sound.tick();
+    // single-column layout (phones, portrait tablets): the cross-reference panel sits below every
+    // skill group, so bring it into view or a tap looks like it did nothing
+    if (pinning && window.innerWidth <= 900) {
+      window.setTimeout(() => {
+        rootRef.current?.querySelector('.xref')?.scrollIntoView({ behavior: nav.reducedMotion ? 'auto' : 'smooth', block: 'nearest' });
+      }, 60);
+    }
   };
 
   const totalSkills = ALL_SKILLS.length;
@@ -85,8 +93,10 @@ export function Matrix({ index, active }: SectionProps) {
                       key={s.name}
                       data-skill={s.name}
                       className={`skill ${isCur ? 'is-active' : ''} ${dim ? 'is-dim' : ''}`}
-                      onMouseEnter={() => { setHover(s.name); sound.tick(); }}
-                      onFocus={() => setHover(s.name)}
+                      // mouse only: on touch screens a tap also fires a "hover" that then sticks
+                      onPointerEnter={(e) => { if (e.pointerType !== 'mouse') return; setHover(s.name); sound.tick(); }}
+                      onFocus={(e) => { if (e.currentTarget.matches(':focus-visible')) setHover(s.name); }}
+                      onBlur={() => setHover((h) => (h === s.name ? null : h))}
                       onClick={() => toggle(s.name)}
                       aria-pressed={pinned === s.name}
                     >
@@ -121,7 +131,7 @@ export function Matrix({ index, active }: SectionProps) {
                   ))}
                 </ul>
               ) : (
-                <p className="xref-empty">Part of my working toolkit — used in personal builds and coursework rather than a listed role.</p>
+                <p className="xref-empty">Part of my toolkit — not tied to a specific role or project listed on this site.</p>
               )}
               {refs.length > 0 && (
                 <div className="label label--dim" style={{ marginTop: 14, display: 'flex', alignItems: 'center', gap: 6 }}>

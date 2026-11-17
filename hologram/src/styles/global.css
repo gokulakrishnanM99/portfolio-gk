@@ -244,7 +244,13 @@ body.has-reticle input, body.has-reticle textarea { cursor: text !important; }
   transform-origin: 50% 50%;
 }
 .sector.is-active { pointer-events: auto; }
-.sector-inner { position: relative; width: 100%; max-width: 1360px; margin: 0 auto; max-height: 100%; }
+/* every page scrolls inside its own frame when it is taller than the space between the HUD bars
+   (short laptop screens, tablets in landscape) instead of running underneath them */
+.sector-inner {
+  position: relative; width: 100%; max-width: 1360px; margin: 0 auto; max-height: 100%;
+  overflow-y: auto; overflow-x: hidden; overscroll-behavior: contain;
+  padding: 2px; /* keeps panel corner brackets and focus rings inside the clip */
+}
 .sector-scroll { overflow-y: auto; overflow-x: hidden; overscroll-behavior: contain; }
 
 /* materialize sweep */
@@ -823,9 +829,9 @@ html.reduce-motion *, html.reduce-motion *::before, html.reduce-motion *::after 
 .orbit-tilt, .orbit-ring { position: absolute; left: 50%; top: 47%; width: 0; height: 0; transform-style: preserve-3d; }
 .ocard {
   position: absolute; left: calc(var(--cw) / -2); top: calc(var(--ch) / -2); width: var(--cw); height: var(--ch);
-  padding: 0; text-align: left; transform-style: preserve-3d; cursor: pointer; will-change: transform, opacity;
+  padding: 0; text-align: left; transform-style: preserve-3d; cursor: pointer; will-change: transform;
 }
-.oc-face, .oc-back { position: absolute; inset: 0; border-radius: 6px; backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+.oc-face, .oc-back { position: absolute; inset: 0; border-radius: 6px; backface-visibility: hidden; -webkit-backface-visibility: hidden; opacity: var(--op, 1); }
 .oc-face {
   display: flex; flex-direction: column; overflow: hidden;
   padding: calc(14px * var(--fs)) calc(16px * var(--fs)) calc(12px * var(--fs));
@@ -906,3 +912,33 @@ html.reduce-motion *, html.reduce-motion *::before, html.reduce-motion *::after 
 .co-line { position: absolute; left: 0; top: 0; width: 1px; height: 1px; transform-origin: 0 0; background: rgba(95, 212, 255, 0.55); will-change: transform; }
 .co-dot { position: absolute; left: 0; top: 0; width: 8px; height: 8px; border-radius: 50%; border: 1px solid var(--holo); box-shadow: 0 0 8px rgba(95, 212, 255, 0.6); will-change: transform; }
 .callout, .core-label { will-change: transform; }
+
+/* ================================================================ READABILITY & LAYOUT FIXES */
+/* identity status line: fixed width on desktop so the decrypt effect doesn't jitter the row */
+.id-status { flex-wrap: wrap; row-gap: 4px; }
+.id-status .label { white-space: nowrap; }
+.id-status-text { font-size: 12px; color: var(--ok); min-width: 30ch; }
+
+/* telemetry callouts float over the bright core: a more solid backing keeps the numbers legible */
+.callout.panel--flat { background: rgba(3, 11, 20, 0.82); }
+
+/* timeline bars: clip long labels cleanly instead of cutting a word in half */
+.gantt-seg { text-overflow: ellipsis; }
+.gantt-seg span { overflow: hidden; text-overflow: ellipsis; }
+
+/* copy button under the stacked email on narrow screens */
+.email-line .btn { justify-content: center; }
+
+@media (max-width: 900px) {
+  /* the 3D core sits behind the copy on narrow screens: a scrim under each page keeps text readable
+     (it fades out with the page, so the orbit view still shows the full scene) */
+  .sector { isolation: isolate; }
+  .sector::before {
+    content: ''; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+    background: linear-gradient(180deg, rgba(2, 6, 12, 0.55), rgba(2, 6, 12, 0.42) 60%, rgba(2, 6, 12, 0.6));
+  }
+  .id-status-text { min-width: 0; flex: 1 1 18ch; }
+  .gs-role { display: none; }
+  /* single column: link curves would run to a panel far off-screen */
+  .links-svg { display: none; }
+}

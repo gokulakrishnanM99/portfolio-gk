@@ -131,8 +131,13 @@ export interface Project {
   /** Primary image. If the file does not exist yet the card renders its typographic face. */
   image?: string;
   imageFit?: 'cover' | 'contain';
+  /** CSS object-position, to keep a logo clear of the title overlaid at the bottom of the card. */
+  imagePosition?: string;
+  /** Fill behind an image shown with imageFit 'contain' (match the image's own background). */
+  imageBg?: string;
 }
 
+/* Order: ResZoom and Cubiverse lead (they have live links and real images); the rest follow. */
 export const PROJECTS: Project[] = [
   {
     id: 'reszoom',
@@ -144,21 +149,13 @@ export const PROJECTS: Project[] = [
     tags: ['Agentic AI', 'LLM', 'Next.js', 'Productivity'],
     url: 'https://reszoom.vercel.app/',
     image: media('projects/reszoom.webp'),
-    imageFit: 'cover',
-  },
-  {
-    id: 'comic-agent',
-    code: 'P-02',
-    title: 'Story → Comic Agent',
-    kind: 'Agentic AI',
-    year: '2026',
-    summary: 'An agent that turns a written story into a multi-panel comic strip — orchestrating MCP tools with Gemini for scene breakdown, panel prompts and layout.',
-    tags: ['Agentic AI', 'MCP', 'Gemini', 'Prompt Engineering'],
-    image: media('generated/project-comic-agent.webp'),
+    // square logo: show it whole (cover cropped it under the card title) on its own background colour
+    imageFit: 'contain',
+    imageBg: '#2c2d33',
   },
   {
     id: 'cubiverse',
-    code: 'P-03',
+    code: 'P-02',
     title: 'Cubiverse',
     kind: '3D web experience',
     year: '2026',
@@ -166,6 +163,16 @@ export const PROJECTS: Project[] = [
     tags: ['Three.js', 'React', 'Vercel'],
     url: 'https://cubiverse-pied.vercel.app/',
     image: media('projects/cubiverse.webp'),
+  },
+  {
+    id: 'comic-agent',
+    code: 'P-03',
+    title: 'Story → Comic Agent',
+    kind: 'Agentic AI',
+    year: '2026',
+    summary: 'An agent that turns a written story into a multi-panel comic strip — orchestrating MCP tools with Gemini for scene breakdown, panel prompts and layout.',
+    tags: ['Agentic AI', 'MCP', 'Gemini', 'Prompt Engineering'],
+    image: media('generated/project-comic-agent.webp'),
   },
   {
     id: 'liver-seg',
