@@ -74,13 +74,19 @@ export const sectorIndex = (id: SectorId) => SECTORS.findIndex((s) => s.id === i
       on the last page, to the orbit overview).
    The top edge works the same way towards the previous page (which opens at its end);
    the first page has nothing above it.
-   Staying 40 s at the end shows a reminder and arms step 3 directly.
+   Staying 40 s at the end (and only at the end) shows a reminder and arms step 3 directly. The reminder
+   goes away as soon as the visitor is active again (mouse, click, tap, key) or scrolls away from the end;
+   it can come back after another 40 quiet seconds at the end.
 -------------------------------------------------------------------------- */
 const IDLE_MS = 40_000;
 const GAP_MS = 220;      // wheel events further apart than this start a new gesture
 const MIN_ARM_MS = 350;  // pause → move needs at least this long between the two gestures
 const WHEEL_THRESH = 40; // px of wheel travel that make a deliberate gesture
 const SWIPE_MIN = 50;    // px of finger travel
+const MOVE_MIN = 24;     // px of real mouse travel that count as the visitor being active
+
+/** Keys that scroll the page or move between pages (handled as gestures, not as "activity"). */
+export const SCROLL_KEYS = new Set(['ArrowDown', 'ArrowUp', 'PageDown', 'PageUp', ' ', 'Home', 'End']);
 
 /** Can an element between the event target and the page scroller still scroll in `dir`? */
 function nestedCanScroll(el: Element | null, stop: HTMLElement, dir: GateDir): boolean {
@@ -267,15 +273,43 @@ export function usePageInput(opts: {
       else if (!g.idle) startIdle(); // the 40 s count only while the page is visible
     };
 
+    // visitor active again: drop the reminder (and the pause it armed) and start counting afresh
+    const wake = () => {
+      if (g.idle) { g.idle = false; g.armed = null; emit(); }
+      startIdle(); // the 40 s are 40 quiet seconds (only counts at the end of the page)
+    };
+    let moved = 0;
+    const onMove = (e: PointerEvent) => {
+      if (e.pointerType !== 'mouse') return;
+      moved += Math.abs(e.movementX) + Math.abs(e.movementY); // synthetic moves after a scroll have no travel
+      if (moved < MOVE_MIN) return;
+      moved = 0;
+      wake();
+    };
+    const onClick = (e: MouseEvent) => { if (!(e.target as Element)?.closest?.('.gate-hint')) wake(); };
+    const onKeyAct = (e: KeyboardEvent) => { if (!SCROLL_KEYS.has(e.key)) wake(); };
+
+    // content that grows or shrinks without a scroll (lazy images, expanding panels) can move the end
+    const ro = new ResizeObserver(() => onScroll());
+    ro.observe(sc);
+    Array.from(sc.children).forEach((c) => ro.observe(c));
+
     sc.addEventListener('scroll', onScroll, { passive: true });
     document.addEventListener('visibilitychange', onVis);
     window.addEventListener('resize', onScroll);
+    window.addEventListener('pointermove', onMove, { passive: true });
+    window.addEventListener('click', onClick, true);
+    window.addEventListener('keydown', onKeyAct);
     startIdle(); // a page shorter than the screen starts at its end
     return () => {
       clearIdle();
+      ro.disconnect();
       sc.removeEventListener('scroll', onScroll);
       document.removeEventListener('visibilitychange', onVis);
       window.removeEventListener('resize', onScroll);
+      window.removeEventListener('pointermove', onMove);
+      window.removeEventListener('click', onClick, true);
+      window.removeEventListener('keydown', onKeyAct);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pageMode, index]);

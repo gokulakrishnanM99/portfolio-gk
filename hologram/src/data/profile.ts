@@ -11,10 +11,10 @@ export const PROFILE = {
   name: 'Gokulakrishnan M',
   first: 'Gokulakrishnan',
   last: 'M',
-  roles: ['AI Engineer', 'ML Engineer', 'Data Scientist'],
-  headline: 'I build agentic AI, LLM pipelines and vision systems that turn messy, real-world data into decisions.',
+  roles: ['AI/ML Engineer', 'Backend Developer', 'Data Scientist'],
+  headline: 'I build LLM pipelines, agentic AI tools and computer-vision systems, along with the backend services that run them.',
   summary:
-    'Specialising in Agentic AI, Generative AI, LLM pipelines and cloud architecture — bridging complex data and frontier models into high-throughput systems, with a love for design and visual storytelling.',
+    'My work covers agentic and generative AI, LLM pipelines and cloud data platforms on AWS and Azure. Outside work, I design posters and write stories.',
   status: 'Building with LLMs, agents & vision',
   location: 'India',
   email: 'gokulakrishnan.m0999@gmail.com',
@@ -30,19 +30,19 @@ export const SOCIALS = [
 
 /* Headline telemetry shown around the core on the Identity sector. */
 export const TELEMETRY = [
-  { value: '3+', unit: 'yrs', label: 'Industry experience', detail: 'Data → GenAI → AI engineering' },
-  { value: '14K+', unit: '', label: 'MCQs verified', detail: 'Self-hosted LLM pipeline' },
-  { value: '14', unit: 'TB', label: 'Enterprise data migrated', detail: 'Multi-region Microsoft Fabric' },
-  { value: 'AIR 132', unit: '', label: 'GATE 2021', detail: 'Biomedical Engineering' },
+  { value: '3+', unit: 'yrs', label: 'Industry experience', detail: 'Data → AI engineering' },
+  { value: 'IIT Bombay', unit: '', label: 'Graduate', detail: 'CPI 9.45' },
+  { value: 'Backend', unit: '', label: 'Developer', detail: 'Python, Java' },
+  { value: 'Biomedical', unit: '', label: 'Engineer', detail: 'Simulations' },
 ];
 
 /* ------------------------------------------------------------------ ORIGIN */
 export const ORIGIN = {
   title: 'From neurons to neural networks',
   paragraphs: [
-    'I trained as a biomedical engineer — first at CEG, Anna University, then at IIT Bombay — learning to read the signals the human body leaves behind: CT scans, thermal images and other medical imaging.',
-    'That curiosity led straight into deep learning: a UNet++ that segments liver tumours at 94% IoU, transfer-learned classifiers, and models built from scratch to understand why they work.',
-    'Since 2023 I have shipped that thinking into industry — carbon-accounting data platforms, RAG pipelines on Azure OpenAI, and self-hosted LLM + vision systems that grade exams at scale.',
+    'I studied biomedical engineering at CEG, Anna University, and then at IIT Bombay. Along the way I worked with medical images such as CT scans and thermal images.',
+    'That work pulled me into deep learning. I trained a UNet++ that segments liver tumours from CT scans at 94% IoU, fine-tuned pretrained classifiers, and built small networks from scratch to see how they work.',
+    'Since 2023 I have worked in industry: data platforms for carbon accounting, RAG pipelines on Azure OpenAI, and self-hosted LLM and vision systems that grade exam answer sheets.',
   ],
   education: [
     { id: 'mtech', degree: 'M.Tech, Biomedical Engineering', institution: 'IIT Bombay', period: '2021 – 2023', metric: '9.45', metricLabel: 'CPI' },
@@ -76,7 +76,7 @@ export const MISSIONS: Mission[] = [
     end: '2026-10',
     period: 'Jan 2026 – Oct 2026',
     codename: 'LOCAL INTELLIGENCE',
-    brief: 'Self-hosted LLM and vision pipelines for an ed-tech platform — verification, grading and exam generation at scale.',
+    brief: 'Self-hosted LLM and vision pipelines for an ed-tech platform, used to verify questions, grade answer sheets and generate exams.',
     points: [
       { label: 'Local LLM evaluation', text: 'Benchmarked self-hosted Llama, Qwen and GPT-OSS (3B–20B) with prompt and inference tuning inside an LLM pipeline that verifies 14k+ MCQs and generates pedagogical metadata.' },
       { label: 'Computer vision & GenAI', text: 'Architected an OpenCV + Vision-LLM OCR pipeline on Django/Celery to grade scanned answer sheets; tuned and integrated a Gemma 3 4B RAG system to auto-generate personalised exams.' },
@@ -94,7 +94,7 @@ export const MISSIONS: Mission[] = [
     brief: 'GenAI and serverless automation for a B2B carbon-accounting SaaS platform.',
     points: [
       { label: 'GenAI & LLM development', text: 'Engineered a LangChain-driven RAG pipeline on Azure OpenAI to automate policy report generation and predict qualitative outcomes from historical datasets.' },
-      { label: 'AWS serverless automation', text: 'Built an event-driven AWS Lambda architecture for data ingestion and real-time metric computation — cutting turnaround from months of manual processing to hours.' },
+      { label: 'AWS serverless automation', text: 'Built an event-driven AWS Lambda architecture for data ingestion and real-time metric computation, which cut turnaround from months of manual processing to hours.' },
       { label: 'SaaS platform', text: 'Optimised high-throughput sustainability-metric computation and designed scalable multi-table ingestion frameworks in Java (Spring Boot) and SQL.' },
     ],
     stack: ['Azure OpenAI', 'LangChain', 'RAG', 'AWS Lambda', 'Java (Spring Boot)', 'SQL'],
@@ -170,7 +170,7 @@ export const PROJECTS: Project[] = [
     title: 'Story → Comic Agent',
     kind: 'Agentic AI',
     year: '2026',
-    summary: 'An agent that turns a written story into a multi-panel comic strip — orchestrating MCP tools with Gemini for scene breakdown, panel prompts and layout.',
+    summary: 'An agent that turns a written story into a multi-panel comic strip. It uses MCP tools with Gemini to split the story into scenes, write the panel prompts and lay out the page.',
     tags: ['Agentic AI', 'MCP', 'Gemini', 'Prompt Engineering'],
     image: media('generated/project-comic-agent.webp'),
   },
@@ -281,8 +281,8 @@ export const SKILL_GROUPS: SkillGroup[] = [
 
 /* ------------------------------------------------------------- CREDENTIALS */
 export const DISTINCTIONS = [
-  { id: 'gate', value: 'AIR 132', title: 'GATE 2021 — Biomedical Engineering', text: 'All-India rank 132 among 1,684 candidates.', year: '2021' },
-  { id: 'intern', value: 'Best', title: 'Best Summer Intern — Medevolve', text: 'Best Summer Intern award at Medevolve ’20.', year: '2020' },
+  { id: 'gate', value: 'AIR 132', title: 'GATE 2021, Biomedical Engineering', text: 'All-India rank 132 among 1,684 candidates.', year: '2021' },
+  { id: 'intern', value: 'Best', title: 'Best Summer Intern, Medevolve', text: 'Best Summer Intern award at Medevolve ’20.', year: '2020' },
   { id: 'culture', value: '7+', title: 'Cultural excellence', text: 'Winner of 7+ inter-college competitions; guest performer on National Voters’ Day.', year: '2018 – 2020' },
 ];
 
@@ -302,27 +302,27 @@ export const CERTIFICATES: Certificate[] = [
   C('coursera-python-project-for-data-engineering', 'Python Project for Data Engineering', 'IBM · Coursera', 'Courses', 1600, 1236),
   C('gokulakrishnan-m-python-certificate', 'Python Programming', 'Certificate', 'Courses', 1600, 1190),
   C('pantech-matlab', 'MATLAB', 'Pantech', 'Courses', 972, 648),
-  C('gokulakrishnan-page-001', 'Internship — Collaborative New Product Development', 'Xfinito Biodesigns', 'Internships', 1131, 1600),
+  C('gokulakrishnan-page-001', 'Internship: Collaborative New Product Development', 'Xfinito Biodesigns', 'Internships', 1131, 1600),
   C('3g-irps-intern', 'Internship', '3G IRPS', 'Internships', 1394, 1054),
   C('3g-irps-lor', 'Letter of Recommendation', '3G IRPS', 'Internships', 1126, 1600),
   C('uniq-inplant-training', 'In-plant Training', 'UNIQ', 'Workshops', 1404, 1041),
-  C('uniq-fingerprint-recognition-mini-project', 'Fingerprint Recognition — Mini Project', 'UNIQ', 'Workshops', 1431, 1061),
+  C('uniq-fingerprint-recognition-mini-project', 'Fingerprint Recognition (mini project)', 'UNIQ', 'Workshops', 1431, 1061),
   C('uniq-matlab', 'MATLAB Workshop', 'UNIQ', 'Workshops', 1349, 1005),
   C('mit-app-inventor-workshop', 'MIT App Inventor Workshop', 'Workshop', 'Workshops', 1398, 1004),
   C('best-summer-intern-medevol-20', 'Best Summer Intern', 'Medevolve 2020', 'Achievements', 1380, 962),
-  C('k-box-winner', 'K! Box — Winner', 'Competition', 'Achievements', 1410, 1000),
+  C('k-box-winner', 'K! Box, Winner', 'Competition', 'Achievements', 1410, 1000),
   C('nss-certificate', 'National Service Scheme', 'NSS', 'Achievements', 1007, 696),
   C('covid-safe-shop', 'Covid Safe Shop', 'Initiative', 'Achievements', 960, 540),
-  C('biospctra18-bionomics-2nd', 'Bionomics — 2nd place', 'Biospectra 2018', 'Culturals', 1295, 919),
-  C('medevolv-19-limbo-3rd', 'Limbo — 3rd place', 'Medevolve 2019', 'Culturals', 1394, 1005),
+  C('biospctra18-bionomics-2nd', 'Bionomics, 2nd place', 'Biospectra 2018', 'Culturals', 1295, 919),
+  C('medevolv-19-limbo-3rd', 'Limbo, 3rd place', 'Medevolve 2019', 'Culturals', 1394, 1005),
   C('finun-2018-new-college', 'FINUN 2018', 'The New College', 'Culturals', 1417, 1003),
   C('smc-euphoria-2018', 'Euphoria 2018', 'SMC', 'Culturals', 1452, 992),
   C('mcc-deepwoods-2019', 'Deepwoods 2019', 'MCC', 'Culturals', 1445, 1016),
   C('srm-milan-2020', 'Milan 2020', 'SRM', 'Culturals', 1405, 997),
   C('theaterfest-creasent-2020', 'Theatre Fest 2020', 'Crescent', 'Culturals', 1380, 973),
-  C('voters-poster', 'National Voters’ Day — Poster', 'Election Commission', 'Culturals', 1442, 1057),
-  C('voters-slogan', 'National Voters’ Day — Slogan', 'Election Commission', 'Culturals', 1369, 1002),
-  C('voters-shadow', 'National Voters’ Day — Shadow play', 'Election Commission', 'Culturals', 1376, 1038),
+  C('voters-poster', 'National Voters’ Day: Poster', 'Election Commission', 'Culturals', 1442, 1057),
+  C('voters-slogan', 'National Voters’ Day: Slogan', 'Election Commission', 'Culturals', 1369, 1002),
+  C('voters-shadow', 'National Voters’ Day: Shadow play', 'Election Commission', 'Culturals', 1376, 1038),
 ];
 
 /* ---------------------------------------------------------- TRANSMISSIONS */
@@ -330,7 +330,7 @@ export const MEDIUM_BASE = 'https://medium.com/@gokulkrish0999/';
 
 export interface Blog { id: string; title: string; subtitle?: string; date?: string; read?: string; w: number; h: number }
 export const BLOGS: Blog[] = [
-  { id: 'the-radha-krishna-b8d39f39a632', title: 'The Radha – Krishna', subtitle: 'Mythology isn’t just a story — sometimes it becomes a mirror.', date: 'Nov 17, 2025', read: '5 min', w: 1024, h: 1024 },
+  { id: 'the-radha-krishna-b8d39f39a632', title: 'The Radha – Krishna', subtitle: 'Mythology isn’t just a story; sometimes it becomes a mirror.', date: 'Nov 17, 2025', read: '5 min', w: 1024, h: 1024 },
   { id: 'you-are-never-compared-an-imperfect-story-8d842c0022ab', title: 'You Are Never Compared', subtitle: 'An imperfect story.', w: 800, h: 1200 },
   { id: 'the-trip-that-almost-didnt-happen-part-1-4d526d5398b7', title: 'The Trip That Almost Didn’t Happen', subtitle: 'Part 1.', w: 720, h: 960 },
   { id: 'hearts-desire-the-girl-within-c7195dea5db4', title: 'Heart’s Desire', subtitle: 'The girl within.', w: 900, h: 1200 },
@@ -343,10 +343,10 @@ export const BLOGS: Blog[] = [
 export const QUOTE_AUTHOR = 'tinyDragon';
 export const QUOTES: string[] = [
   'Views are about perspective, not about truth.',
-  'Some people are worth melting for — and my melting point is you.',
+  'Some people are worth melting for, and my melting point is you.',
   'Simple equation of life:\nx² + x + 1 = 0',
-  'If you try to go back to your older version, it becomes a new version — and the current one becomes your older. Change can’t bring back what you used to be.',
-  'Stop earning persons. Start earning memories — they might last longer.',
+  'If you try to go back to your older version, it becomes a new version, and the current one becomes your older. Change can’t bring back what you used to be.',
+  'Stop earning persons. Start earning memories; they might last longer.',
   'The real gem shines even when it’s lost.',
   'Worst day + Listening = Solace',
   'Love chemistry vs\nfriendship physics',
@@ -354,14 +354,14 @@ export const QUOTES: string[] = [
   'A journey or destination feels worthless with no company to share it.',
   'Stronger it becomes, more brittle it will be.',
   'Make a stand, I will. Standing alone, I’m used to it.',
-  'The reason is not always the reason — the person is.',
+  'The reason is not always the reason; the person is.',
   'Non-fictional superpower:\nmemory loss',
   'Her reply will always be a haiku.',
   'Wavelength matters.',
-  'Did I wound you? asked Big Panda.\nNah, the wound was already made — you were my healer.',
+  'Did I wound you? asked Big Panda.\nNah, the wound was already made. You were my healer.',
   'One person is enough to make you feel you have it all.',
   'What we want vs\nwhat we feel is right',
-  'Heart — always wants more.',
+  'Heart: always wants more.',
   'Understanding: the real curse.',
   'என் நிழலும் என்னுடன் வாராத பொழுதினில்\nஉன்னுடன் செல்ல ஏங்கினேன்',
   'மாற்றங்களின் சிறு முள்ளாய் நானும் பெரு முள்ளாய் நீயும்',

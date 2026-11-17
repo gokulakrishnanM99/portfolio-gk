@@ -35,9 +35,9 @@ export function Uplink({ active }: SectionProps) {
     <div className="blk-body">
       <div className="up-wrap">
         <div style={{ display: 'flex', justifyContent: 'center' }}><SectionHeaderLabelOnly block="uplink" active={active} /></div>
-        <h2 className="up-title" data-reveal>Let’s build something <em>intelligent.</em></h2>
+        <h2 className="up-title" data-reveal>Get in <em>touch.</em></h2>
         <p className="up-lede" data-reveal>
-          Have a problem worth modelling, a pipeline to scale, or an idea that needs an agent? Open a channel.
+          Hiring for an AI, ML or backend role, or have a project in mind? Email me or reach out on LinkedIn.
         </p>
 
         <div className="email-line" data-reveal>
@@ -69,7 +69,7 @@ export function Uplink({ active }: SectionProps) {
           <label className="sr-only" htmlFor="up-name">Your name</label>
           <input id="up-name" className="field" placeholder="Your name" value={name} onChange={(e) => setName(e.target.value)} autoComplete="name" />
           <label className="sr-only" htmlFor="up-msg">Message</label>
-          <input id="up-msg" className="field" placeholder="Message — opens in your mail app" value={msg} onChange={(e) => setMsg(e.target.value)} />
+          <input id="up-msg" className="field" placeholder="Message (opens in your mail app)" value={msg} onChange={(e) => setMsg(e.target.value)} />
           <button className="btn btn--amber" type="submit"><ISend /> Transmit</button>
         </form>
       </div>

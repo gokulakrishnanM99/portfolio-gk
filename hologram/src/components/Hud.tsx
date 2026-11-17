@@ -58,7 +58,7 @@ export function Hud({ scene }: { scene: HoloScene | null }) {
       <div className="hud-frame" aria-hidden><i /><i /><i /><i /></div>
 
       <div className="hud-top">
-        <button className="brand" onClick={() => nav.go(0)} aria-label="GK.OS — go to start">
+        <button className="brand" onClick={() => nav.go(0)} aria-label="GK.OS, go to start">
           <GKMark className="brand-mark" />
           <span style={{ textAlign: 'left' }}>
             <div className="brand-name">GK.OS</div>
@@ -89,7 +89,7 @@ export function Hud({ scene }: { scene: HoloScene | null }) {
       <nav className="rail" aria-label="Sectors">
         {SECTORS.map((x, i) => (
           <button key={x.id} className={`rail-item ${i === nav.index ? 'is-active' : ''}`} onClick={() => nav.go(i)}
-            onMouseEnter={() => sound.tick()} aria-current={i === nav.index ? 'step' : undefined} aria-label={`${x.code} ${x.label} — ${x.title}`}>
+            onMouseEnter={() => sound.tick()} aria-current={i === nav.index ? 'step' : undefined} aria-label={`${x.code} ${x.label}, ${x.title}`}>
             <span className="rl">{x.label}</span>
             <span className="rc">{x.code}</span>
             <span className="tick" />

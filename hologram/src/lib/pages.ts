@@ -1,5 +1,6 @@
 /* DOM helpers for the scrollable pages (one `.sector-inner` scroller per page). */
 import { BLOCKS, SECTORS, type BlockId } from '../data/profile';
+import { blendPose, type Waypoint } from '../three/HoloScene';
 
 export type PagePlace = 'top' | 'end' | 'keep' | BlockId;
 
@@ -48,5 +49,45 @@ export function currentBlock(k: number): BlockId {
   return cur;
 }
 
-/** Camera pose for page k at its current scroll position. */
-export const poseOf = (k: number) => BLOCKS[currentBlock(k)].pose;
+const smooth = (x: number) => x * x * (3 - 2 * x);
+
+/**
+ * Camera pose for page k at its current scroll position. Between two sections the pose is blended
+ * along the scroll, so the scene glides with the reader instead of cutting from one framing to the next:
+ * the blend runs while the next section's top travels from 85% to 35% of the page height (finishing by
+ * the end of the page, so the last section is always reached).
+ */
+export function poseOf(k: number): Waypoint {
+  const blocks = SECTORS[k].blocks as readonly BlockId[];
+  const sc = scrollerOf(k);
+  const first = BLOCKS[blocks[0]].pose;
+  if (!sc || blocks.length === 1) return blendPose(first, first, 0);
+  const h = sc.clientHeight;
+  const max = Math.max(0, sc.scrollHeight - h);
+  const s = sc.scrollTop;
+  const top0 = sc.getBoundingClientRect().top - s;
+  // one blend zone per section boundary
+  const zones: { a: number; b: number; st: number; e: number }[] = [];
+  for (let i = 1; i < blocks.length; i++) {
+    const el = sc.querySelector<HTMLElement>(`[data-block="${blocks[i]}"]`);
+    if (!el) continue;
+    const at = el.getBoundingClientRect().top - top0; // block top in scroll coordinates
+    const e = Math.min(at - h * 0.35, max);
+    zones.push({ a: BLOCKS[blocks[i - 1]].pose, b: BLOCKS[blocks[i]].pose, st: Math.min(at - h * 0.85, e - h * 0.25), e });
+  }
+  // short sections near the end can make zones overlap: split the overlap so they run back to back
+  for (let i = 1; i < zones.length; i++) {
+    const p = zones[i - 1], z = zones[i];
+    if (p.e > z.st) {
+      p.e = Math.max((p.e + z.st) / 2, p.st + 1);
+      z.st = p.e;
+      if (z.e <= z.st) z.e = z.st + 1;
+    }
+  }
+  let pose = blendPose(first, first, 0);
+  for (const z of zones) {
+    if (s <= z.st) break;
+    pose = blendPose(z.a, z.b, s >= z.e ? 1 : smooth((s - z.st) / (z.e - z.st)));
+  }
+  return pose;
+}

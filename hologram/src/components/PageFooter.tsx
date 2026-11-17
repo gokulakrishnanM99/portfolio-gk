@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { PROFILE, SECTORS, SOCIALS } from '../data/profile';
-import { useNav } from '../lib/nav';
+import { SCROLL_KEYS, useNav } from '../lib/nav';
+import { atBottom, atTop, scrollerOf } from '../lib/pages';
 import { IArrowUpRight, IFile, IGithub, ILinkedin, IMail, IMedium } from './icons';
 
 const ICON = { linkedin: ILinkedin, github: IGithub, medium: IMedium } as const;
@@ -43,7 +44,7 @@ export function PageFooter({ index }: { index: number }) {
           <ContactIcons />
         </div>
         <button className="pf-next" onClick={() => nav.advance('down')}
-          aria-label={last ? 'End of portfolio — open the orbit view' : `Continue to ${nextLabel(index)}`}>
+          aria-label={last ? 'End of portfolio. Open the orbit view' : `Continue to ${nextLabel(index)}`}>
           <span className="pf-end">End of {SECTORS[index].title}</span>
           <span className="pf-go">
             {armed ? `${verb} again` : last ? 'All pages' : 'Next'} → <b>{nextLabel(index)}</b>
@@ -69,10 +70,31 @@ export function GateHint() {
 
   useEffect(() => {
     if (!page || (!armed && !idle)) { setShow(false); return; }
+    // only at the very edge it talks about: never anywhere else on the page
+    const sc = scrollerOf(nav.index);
+    const atEdge = !!sc && (armed === 'up' && !idle ? atTop(sc) : atBottom(sc));
+    if (!atEdge) { setShow(false); return; }
     setShow(true);
-    if (idle) return; // the 40-second reminder stays until the visitor scrolls
-    const t = window.setTimeout(() => setShow(false), 3800);
-    return () => clearTimeout(t);
+    // gone as soon as the visitor is active again (the 40-second reminder is also reset in nav)
+    let moved = 0;
+    const hide = () => setShow(false);
+    const onMove = (e: PointerEvent) => {
+      if (e.pointerType !== 'mouse') return;
+      moved += Math.abs(e.movementX) + Math.abs(e.movementY);
+      if (moved >= 24) hide();
+    };
+    const onClick = (e: MouseEvent) => { if (!(e.target as Element)?.closest?.('.gate-hint')) hide(); };
+    const onKey = (e: KeyboardEvent) => { if (!SCROLL_KEYS.has(e.key)) hide(); };
+    window.addEventListener('pointermove', onMove, { passive: true });
+    window.addEventListener('click', onClick, true);
+    window.addEventListener('keydown', onKey);
+    const t = idle ? 0 : window.setTimeout(hide, 3800); // the pause confirmation is brief
+    return () => {
+      clearTimeout(t);
+      window.removeEventListener('pointermove', onMove);
+      window.removeEventListener('click', onClick, true);
+      window.removeEventListener('keydown', onKey);
+    };
   }, [armed, idle, page, nav.index]);
 
   if (!show) return null;

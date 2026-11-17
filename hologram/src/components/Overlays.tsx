@@ -87,7 +87,7 @@ export function RadialMenu() {
             const m = mid(i, 200);
             return (
               <g key={s.id} className={`seg ${i === nav.index ? 'is-active' : ''}`} tabIndex={0} role="button"
-                aria-label={`${s.code} ${s.label} — ${s.title}`}
+                aria-label={`${s.code} ${s.label}, ${s.title}`}
                 onMouseEnter={() => { setHover(i); sound.tick(); }} onMouseLeave={() => setHover(null)}
                 onFocus={() => setHover(i)}
                 onClick={() => { nav.go(i); close(); }}
@@ -133,7 +133,7 @@ export function CommandPalette() {
       keywords: `${BLOCKS[b].label} ${BLOCKS[b].title} ${s.title} section go open`, run: () => nav.goBlock(b),
     })));
     MISSIONS.forEach((m) => out.push({
-      id: `m-${m.id}`, type: 'Role', title: `${m.role} — ${m.org}`, sub: m.period,
+      id: `m-${m.id}`, type: 'Role', title: `${m.role} @ ${m.org}`, sub: m.period,
       keywords: `${m.role} ${m.org} ${m.codename} ${m.stack.join(' ')} experience work job`, run: () => nav.focusOn('mission', m.id),
     }));
     PROJECTS.forEach((p) => out.push({
@@ -149,7 +149,7 @@ export function CommandPalette() {
       { id: 'a-email', type: 'Action', title: 'Copy email address', sub: PROFILE.email, keywords: 'email mail contact copy', run: () => { navigator.clipboard?.writeText(PROFILE.email).then(() => nav.toast('Email copied to clipboard')); } },
       { id: 'a-vault', type: 'Action', title: 'Open certificate vault', keywords: 'certificates certificate vault course coursera', run: () => nav.setOverlay({ type: 'vault' }) },
       { id: 'a-repos', type: 'Action', title: 'Open live GitHub feed', keywords: 'github repos repositories code', run: () => nav.setOverlay({ type: 'repos' }) },
-      { id: 'a-orbit', type: 'Action', title: 'Orbit view — all pages on the ring', keywords: 'orbit ring overview all pages', run: () => nav.orbit() },
+      { id: 'a-orbit', type: 'Action', title: 'Orbit view: all pages on the ring', keywords: 'orbit ring overview all pages', run: () => nav.orbit() },
       { id: 'a-motion', type: 'Action', title: nav.reducedMotion ? 'Enable full motion' : 'Reduce motion', keywords: 'motion animation reduce accessibility', run: () => nav.setMotion(nav.reducedMotion ? 'full' : 'reduced') },
       { id: 'a-sound', type: 'Action', title: nav.soundOn ? 'Mute interface sounds' : 'Enable interface sounds', keywords: 'sound audio mute', run: nav.toggleSound },
       { id: 'a-classic', type: 'Link', title: 'Classic portfolio', sub: 'Previous site', keywords: 'old classic portfolio previous', run: () => window.open(PROFILE.classicSite, '_blank', 'noopener') },
@@ -200,7 +200,7 @@ export function CommandPalette() {
       <div className="palette panel">
         <div className="palette-input">
           <ISearch />
-          <input data-autofocus value={q} onChange={(e) => setQ(e.target.value)} placeholder="Ask GK.OS — try “RAG”, “IIT”, “resume”, “projects”…"
+          <input data-autofocus value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search GK.OS: try “RAG”, “IIT”, “resume”, “projects”…"
             aria-label="Search commands" aria-controls="palette-list" aria-activedescendant={results[sel] ? `pc-${results[sel].id}` : undefined} />
           <span className="kbd">Esc</span>
         </div>

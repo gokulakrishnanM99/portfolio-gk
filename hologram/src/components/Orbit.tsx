@@ -16,7 +16,7 @@ import {
 } from '../data/profile';
 import type { PagePlace } from '../lib/pages';
 import { sound } from '../lib/sound';
-import type { HoloScene } from '../three/HoloScene';
+import type { HoloScene, PoseTarget } from '../three/HoloScene';
 import { IArrowRight, IChevronLeft, IChevronRight } from './icons';
 
 export type OrbitMode = 'page' | 'ring' | 'busy';
@@ -32,7 +32,7 @@ export interface OrbitCallbacks {
   /** scroll page k to a position before it appears */
   place: (k: number, at: PagePlace) => void;
   /** camera pose for page k at its current scroll position */
-  poseOf: (k: number) => number;
+  poseOf: (k: number) => PoseTarget;
 }
 
 /* ---------------------------------------------------------------- previews */
@@ -97,7 +97,7 @@ export const OrbitLayer = forwardRef<HTMLDivElement, {
           {SECTORS.map((s, i) => <div key={`sp-${s.id}`} className="orbit-spoke" data-i={i} aria-hidden />)}
           {SECTORS.map((s, i) => (
             <button key={s.id} className="ocard" data-i={i} onClick={() => onCard(i)}
-              aria-label={`Open ${s.code} ${s.label} — ${s.title}`} tabIndex={-1}>
+              aria-label={`Open ${s.code} ${s.label}, ${s.title}`} tabIndex={-1}>
               <span className="oc-face">
                 <span className="oc-head"><b>{s.code}</b><span>{s.label}</span><i aria-hidden /></span>
                 <span className="oc-title">{s.title}</span>

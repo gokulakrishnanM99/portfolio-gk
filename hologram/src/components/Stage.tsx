@@ -1,9 +1,12 @@
-import { useEffect, useRef, useState, type ComponentType } from 'react';
+import { useEffect, useRef, type ComponentType } from 'react';
 import { BLOCKS, SECTORS, type BlockId } from '../data/profile';
+
+/** Phone-sized screens (portrait phones, or landscape phones with a short height). */
+const isPhone = () => window.matchMedia('(max-width: 600px), (max-height: 500px) and (pointer: coarse)').matches;
 import { useNav } from '../lib/nav';
 import type { HoloScene } from '../three/HoloScene';
 import { isCapture } from '../lib/motion';
-import { currentBlock, scrollerOf, scrollToBlock } from '../lib/pages';
+import { poseOf, scrollerOf, scrollToBlock } from '../lib/pages';
 import { OrbitController, OrbitLayer, type OrbitCallbacks } from './Orbit';
 import { PageFooter } from './PageFooter';
 import type { SectionProps } from './SectionHeader';
@@ -34,7 +37,6 @@ export function Stage({ scene, bind, cb, initialBlock }: {
   const ctrl = useRef<OrbitController | null>(null);
   const cbRef = useRef(cb);
   cbRef.current = cb;
-  const [heroOn, setHeroOn] = useState(true);
 
   // one controller for the lifetime of the stage
   useEffect(() => {
@@ -72,29 +74,39 @@ export function Stage({ scene, bind, cb, initialBlock }: {
     refs.current.forEach((el, k) => { if (el) el.inert = !(nav.booted && k === nav.index && nav.mode === 'page'); });
   }, [nav.index, nav.booted, nav.mode]);
 
-  // scrolling through a page: re-frame the 3D scene for each section, and hide the hero callouts
-  const lastPose = useRef(-1);
+  // scrolling through a page: the camera glides with the scroll from one section's framing to the next
+  // (one continuous page, no cuts), and the hero callouts hide once the visitor scrolls down.
+  // On phones the scene sits behind the content, so it holds still and drops to a lighter frame rate.
   useEffect(() => {
     if (!nav.booted || nav.mode !== 'page') return;
     const k = nav.index;
     const sc = scrollerOf(k);
     if (!sc) return;
-    lastPose.current = BLOCKS[currentBlock(k)].pose; // the open transition already flew here
+    let phone = isPhone();
+    scene?.setCalm(phone);
     let raf = 0;
     const update = () => {
       raf = 0;
-      if (k === 0) setHeroOn(sc.scrollTop < sc.clientHeight * 0.22);
-      const pose = BLOCKS[currentBlock(k)].pose;
-      if (pose !== lastPose.current) {
-        lastPose.current = pose;
-        scene?.flyTo(pose, { duration: nav.reducedMotion ? 0 : 1.3 });
-      }
+      if (!phone) scene?.setTrack(poseOf(k));
     };
     const on = () => { if (!raf) raf = requestAnimationFrame(update); };
+    const onResize = () => {
+      phone = isPhone();
+      scene?.setCalm(phone);
+      if (phone) scene?.setTrack(null);
+      on();
+    };
     sc.addEventListener('scroll', on, { passive: true });
+    window.addEventListener('resize', onResize);
     update();
-    return () => { sc.removeEventListener('scroll', on); cancelAnimationFrame(raf); };
-  }, [nav.index, nav.mode, nav.booted, scene, nav.reducedMotion]);
+    return () => {
+      sc.removeEventListener('scroll', on);
+      window.removeEventListener('resize', onResize);
+      cancelAnimationFrame(raf);
+      scene?.setTrack(null);
+      scene?.setCalm(false);
+    };
+  }, [nav.index, nav.mode, nav.booted, scene]);
 
   return (
     <main className={`stage stage--${nav.mode}`}>
@@ -120,7 +132,7 @@ export function Stage({ scene, bind, cb, initialBlock }: {
               })}
               <PageFooter index={i} />
             </div>
-            {i === 0 && <IdentityCallouts on={active && nav.mode === 'page' && heroOn} scene={scene} />}
+            {i === 0 && <IdentityCallouts active={active && nav.mode === 'page'} scene={scene} />}
           </section>
         );
       })}

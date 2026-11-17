@@ -155,7 +155,7 @@ export default function App() {
 
   useEffect(() => {
     const s = SECTORS[index];
-    document.title = index === 0 ? 'Gokulakrishnan M — AI Engineer' : `${s.title} · Gokulakrishnan M`;
+    document.title = index === 0 ? 'Gokulakrishnan M · AI/ML Engineer' : `${s.title} · Gokulakrishnan M`;
   }, [index]);
 
   useEffect(() => {
@@ -190,7 +190,7 @@ export default function App() {
       {booted && motionAsk && (
         <div className="motion-ask panel" role="dialog" aria-label="Motion preference">
           <div className="label label--amber">System notice</div>
-          <p>Your device has <b>animation effects turned off</b>, so GK.OS is running in reduced motion. This interface is built around 3D motion — enable it?</p>
+          <p>Your device has <b>animation effects turned off</b>, so GK.OS is running in reduced motion. This interface is built around 3D motion. Turn it on?</p>
           <div className="ma-actions">
             <button className="btn btn--primary btn--sm" onClick={() => { api.setMotion('full'); api.toast('Full motion enabled'); }}>Enable full motion</button>
             <button className="btn btn--sm" onClick={() => api.setMotion('reduced')}>Keep reduced</button>

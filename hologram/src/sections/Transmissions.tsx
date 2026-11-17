@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { BLOGS, DESIGNS, MEDIUM_BASE, QUOTES, QUOTE_AUTHOR, media } from '../data/profile';
+import { BLOGS, DESIGNS, MEDIUM_BASE, ORIGIN, QUOTES, QUOTE_AUTHOR, media } from '../data/profile';
 import { useNav } from '../lib/nav';
 import { sound } from '../lib/sound';
 import { isLatin, useDecrypt } from '../lib/useDecrypt';
@@ -36,7 +36,7 @@ function Quote({ active }: { active: boolean }) {
           <span aria-hidden>{text}</span>
           <span className="sr-only">{q}</span>
         </blockquote>
-        <div className="quote-author">— {QUOTE_AUTHOR}</div>
+        <div className="quote-author">by {QUOTE_AUTHOR}</div>
       </div>
       <div className="quote-ctrl">
         <button className="icon-btn" onClick={() => go(-1)} aria-label="Previous quote"><IChevronLeft /></button>
@@ -61,7 +61,11 @@ export function Transmissions({ active }: SectionProps) {
   return (
     <div className="blk-body">
       <SectionHeader block="transmissions" active={active} title={<>Off-duty <em>transmissions</em></>}
-        lede="Away from models and pipelines I write stories, short lines and design posters — under the pen name tinyDragon." />
+        lede="Outside work, I write stories and short lines and design posters, all under the pen name tinyDragon." />
+      <div className="interests tx-interests" data-reveal>
+        <span className="label label--dim" style={{ marginRight: 6 }}>Off-duty</span>
+        {ORIGIN.interests.map((i) => <span key={i} className="chip">{i}</span>)}
+      </div>
 
       <div className="tx-grid">
         <Quote active={active} />

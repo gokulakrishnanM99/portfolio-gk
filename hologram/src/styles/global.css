@@ -459,11 +459,12 @@ body.has-reticle input, body.has-reticle textarea { cursor: text !important; }
 /* ================================================================== SECTIONS */
 
 /* --- 01 Identity --- */
-.id-grid { display: grid; grid-template-columns: minmax(0, 640px) 1fr; align-items: center; min-height: 100%; }
+/* the hero copy keeps over 60% of the screen; the core and its callouts share the rest */
+.id-grid { display: grid; grid-template-columns: minmax(0, 13fr) minmax(0, 7fr); align-items: center; min-height: 100%; }
 .id-roles { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 22px; }
 .id-name {
   font-family: var(--f-display); font-weight: 700;
-  font-size: clamp(54px, 7.4vw, 112px); line-height: 0.9; letter-spacing: -0.005em;
+  font-size: clamp(54px, 6.8vw, 104px); line-height: 0.9; letter-spacing: -0.005em; white-space: nowrap;
   margin: 18px 0 0; color: #f4fbff;
   text-shadow: 0 0 40px rgba(95, 212, 255, 0.25);
 }
@@ -472,8 +473,8 @@ body.has-reticle input, body.has-reticle textarea { cursor: text !important; }
 .id-name .idot { position: relative; display: inline-block; }
 .id-name .idot .i-red { color: var(--red); text-shadow: 0 0 18px rgba(255, 75, 75, 0.8); }
 .id-name .idot .i-top { position: absolute; inset: 0; color: #f4fbff; clip-path: polygon(0 36%, 100% 36%, 100% 100%, 0 100%); }
-.id-headline { font-size: clamp(16px, 1.35vw, 19px); color: var(--text); max-width: 34ch; margin: 22px 0 0; line-height: 1.5; font-weight: 400; }
-.id-summary { color: var(--text-2); max-width: 54ch; margin: 12px 0 0; font-size: 14.5px; }
+.id-headline { font-size: clamp(16px, 1.35vw, 20px); color: var(--text); max-width: 46ch; margin: 22px 0 0; line-height: 1.5; font-weight: 400; }
+.id-summary { color: var(--text-2); max-width: 64ch; margin: 12px 0 0; font-size: 14.5px; }
 .id-ctas { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px; }
 .id-socials { display: flex; gap: 8px; margin-top: 26px; align-items: center; }
 .id-socials .label { margin-right: 8px; }
@@ -481,21 +482,63 @@ body.has-reticle input, body.has-reticle textarea { cursor: text !important; }
 .callouts { position: absolute; inset: 0; pointer-events: none; }
 .callouts svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
 .callout {
-  position: absolute; width: 196px; padding: 10px 14px 12px; pointer-events: auto;
+  position: absolute; width: 180px; padding: 8px 12px 9px; pointer-events: auto;
   transform: translate(var(--tx, 0), var(--ty, 0));
 }
-.callout .cv { font-family: var(--f-display); font-weight: 600; font-size: 30px; line-height: 1; color: #fff; }
-.callout .cv small { font-size: 15px; color: var(--holo); margin-left: 3px; }
-.callout .cl { font-family: var(--f-mono); font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--holo-mid); margin-top: 6px; }
-.callout .cd { font-size: 12px; color: var(--text-3); margin-top: 2px; }
+.callout .cv { font-family: var(--f-display); font-weight: 600; font-size: 21px; line-height: 1.05; color: #fff; }
+.callout .cv small { font-size: 12px; color: var(--holo); margin-left: 3px; }
+.callout .cl { font-family: var(--f-mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--holo-mid); margin-top: 5px; white-space: nowrap; }
+.callout .cd { font-size: 12px; color: var(--text-2); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .core-label { position: absolute; font-family: var(--f-mono); font-size: 10px; letter-spacing: 0.24em; color: var(--holo-mid); transform: translate(-50%, 0); white-space: nowrap; }
 .telemetry-row { display: none; }
 
 /* --- 02 Origin --- */
-.or-grid { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: clamp(28px, 4vw, 64px); align-items: center; }
-.signature { position: relative; padding: 0; overflow: hidden; }
-.signature .sig-img { position: relative; aspect-ratio: 1716 / 916; background: #000; overflow: hidden; }
-.signature img { width: 100%; height: 100%; object-fit: cover; mix-blend-mode: screen; }
+/* the About text first, then the signature at full width (sized so the whole artwork fits on screen) */
+.or-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: clamp(32px, 5vh, 56px); }
+.or-body { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); gap: clamp(24px, 3.5vw, 56px); align-items: start; margin-top: 6px; }
+.or-body .edu { grid-template-columns: minmax(0, 1fr); margin-top: 12px; width: 90%; justify-self: start; } /* 10% shorter, trimmed on its right */
+.or-body .or-text p { max-width: none; } /* paragraphs use the full text column (longer lines) */
+/* The artwork floats in front of the panel: a recessed plate (grid + glow + scan) sits at screen depth and
+   the transparent artwork hovers above it, pushed towards the viewer, casting a shadow onto the plate and
+   spilling over the panel's header and footer bars. A mouse tilts the whole stage for parallax. */
+.signature {
+  position: relative; padding: 0; overflow: visible; perspective: 1100px; z-index: 1;
+  width: 100%; max-width: min(1180px, calc((78vh - 120px) * 1.873 + 40px)); justify-self: center;
+  --sig-ratio: 1716 / 916;
+  background: linear-gradient(180deg, rgba(3, 9, 16, 0.97), rgba(1, 4, 9, 0.97));
+}
+.signature .sig-img {
+  /* the "screen": a dark display set into the panel with a wide bezel; the artwork floats inside it */
+  position: relative; z-index: 1; aspect-ratio: var(--sig-ratio); margin: clamp(12px, 1.6vw, 20px);
+  transform-style: preserve-3d; transform: rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+  transition: transform 0.7s var(--ease);
+}
+.signature .sig-plate {
+  position: absolute; inset: 0; overflow: hidden; border-radius: 3px;
+  border: 1px solid rgba(255, 181, 71, 0.28);
+  background:
+    radial-gradient(ellipse 58% 52% at 50% 54%, rgba(255, 181, 71, 0.06), transparent 72%),
+    repeating-linear-gradient(0deg, rgba(255, 181, 71, 0.035) 0 1px, transparent 1px 26px),
+    repeating-linear-gradient(90deg, rgba(255, 181, 71, 0.035) 0 1px, transparent 1px 26px),
+    #010306;
+  box-shadow: inset 0 0 0 5px rgba(0, 0, 0, 0.7), inset 0 0 60px rgba(0, 0, 0, 0.9), 0 0 0 4px rgba(255, 181, 71, 0.05);
+}
+.signature .sig-art {
+  /* inset from the screen edge so the float, breathing and tilt never reach the border */
+  position: absolute; left: 6%; top: 7%; display: block; width: 88%; height: 86%; object-fit: contain;
+  transform: translateZ(64px);
+  filter: drop-shadow(0 14px 10px rgba(0, 0, 0, 0.8)) drop-shadow(0 0 6px rgba(255, 186, 90, 0.32));
+  pointer-events: none;
+}
+@media (hover: hover) and (min-width: 901px) {
+  .signature .sig-art { animation: sigfloat 7s ease-in-out infinite; will-change: transform; }
+}
+@keyframes sigfloat { 0%, 100% { transform: translateZ(64px) translateY(0); } 50% { transform: translateZ(72px) translateY(-5px); } }
+/* tablets/PCs: the display is 10% wider than the artwork (wider side screens) and the whole panel ~5% bigger */
+@media (min-width: 901px) {
+  .signature { --sig-ratio: 1888 / 916; max-width: min(1300px, calc((81.9vh - 126px) * 2.061 + 40px)); }
+  .signature .sig-art { left: 4%; top: 6%; width: 92%; height: 88%; }
+}
 .signature .sig-scan { position: absolute; left: 0; right: 0; height: 30%; top: -30%; background: linear-gradient(180deg, transparent, rgba(255, 196, 92, 0.10), transparent); animation: sigscan 5.5s linear infinite; pointer-events: none; }
 @keyframes sigscan { to { top: 100%; } }
 .signature .sig-foot { display: flex; justify-content: space-between; gap: 12px; padding: 10px 16px; border-top: 1px solid var(--line); }
@@ -510,6 +553,7 @@ body.has-reticle input, body.has-reticle textarea { cursor: text !important; }
 .edu-card .em b { display: block; font-family: var(--f-display); font-size: 34px; font-weight: 600; color: var(--amber); line-height: 1; }
 .edu-card .em span { font-family: var(--f-mono); font-size: 10px; letter-spacing: 0.18em; color: var(--text-3); }
 .interests { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 16px; align-items: center; }
+.tx-interests { margin-top: 14px; }
 
 /* --- 03 Missions --- */
 .ms-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; flex-wrap: wrap; }
@@ -697,7 +741,7 @@ body.has-reticle input, body.has-reticle textarea { cursor: text !important; }
 /* ================================================================ RESPONSIVE */
 @media (max-height: 820px) and (min-width: 901px) {
   :root { --hud-top: 68px; --hud-bottom: 60px; }
-  .id-name { font-size: clamp(50px, 6.4vw, 96px); }
+  .id-name { font-size: clamp(50px, 6.4vw, 98px); }
   .id-ctas { margin-top: 22px; }
   .gantt { margin-top: 14px; padding: 10px 16px 8px; }
   .ms-detail { padding: 18px 22px; }
@@ -713,10 +757,11 @@ body.has-reticle input, body.has-reticle textarea { cursor: text !important; }
 
 @media (max-width: 1280px) {
   .callouts { display: none; }
-  .telemetry-row { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; margin-top: 26px; max-width: 640px; }
+  .telemetry-row { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; margin-top: 26px; max-width: 720px; }
   .telemetry-row .tm { padding: 10px 12px; border-left: 1px solid var(--line-3); }
-  .telemetry-row .tm b { display: block; font-family: var(--f-display); font-size: 24px; line-height: 1; font-weight: 600; }
-  .telemetry-row .tm span { font-family: var(--f-mono); font-size: 9.5px; letter-spacing: 0.1em; color: var(--text-3); text-transform: uppercase; }
+  .telemetry-row .tm b { display: block; font-family: var(--f-display); font-size: 19px; line-height: 1.1; font-weight: 600; }
+  .telemetry-row .tm span { display: block; margin-top: 4px; font-family: var(--f-mono); font-size: 9.5px; letter-spacing: 0.1em; color: var(--holo-mid); text-transform: uppercase; }
+  .telemetry-row .tm i { display: block; margin-top: 2px; font-style: normal; font-size: 12px; color: var(--text-2); }
   .mx-grid { grid-template-columns: minmax(0, 1fr) 290px; }
 }
 
@@ -740,7 +785,8 @@ body.has-reticle input, body.has-reticle textarea { cursor: text !important; }
   .mobile-nav { position: absolute; left: 12px; right: 12px; bottom: 12px; height: 52px; display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 0 8px; }
   .mobile-nav .mn-label { flex: 1; text-align: center; font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--text-2); }
   .mobile-nav .mn-label b { color: var(--holo); font-weight: 500; margin-right: 8px; }
-  .id-grid, .or-grid, .ar-grid, .tx-grid, .mx-grid { grid-template-columns: minmax(0, 1fr); }
+  .id-grid, .or-grid, .ar-grid, .tx-grid, .mx-grid, .or-body { grid-template-columns: minmax(0, 1fr); }
+  .or-body .edu { width: 100%; }
   .id-grid { min-height: auto; padding-top: 8vh; }
   .telemetry-row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .edu { grid-template-columns: 1fr; }
@@ -767,6 +813,9 @@ html.reduce-motion *, html.reduce-motion *::before, html.reduce-motion *::after 
 
 /* late additions */
 .callouts { opacity: 0; transition: opacity 0.5s; }
+/* wide screens: while the hero callouts are out, the page's scrollbar thumb steps aside (the right-hand
+   callouts sit over its track); it is back as soon as the visitor scrolls into the page */
+@media (min-width: 1281px) { .sector-inner.is-hero { scrollbar-color: transparent transparent; } }
 .callouts.on { opacity: 1; transition: opacity 1s 1.4s; }
 .mat-in { animation: matIn 0.55s var(--ease) both; }
 @keyframes matIn {
@@ -850,8 +899,9 @@ html.reduce-motion *, html.reduce-motion *::before, html.reduce-motion *::after 
 .op-row b small, .op-row > small { color: var(--text-3); font-family: var(--f-mono); font-size: calc(10px * var(--fs)); }
 .op-stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; margin-top: calc(8px * var(--fs)); }
 .op-stats--3 { grid-template-columns: repeat(3, minmax(0, 1fr)); margin-top: 0; }
+.op-stats--3 b { font-size: calc(17px * var(--fs)); }
 .op-stats div { border-left: 1px solid var(--line-3); padding-left: 6px; }
-.op-stats b { display: block; font-family: var(--f-display); font-size: calc(17px * var(--fs)); font-weight: 600; color: #fff; line-height: 1; }
+.op-stats b { display: block; font-family: var(--f-display); font-size: calc(13.5px * var(--fs)); font-weight: 600; color: #fff; line-height: 1.1; overflow-wrap: anywhere; }
 .op-stats b small { font-size: 0.6em; color: var(--holo); margin-left: 2px; }
 .op-stats span { display: block; margin-top: 3px; font-family: var(--f-mono); font-size: calc(8.5px * var(--fs)); letter-spacing: 0.06em; color: var(--text-3); text-transform: uppercase; line-height: 1.3; }
 .op-chips { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 4px; }
@@ -928,7 +978,7 @@ html.reduce-motion *, html.reduce-motion *::before, html.reduce-motion *::after 
 
 /* ================================================================ COMBINED, SCROLLING PAGES */
 .blk-body { position: relative; }
-.blk + .blk { margin-top: clamp(72px, 12vh, 140px); }
+.blk + .blk { margin-top: clamp(56px, 8vh, 96px); }
 /* the hero fills the first screen, so the next section starts below the fold */
 .blk--identity { min-height: calc(100vh - var(--hud-top) - var(--hud-bottom) - 4px); display: flex; flex-direction: column; justify-content: center; }
 .blk--identity > .blk-body { width: 100%; }

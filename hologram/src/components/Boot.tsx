@@ -77,7 +77,7 @@ export function Boot({ onDone }: { onDone: () => void }) {
 
   return (
     <div className="boot" ref={root} onClick={() => { skip.current = true; }} role="status" aria-live="polite" aria-label={`Loading interface, ${Math.round(p * 100)} percent`}>
-      <div className="boot-brand">GK.OS — Holographic interface · v4.0</div>
+      <div className="boot-brand">GK.OS · Holographic interface · v4.0</div>
       <div className="boot-core">
         <svg viewBox="0 0 200 200" aria-hidden>
           <defs>

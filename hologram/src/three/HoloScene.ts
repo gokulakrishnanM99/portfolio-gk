@@ -14,8 +14,10 @@ import { buildPlexus, type Plexus } from './plexus';
 export interface Waypoint { theta: number; r: number; h: number; sx: number; sy: number; fov: number }
 
 const WAYPOINTS: Waypoint[] = [
-  { theta: 0, r: 13.5, h: 0.9, sx: 3.9, sy: 0.0, fov: 44 },     // identity
-  { theta: 52, r: 21, h: 6.5, sx: -7.5, sy: 2.6, fov: 42 },      // origin
+  { theta: 0, r: 13.5, h: 0.9, sx: 5.1, sy: 0.0, fov: 44 },     // identity (core in the right 40%)
+  // origin: same view direction as identity, camera pulled back, so scrolling into About leaves the core
+  // where it was on screen (sx/r and h/r match identity) and only shrinks it, away from the text
+  { theta: 0, r: 22, h: 1.47, sx: 8.31, sy: 0.0, fov: 44 },     // origin
   { theta: 104, r: 15, h: 9.5, sx: 7.4, sy: -0.6, fov: 46 },     // missions
   { theta: 158, r: 13.5, h: -0.6, sx: 6.2, sy: -1.6, fov: 46 },  // arsenal (core behind detail panel)
   { theta: 212, r: 3.2, h: 17, sx: 8.2, sy: 0.4, fov: 50 },      // matrix (top-down radar)
@@ -25,6 +27,20 @@ const WAYPOINTS: Waypoint[] = [
 ];
 
 const INTRO: Waypoint = { theta: -24, r: 52, h: 18, sx: 0, sy: 0, fov: 38 };
+
+/** A camera pose part-way (t = 0..1) between two section waypoints, along the shorter way round. */
+export function blendPose(a: number, b: number, t: number): Waypoint {
+  const A = WAYPOINTS[Math.max(0, Math.min(WAYPOINTS.length - 1, a))];
+  const B = WAYPOINTS[Math.max(0, Math.min(WAYPOINTS.length - 1, b))];
+  const L = THREE.MathUtils.lerp;
+  let d = B.theta - A.theta;
+  d = ((d % 360) + 540) % 360 - 180;
+  return { theta: A.theta + d * t, r: L(A.r, B.r, t), h: L(A.h, B.h, t), sx: L(A.sx, B.sx, t), sy: L(A.sy, B.sy, t), fov: L(A.fov, B.fov, t) };
+}
+
+export type PoseTarget = number | Waypoint;
+const resolvePose = (p: PoseTarget): Waypoint =>
+  typeof p === 'number' ? { ...WAYPOINTS[Math.max(0, Math.min(WAYPOINTS.length - 1, p))] } : { ...p };
 
 const CORE = new THREE.Vector3(0, 0.2, 0);
 const FLOOR_Y = -3.4;
@@ -70,6 +86,12 @@ export class HoloScene {
   private wp: Waypoint = { ...INTRO };
   /** When set, the camera eases continuously towards this waypoint (orbital ring view). */
   private follow: Waypoint | null = null;
+  /** In-page tracking: while a page is open the camera eases towards the pose for its scroll position. */
+  private track: Waypoint | null = null;
+  /** Calm mode (phones, page open): lower frame rate and no idle camera sway behind the content. */
+  private calm = false;
+  private driftAmt = 1;
+  private lastFrame = 0;
   private flight: gsap.core.Tween | null = null;
   private roll = 0;
   private pointer = new THREE.Vector2();
@@ -402,9 +424,11 @@ export class HoloScene {
 
   /* ============================================================ CAMERA */
   private applyCamera(dt: number) {
-    if (this.follow) {
-      const f = this.follow, w0 = this.wp;
-      const k = 1 - Math.exp(-(dt || 0.016) * 3.2);
+    const tracking = !this.follow && !!this.track && !this.flight?.isActive();
+    if (this.follow || tracking) {
+      const f = (this.follow ?? this.track)!, w0 = this.wp;
+      // the ring view follows briskly; in-page tracking trails the scroll a little for a soft glide
+      const k = this.opts.reducedMotion && tracking ? 1 : 1 - Math.exp(-(dt || 0.016) * (tracking ? 2.4 : 3.2));
       let dth = f.theta - w0.theta;
       dth = ((dth % 360) + 540) % 360 - 180;
       w0.theta += dth * k;
@@ -424,7 +448,9 @@ export class HoloScene {
     this.tmpDir.subVectors(CORE, cam.position).normalize();
     this.tmpRight.crossVectors(this.tmpDir, UP).normalize();
     this.tmpUp.crossVectors(this.tmpRight, this.tmpDir).normalize();
-    const drift = this.opts.reducedMotion ? 0 : 1;
+    const calmNow = this.calmActive();
+    this.driftAmt += ((calmNow ? 0 : 1) - this.driftAmt) * Math.min(1, (dt || 0.016) * 2);
+    const drift = this.opts.reducedMotion ? 0 : this.driftAmt;
     cam.position
       .addScaledVector(this.tmpRight, this.pointerSmooth.x * 0.55 + Math.sin(t * 0.21) * 0.25 * drift)
       .addScaledVector(this.tmpUp, -this.pointerSmooth.y * 0.32 + Math.sin(t * 0.17) * 0.18 * drift);
@@ -449,10 +475,11 @@ export class HoloScene {
    * `via` adds intermediate stops reached at normalised times `at` (0..1),
    * used by the orbital transitions to swing out to an overview of the core.
    */
-  flyTo(index: number, opts: { duration?: number; immediate?: boolean; via?: { wp: Partial<Waypoint>; at: number }[] } = {}) {
+  flyTo(target: PoseTarget, opts: { duration?: number; immediate?: boolean; via?: { wp: Partial<Waypoint>; at: number }[] } = {}) {
     this.follow = null;
-    const to = WAYPOINTS[Math.max(0, Math.min(WAYPOINTS.length - 1, index))];
-    const dir = Math.sign(index - this.current) || 1;
+    const to = resolvePose(target);
+    const index = typeof target === 'number' ? target : this.current;
+    const dir = typeof target === 'number' ? Math.sign(index - this.current) || 1 : Math.sign(((((to.theta - this.wp.theta) % 360) + 540) % 360) - 180) || 1;
     this.current = index;
     this.flight?.kill();
     if (opts.immediate || this.opts.reducedMotion) {
@@ -533,10 +560,25 @@ export class HoloScene {
   }
 
   /** Cinematic arrival after boot. */
-  intro(index = 0, duration = 3.2) {
+  intro(target: PoseTarget = 0, duration = 3.2) {
     this.wp = { ...INTRO };
     this.current = -1;
-    this.flyTo(index, { duration });
+    this.flyTo(target, { duration });
+  }
+
+  /** Pose the camera should settle on for the open page's scroll position (null: stop tracking). */
+  setTrack(wp: Waypoint | null) { this.track = wp ? { ...wp } : null; }
+
+  /** Phones with a page open: the scene sits behind the content, so drop idle motion and frame rate. */
+  setCalm(on: boolean) { this.calm = on; }
+
+  /** Calm only while nothing is travelling: page transitions and the orbit view always run at full rate. */
+  private calmActive() {
+    if (!this.calm || this.follow || this.flight?.isActive() || this.fx.boost > 0.01) return false;
+    // still easing towards a tracked pose: keep full rate until it lands
+    const t = this.track, w = this.wp;
+    if (t && (Math.abs(t.theta - w.theta) > 0.05 || Math.abs(t.r - w.r) > 0.01 || Math.abs(t.sx - w.sx) > 0.01 || Math.abs(t.sy - w.sy) > 0.01)) return false;
+    return true;
   }
 
   pulse() {
@@ -578,12 +620,16 @@ export class HoloScene {
     if (this.running || this.disposed) return;
     this.running = true;
     this.clock.getDelta();
-    const loop = () => {
+    this.lastFrame = 0;
+    const loop = (now: number) => {
       if (!this.running) return;
       this.raf = requestAnimationFrame(loop);
+      // calm mode: ~30 fps is plenty for a slow background that sits behind the page content
+      if (this.calmActive() && this.driftAmt < 0.02 && now - this.lastFrame < 31) return;
+      this.lastFrame = now;
       this.tick();
     };
-    loop();
+    loop(performance.now());
   }
 
   stop() { this.running = false; cancelAnimationFrame(this.raf); }
@@ -604,7 +650,7 @@ export class HoloScene {
 
   private tick() {
     const raw = this.clock.getDelta();
-    this.monitor(raw);
+    if (!this.calmActive()) this.monitor(raw); // calm frames are capped on purpose, not slow
     const dt = Math.min(raw, 0.05);
     const t = this.clock.elapsedTime;
     const motion = this.opts.reducedMotion ? 0.15 : 1;

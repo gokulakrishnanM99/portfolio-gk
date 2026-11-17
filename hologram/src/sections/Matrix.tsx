@@ -77,7 +77,7 @@ export function Matrix({ active }: SectionProps) {
     <div className="blk-body" ref={rootRef}>
       <svg ref={svgRef} className="links-svg" aria-hidden style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }} />
       <SectionHeader block="matrix" active={active} title={<>Neural <em>matrix</em></>}
-        lede="Every capability is wired to where it was actually used. Hover or select one to trace it across roles and projects." />
+        lede="Each skill links to the roles and projects where I used it. Hover over or select one to see where." />
 
       <div className="mx-grid" onMouseLeave={() => setHover(null)}>
         <div className="mx-groups">
@@ -131,7 +131,7 @@ export function Matrix({ active }: SectionProps) {
                   ))}
                 </ul>
               ) : (
-                <p className="xref-empty">Part of my toolkit — not tied to a specific role or project listed on this site.</p>
+                <p className="xref-empty">Part of my toolkit, but not tied to a specific role or project on this site.</p>
               )}
               {refs.length > 0 && (
                 <div className="label label--dim" style={{ marginTop: 14, display: 'flex', alignItems: 'center', gap: 6 }}>
@@ -142,7 +142,7 @@ export function Matrix({ active }: SectionProps) {
           ) : (
             <div>
               <h4 style={{ color: 'var(--text-2)' }}>Awaiting selection</h4>
-              <p className="xref-empty">Point at any capability to trace where it was deployed. Click to pin it.</p>
+              <p className="xref-empty">Hover over a skill to see where I used it. Click to pin it.</p>
               <div className="xref-stats">
                 <div><b>{totalSkills}</b><span>Skills</span></div>
                 <div><b>{SKILL_GROUPS.length}</b><span>Domains</span></div>

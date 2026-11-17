@@ -132,7 +132,7 @@ export function Arsenal({ active }: SectionProps) {
                       filter: front ? 'none' : `saturate(.6) brightness(${dist === 1 ? 0.75 : 0.5})`,
                     }}
                     onClick={() => { if (!justDragged.current) goTo(i); }}
-                    aria-label={`${x.title} — ${x.kind}`}
+                    aria-label={`${x.title}, ${x.kind}`}
                     aria-current={front}
                     tabIndex={front ? 0 : -1}
                   >

@@ -1,6 +1,7 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { PROFILE, SOCIALS, TELEMETRY } from '../data/profile';
 import { useNav } from '../lib/nav';
+import { scrollerOf } from '../lib/pages';
 import { useDecrypt } from '../lib/useDecrypt';
 import { SectionHeaderLabelOnly } from './parts';
 import type { SectionProps } from '../components/SectionHeader';
@@ -10,13 +11,30 @@ const SOCIAL_ICON = { linkedin: ILinkedin, github: IGithub, medium: IMedium } as
 
 /** Callout slots around the projected core: [dx sign, dy sign] */
 const SLOTS: [number, number][] = [[-1, -1], [1, -1], [-1, 1], [1, 1]];
-const BOX_W = 196;
-const BOX_H = 84;
+const BOX_W = 180;
+const BOX_H = 72;
 
 /** Telemetry callouts wired to the 3D core. Rendered beside the page scroller (not inside it) and
  *  shown only while the hero is on screen — `on` turns false once the visitor scrolls down. */
-export function IdentityCallouts({ on, scene }: { on: boolean; scene: SectionProps['scene'] }) {
+export function IdentityCallouts({ active, scene }: { active: boolean; scene: SectionProps['scene'] }) {
   const wrap = useRef<HTMLDivElement>(null);
+  // hero still on screen? Tracked here (not in the page component) so hiding the callouts re-renders
+  // only this small component instead of every page mid-scroll.
+  const [hero, setHero] = useState(true);
+  useEffect(() => {
+    if (!active) return;
+    const sc = scrollerOf(0);
+    if (!sc) return;
+    const update = () => {
+      const h = sc.scrollTop < sc.clientHeight * 0.22;
+      setHero(h);
+      sc.classList.toggle('is-hero', h);
+    };
+    sc.addEventListener('scroll', update, { passive: true });
+    update();
+    return () => sc.removeEventListener('scroll', update);
+  }, [active]);
+  const on = active && hero;
 
   useEffect(() => {
     if (!on || !scene) return;
@@ -26,6 +44,22 @@ export function IdentityCallouts({ on, scene }: { on: boolean; scene: SectionPro
       const a = Math.atan2(y2 - y1, x2 - x1);
       el.style.transform = `translate(${x1.toFixed(1)}px, ${y1.toFixed(1)}px) rotate(${a.toFixed(4)}rad) scaleX(${len.toFixed(1)})`;
     };
+    // keep the callouts clear of the hero text, the page-nav rail and the page's scrollbar:
+    // measured on resize, not every frame
+    let copyRight = 0;
+    let rail: DOMRect | null = null;
+    const measure = () => {
+      copyRight = 0;
+      const range = document.createRange();
+      document.querySelectorAll<HTMLElement>('.blk--identity .id-copy > *').forEach((n) => {
+        range.selectNodeContents(n);
+        copyRight = Math.max(copyRight, range.getBoundingClientRect().right);
+      });
+      const r = document.querySelector<HTMLElement>('.rail')?.getBoundingClientRect();
+      rail = r && r.width > 0 ? r : null;
+    };
+    measure();
+    window.addEventListener('resize', measure);
     let raf = 0;
     const loop = () => {
       raf = requestAnimationFrame(loop);
@@ -41,18 +75,28 @@ export function IdentityCallouts({ on, scene }: { on: boolean; scene: SectionPro
       const dots = el.querySelectorAll<HTMLElement>('.co-dot');
       const label = el.querySelector<HTMLElement>('.core-label');
       const gr = r * 0.42; // anchor radius ≈ globe edge
+      // read every box height first, then write transforms: interleaving them forced a style/layout
+      // pass per box on every frame
+      const heights = Array.from(boxes, (b) => b.offsetHeight || BOX_H);
       SLOTS.forEach(([sx, sy], i) => {
         const box = boxes[i]; if (!box) return;
-        // real height: labels wrap to two lines, so a fixed height made leaders end inside the box
-        const bh = box.offsetHeight || BOX_H;
-        let bx = sx < 0 ? cx - r * 0.6 - BOX_W : cx + r * 0.25;
-        bx = Math.min(Math.max(bx, W * 0.5), W - 150 - BOX_W);
+        const bh = heights[i];
+        // boxes above and below the core: the left pair just left of its centre, the right pair well to
+        // the right of it, never over the hero text, the page-nav rail or the screen edge
         let by = sy < 0 ? cy - r * 0.95 - bh : cy + r * 0.62;
         by = Math.min(Math.max(by, top), bottom - bh);
+        let bx: number;
+        if (sx < 0) {
+          bx = Math.max(cx - BOX_W - gr * 0.3, copyRight + 32);
+        } else {
+          bx = Math.min(cx + gr * 0.55, W - 36 - BOX_W);
+          if (rail && by < rail.bottom + 12 && by + bh > rail.top - 12) bx = Math.min(bx, rail.left - 12 - BOX_W);
+          bx = Math.max(bx, Math.max(cx - BOX_W - gr * 0.3, copyRight + 32) + BOX_W + 16); // never under the left pair
+        }
         box.style.transform = `translate(${bx.toFixed(1)}px, ${by.toFixed(1)}px)`;
         const ang = Math.atan2(sy * 0.8, sx);
         const ax = cx + Math.cos(ang) * gr, ay = cy + Math.sin(ang) * gr;
-        const ex = sx < 0 ? bx + BOX_W : bx;
+        const ex = sx < 0 ? bx + BOX_W * 0.62 : bx + BOX_W * 0.38;
         const ey = sy < 0 ? by + bh : by;
         const kx = ax + (ex - ax) * 0.45;
         // composited-only updates (no SVG repaint): each leader is two transformed 1px lines
@@ -63,7 +107,7 @@ export function IdentityCallouts({ on, scene }: { on: boolean; scene: SectionPro
       if (label) label.style.transform = `translate(${cx.toFixed(1)}px, ${(cy + r * 0.5 + 6).toFixed(1)}px) translateX(-50%)`;
     };
     loop();
-    return () => cancelAnimationFrame(raf);
+    return () => { cancelAnimationFrame(raf); window.removeEventListener('resize', measure); };
   }, [on, scene]);
 
   return (
@@ -132,7 +176,7 @@ export function Identity({ active }: SectionProps) {
             </div>
             <div className="telemetry-row" data-reveal>
               {TELEMETRY.map((t) => (
-                <div key={t.label} className="tm"><b>{t.value}{t.unit && <small style={{ fontSize: 13, color: 'var(--holo)', marginLeft: 2 }}>{t.unit}</small>}</b><span>{t.label}</span></div>
+                <div key={t.label} className="tm"><b>{t.value}{t.unit && <small style={{ fontSize: 12, color: 'var(--holo)', marginLeft: 2 }}>{t.unit}</small>}</b><span>{t.label}</span><i>{t.detail}</i></div>
               ))}
             </div>
           </div>
