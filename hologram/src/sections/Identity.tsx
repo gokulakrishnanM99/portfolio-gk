@@ -164,7 +164,6 @@ export function Identity({ active }: SectionProps) {
               </span>
             </h1>
             <p className="id-headline" data-reveal>{PROFILE.headline}</p>
-            <p className="id-summary" data-reveal>{PROFILE.summary}</p>
             <div className="id-ctas" data-reveal>
               <button className="btn btn--primary" onClick={() => nav.goBlock('origin')}>Begin briefing <IArrowRight /></button>
               <a className="btn" href={PROFILE.resume} download="Resume_Gokulakrishnan_M.pdf">Resume <IDownload /></a>

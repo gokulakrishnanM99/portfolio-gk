@@ -12,9 +12,9 @@ export const PROFILE = {
   first: 'Gokulakrishnan',
   last: 'M',
   roles: ['AI/ML Engineer', 'Medical AI', 'Data Scientist'],
-  headline: 'I build LLM pipelines, agentic AI tools and computer-vision systems, along with the backend services that run them.',
-  summary:
-    'My work covers agentic and generative AI, LLM pipelines and cloud data platforms on AWS and Azure. Outside work, I write stories and create visual content.',
+  headline: 'I build LLM pipelines, agentic AI tools and computer-vision systems, along with the backend services that run them. Outside work, I write stories and create visual content.',
+  // summary:
+  //   'My work covers agentic and generative AI, LLM pipelines and cloud data platforms on AWS and Azure. Outside work, I write stories and create visual content.',
   status: 'Building with LLMs, agents & vision',
   location: 'Bengaluru, India',
   /** Job-search status shown on the Experience page. */
@@ -43,9 +43,9 @@ export const TELEMETRY = [
 export const ORIGIN = {
   title: 'From neurons to neural networks',
   paragraphs: [
-    'My path began in biomedical engineering at CEG, Anna University, and deepened during my master’s at IIT Bombay. Somewhere between neurons and code, the question changed from how the brain learns? to how a machine can?',
-    'So I learned machine learning from the ground up, building networks from scratch before training and fine-tuning larger ones for medical image segmentation of CT scans and thermal images, using convolutional networks and clustering.',
-    'Today I build that knowledge into products: data platforms for carbon accounting, RAG pipelines on Azure OpenAI, and self-hosted LLM benchmarking and vision models that grade answer sheets.',
+    'I started out in biomedical engineering at CEG and deepened my understanding at IIT Bombay. Somewhere between neurons and code, the question shifted from ‘how the brain learns’ to ‘how a machine can’.',
+    'So I learned machine learning from the ground up, building networks from scratch and fine-tuning larger ones for image segmentation across CT scans and thermal images, using convolutional networks and clustering.',
+    'Today I build that knowledge into products: RAG pipelines, self-hosted LLM benchmarking, carbon-accounting data platforms, and vision models that grade answer sheets.',
   ],
   education: [
     { id: 'mtech', degree: 'M.Tech, Biomedical Engineering', institution: 'IIT Bombay', period: '2021 – 2023', metric: '9.45', metricLabel: 'CPI' },
