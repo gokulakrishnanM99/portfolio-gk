@@ -113,7 +113,7 @@ export const RESUME_PROJECTS_DATA: ResumeProject[] = [
     id: "agentic-ai",
     title: "Agentic AI & LLM Prompting",
     period: "2026",
-    description: "AI-integrated job-hunt toolkit featuring ATS resume scoring, AI-driven analysis, Automated JD parsing, and tracking. Story to comic strip generator agent using MCP tools and Gemini LLM.",
+    description: "AI-integrated job-hunt toolkit featuring ATS resume scoring, AI-driven analysis, Automated JD parsing, and tracking. Comic Strip Studio: a story-to-comic agent using MCP tools and Gemini LLM.",
     tags: ["Agentic AI", "MCP Tools", "Gemini LLM", "Prompt Engineering"],
     url: "https://reszoom.vercel.app/"
   },

@@ -170,11 +170,12 @@ export const PROJECTS: Project[] = [
   {
     id: 'comic-agent',
     code: 'P-03',
-    title: 'Story → Comic Agent',
+    title: 'Comic Strip Studio',
     kind: 'Agentic AI',
     year: '2026',
     summary: 'An agent that turns a written story into a multi-panel comic strip. It uses MCP tools with Gemini to split the story into scenes, write the panel prompts and lay out the page.',
     tags: ['Agentic AI', 'MCP', 'Gemini', 'Prompt Engineering'],
+    url: 'https://comic-strip-studio-hp55.onrender.com/',
     // image: media('generated/project-comic-agent.webp'), // add the file to public/media/generated/, then uncomment
   },
   {
