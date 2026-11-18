@@ -176,7 +176,10 @@ export const PROJECTS: Project[] = [
     summary: 'An agent that turns a written story into a multi-panel comic strip. It uses MCP tools with Gemini to split the story into scenes, write the panel prompts and lay out the page.',
     tags: ['Agentic AI', 'MCP', 'Gemini', 'Prompt Engineering'],
     url: 'https://comic-strip-studio-hp55.onrender.com/',
-    // image: media('generated/project-comic-agent.webp'), // add the file to public/media/generated/, then uncomment
+    // the app's own logo (from its brand assets), placed clear of the card's code and title
+    image: media('projects/comic-strip-studio.webp'),
+    imageFit: 'contain',
+    imageBg: '#16140f',
   },
   {
     id: 'liver-seg',
